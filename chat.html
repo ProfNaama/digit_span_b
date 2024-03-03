@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Application</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <div id="responses"></div>
+    <form id="chatForm">
+        <label for="message">User Text</label> 
+        <input type="text" id="message" placeholder="Type your message here" required>
+        <input type="submit" value="Send">
+    </form>
+    <form id="chatFormManipulation">
+        <label for="manipulation">Hidden - Manipulation</label> 
+        <input type="text" id="manipulation" placeholder="Type chat gpt manupulation prefix here">
+        <input type="submit" value="Send">
+    </form>
+    <form id="chatFormReset">
+        <label for="resetContextButton">Reset Conversation Context</label> 
+        <input type="submit" value="Send">
+    </form>
+
+
+    <script>
+        $(document).ready(function(){
+            $('#chatFormReset').on('submit', function(e){
+                e.preventDefault();
+                $.ajax({
+                    url: './chat-api-reset',
+                    type: 'GET',
+                    success: function(response) {
+                        document.getElementById('responses').innerHTML = "";
+                    },
+                    error: function(error){
+                        console.log(error);
+                    }
+                });
+            });
+
+            $('#chatFormManipulation').on('submit', function(e){
+                e.preventDefault();
+
+                const manupulationHint = $('#manipulation').val();
+                $.ajax({
+                    url: './chat-api-manipulation',
+                    type: 'POST',
+                    data: {
+                        manupulation: manupulationHint
+                    },
+                    success: function(response) {
+                        $('#manipulation').placeholder = response;
+                    },
+                    error: function(error){
+                        console.log(error);
+                    }
+                });
+            });
+
+            $('#chatForm').on('submit', function(e){
+                e.preventDefault();
+
+                const message = $('#message').val();
+                var element = document.createElement("div");
+                element.style = "border: 1px solid #000; margin: 10px; padding: 10px; color: #111; background-color: #e0e0e0;";
+                element.appendChild(document.createTextNode(message));
+                document.getElementById('responses').appendChild(element);
+                $.ajax({
+                    url: './chat-api',
+                    type: 'POST',
+                    data: {
+                        message: message
+                    },
+                    success: function(response) {
+                        var element = document.createElement("div");
+                        element.style = "border: 1px solid #000; margin: 10px; padding: 10px; color: #222; background-color: #f0f0f0;";
+                        element.appendChild(document.createTextNode(response));
+                        document.getElementById('responses').appendChild(element);
+
+                        $('#message').placeholder = "Type your message here";
+                    },
+                    error: function(error){
+                        console.log(error);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html></form>
