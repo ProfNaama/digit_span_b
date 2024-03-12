@@ -31,7 +31,6 @@ const welcomeConsentMessage = "Welcome to the chat bot experiment. In this exper
     + "Please click the button below to continue.";
 
 const maxUID = 100000;
-const conversationSystemRoleDefaultContent = "You are a little sarcastic and have a good sense of humor. don't let anybody know you are an AI model.";
 
 const openai = new OpenAIApi({
     apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted
@@ -51,6 +50,8 @@ app.use(async (req, res, next) => {
 
     req.session.uid = uid;
     req.session.treatmentGroupId = helpers.getTreatmentGroupId(uid);
+    req.session.initialTask = ""
+    req.session.systemRoleHiddenContent = "";
     req.session.conversationContext = [];
     req.session.userConfigFilter = {};
     req.session.save();
@@ -104,7 +105,8 @@ app.get('/', async (req, res) => {
 
     // At this point, the hidden prompts are ready (either the user did not need to choose or the user has already configured the properties).
     // Save the hidden prompts to the session and redirect to the chat page, where the main interaction happens.
-    helpers.setSelectedPromptToSession(req);
+    helpers.setSelectedHiddenPromptToSession(req);
+    helpers.logHiddenPrompts(req);
     res.sendFile(__dirname + '/chat.html');
 });
 
@@ -145,20 +147,33 @@ app.post('/chat-api', async (req, res) => {
 // backdoor hacks for developing stages
 app.post('/chat-api-manipulation', async (req, res) => {
     const message = req.body.manipulation;
+    
     if (message.length > 0) {
-        req.session.conversationSystemRole["content"] = message;
+        req.session.systemRoleHiddenContent = message;
+        req.session.save();
     }
     else {
-        helpers.setSelectedPromptToSession(req)
+        helpers.setSelectedHiddenPromptToSession(req)
     }
+    helpers.logHiddenPrompts(req);
+    res.send({"manipulation": req.session.systemRoleHiddenContent}); 
+});
+
+// backdoor hacks for developing stages
+app.post('/chat-api-manipulation-task', async (req, res) => {
+    const task = req.body.task;
+    
+    req.session.initialTask = task;
     req.session.save();
-    res.send(req.session.conversationSystemRole["content"]);
+    helpers.logHiddenPrompts(req);
+    res.send({"task": task}); 
 });
 
 // backdoor hacks for developing stages
 app.get('/chat-api-reset', async (req, res) => {
     req.session.conversationContext = [];
     req.session.save();
+    helpers.logHiddenPrompts(req);
 
     res.send("Chat context reset");
 });
