@@ -80,7 +80,8 @@ function getInitialTaskContent(req) {
 function createFullConversationPrompt(req) {
     const initialTaskContent = getInitialTaskContent(req);
     let conversationSystemRole = {"role": "system", "content": req.session.systemRoleHiddenContent + "\n" + initialTaskContent}; 
-    const messageWithContext = [conversationSystemRole].concat(req.session.conversationContext);
+    const conversation = req.session.conversationContext.map(c => ({role: c.role, content: c.content}));
+    const messageWithContext = [conversationSystemRole].concat(conversation);
 
     return messageWithContext;
 }
@@ -106,4 +107,25 @@ function filterUserConfigProperties(recordsByProperty) {
     return userConfigProperties;
 }
 
-module.exports = {getTreatmentGroupId, getRandomInt, getSelectedRecords, createFullConversationPrompt, filterUserConfigProperties, groupRecordsByProperty, setSelectedHiddenPromptToSession, logHiddenPrompts}
+function getAndResetInteractionTime(req) {
+    let currentTime = Date.now()
+    let prevInteractionTime = currentTime;
+    if (req.session.lastInteractionTime) {
+        prevInteractionTime = req.session.lastInteractionTime;
+    }
+    req.session.lastInteractionTime = currentTime;
+    // return milliseconds passed since the last interaction
+    return Math.floor((currentTime - prevInteractionTime));
+}
+
+module.exports = {
+    getTreatmentGroupId,
+    getRandomInt,
+    getSelectedRecords,
+    createFullConversationPrompt,
+    filterUserConfigProperties,
+    groupRecordsByProperty,
+    setSelectedHiddenPromptToSession,
+    logHiddenPrompts,
+    getInteractionTime: getAndResetInteractionTime
+}
