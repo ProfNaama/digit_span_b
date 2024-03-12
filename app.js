@@ -19,7 +19,7 @@ app.use(session({
     resave: true
 }));
 
-const tokenLimit = process.env.OPENAI_TOKEN_LIMIT || 20; 
+const tokenLimit = process.env.OPENAI_TOKEN_LIMIT || 50; 
 const welcomeConsentMessage = "Welcome to the chat bot experiment. In this experiment, you are expected to solve a puzzle. "
     + "The puzzle is decided by a chatbot. "
     + "You will be interacting with the chatbot in order to solve the challange. "
