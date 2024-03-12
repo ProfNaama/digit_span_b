@@ -1,0 +1,27 @@
+html
+  head
+    title= title
+  body
+    h1= header_message
+    h2= body_message
+
+    form(method='post' action='/user_config')
+      P 
+        if userConfig
+            // Loop through the userConfig keys and values (which are arrays of options per key).
+            // present each key as a label and the values as radio button options
+            // submit all the radio labels as well as selected values to the server
+            each value, key in userConfig
+                h3 
+                    label= key
+                P
+                each option, index in value
+                    input(type='radio', name=key, value=option, id=option, required="required")
+                    label(for=option) #{option}
+                    
+                    br
+                br
+                br
+
+      p
+        input(type='submit' value='Apply Configuration')
