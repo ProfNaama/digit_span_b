@@ -3,8 +3,6 @@ const bodyParser = require('body-parser');
 const OpenAIApi = require("openai");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
-const csv = require('csv-parser')
-const fs = require('fs');
 const app = express();
 const helpers = require("./helpers.js");
 
