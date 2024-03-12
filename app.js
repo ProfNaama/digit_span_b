@@ -42,14 +42,13 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); // The maximum is exclusive and the minimum is inclusive
 }
 
-function getTreatmentGroupRecords(req) {
-    const treatment_group = req.session.treatmentGroupId;
-    const userConfigFilter = req.session.userConfigFilter;
-    const treatmentGroupRecords =  csvRecords.filter(r => parseInt(r["treatment_group"]) === treatment_group);
+function getSelectedRecords(req) {
+    // filter the records according to the user's treatment group and user config filter
+    const treatmentGroupRecords =  csvRecords.filter(r => parseInt(r["treatment_group"]) === req.session.treatmentGroupId);
     let filteredRecords = [];
     for (const record of treatmentGroupRecords) {
         let match = true;
-        for (const [userK, userV] of Object.entries(userConfigFilter)) {
+        for (const [userK, userV] of Object.entries(req.session.userConfigFilter)) {
             if (record["property_name"] == [userK]) {
                 match = false;
                 if (record["property_value"] == userV) {
@@ -65,23 +64,20 @@ function getTreatmentGroupRecords(req) {
     return filteredRecords;
 }
 
-function getTreatmentGroupPrompts(req) {
-    return getTreatmentGroupRecords(req).map(r => r["hidden_prompt"]);
+function getSelectedPrompts(req) {
+    return getSelectedRecords(req).map(r => r["hidden_prompt"]);
 }
-
 
 function mergeHiddenPrompts(prompts) {    
     return prompts.join("\n");
 }
 
-function resetDefaultPrompt(req) {
-    req.session.conversationSystemRoleDefaultContent = mergeHiddenPrompts(getTreatmentGroupPrompts(req));
+function setSelectedPromptToSession(req) {
+    req.session.conversationSystemRoleDefaultContent = mergeHiddenPrompts(getSelectedPrompts(req));
     req.session.conversationSystemRole = {"role":"system", "content":req.session.conversationSystemRoleDefaultContent};
     req.session.save();
     console.log("uid: " + req.session.uid + ", treatment group: " + req.session.treatmentGroupId + ", hidden system role is set to : " + req.session.conversationSystemRoleDefaultContent);
 }
-
-
 
 function createFullConversationPrompt(req) {
     // const messageWithContext = [req.session.conversationSystemRole].concat(req.session.conversationContext.concat);
@@ -97,6 +93,7 @@ const openai = new OpenAIApi({
     apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted
 });
 
+// This middleware will be executed for every request to the app, making sure the session is initialized with uid, treatment group id, etc.
 app.use(async (req, res, next) => {
     if (!req.session.uid) {
         let uid = getRandomInt(0, maxUID);
@@ -108,91 +105,83 @@ app.use(async (req, res, next) => {
         req.session.conversationContext = [];
         req.session.userConfigFilter = {};
         req.session.save();
+        console.log("new session. uid: " + req.session.uid + ", treatment group: " + req.session.treatmentGroupId);
     }
     next();
 });
 
-app.get('/', async (req, res) => {
-    // check if user config is needed (in case of more than one value for each property). This depends on the csv and the treatment group.
-    // initially, the user config filter is empty.
-    // if user configuration is needed, the user is redirected to the user_config page, with the set of configuration properties to choose from.
-    // then the configuration is saved in the session and the user is redirected to the chat page.
-    const filteredRecords = getTreatmentGroupRecords(req);
+
+function groupRecordsByProperty(records) {
     let recordsByProperty = {};
-    for (const record of filteredRecords) {
+    for (const record of records) {
         if (!recordsByProperty[record["property_name"]]) {
             recordsByProperty[record["property_name"]] = [];
         }
         recordsByProperty[record["property_name"]].push(record["property_value"]);
     }
-    
+    return recordsByProperty;}
+
+function filterUserConfigProperties(recordsByProperty) {
+    // filter those properties that have more than one value, so the user can select a preference
     let userConfigProperties = {};
     Object.keys(recordsByProperty).forEach(k => {
         if (recordsByProperty[k].length > 1) {
             userConfigProperties[k] = recordsByProperty[k];
         }
-     });
-    
+    });
+    return userConfigProperties;
+}
+
+function renderUserConfigPage(req, res, userConfigProperties, userPropertiesCount) {
+    let userMessage = "Please select your preference regarding the following property.";
+    if (userPropertiesCount > 1) {
+        userMessage = "For each of the following properties, please select your preferences.";
+    }
+    if (Object.keys(req.session.userConfigFilter).length == 0) {
+        // this is the expected case, when the csv is set to let the user choose the properties.
+        res.render('./user_config', { 
+            "title":"ChatLab",  
+            "header_message":"This is an experiment in which you should configure the chat bot",  
+            "body_message": userMessage,
+            userConfig: userConfigProperties
+        });
+    } else {
+        // should not happen.
+        // if we reached here, this means the user was required to choose a property, but the user config is not complete (i.e. some properties were not decided).
+        console.log("Properties are not filtered correctly!. uid: " + req.session.uid + ", treatment group: " + req.session.treatmentGroupId + ", user config filter is set to : " + JSON.stringify(userConfigProperties));
+        res.render('./error', {
+            "title":"ChatLab",  
+            "header_message":"Error",  
+            "body_message": "Properties are not filtered correctly! Please contact the experimenter."
+        });
+    }
+}
+
+app.get('/', async (req, res) => {
+    const filteredRecords = getSelectedRecords(req);
+    let recordsByProperty = groupRecordsByProperty(filteredRecords);
+    let userConfigProperties = filterUserConfigProperties(recordsByProperty);
     const userPropertiesCount = Object.keys(userConfigProperties).length;
+
     if (userPropertiesCount > 0) {
-        let userMessage = "Please select your preference regarding the following property.";
-        if (userPropertiesCount > 1) {
-            userMessage = "For each of the following properties, please select your preferences.";
-        }
-        if (Object.keys(req.session.userConfigFilter).length == 0) {
-            // send to user config page
-            // render the selected csv records according to filteredRecords
-            res.render('./user_config', { 
-                "title":"ChatLab",  
-                "header_message":"This is an experiment in which you should configure the chat bot",  
-                "body_message": userMessage,
-                userConfig: userConfigProperties
-            });
-            return;            
-        }
-        else {
-            console.log("Properties are not filtered correctly!. uid: " + req.session.uid + ", treatment group: " + req.session.treatmentGroupId + ", user config filter is set to : " + JSON.stringify(userConfigProperties));
-            // send to error page
-            res.render('./error', {
-                "title":"ChatLab",  
-                "header_message":"Error",  
-                "body_message": "Properties are not filtered correctly! Please contact the experimenter."
-            });
-            return;            
-        }
+        // according to the csv, the user has some properties to decide on.
+        // we redirect the user to the user_config page, where the user can configure the properties.
+        // after the user config is set, the user is redirected back to this route again.
+        renderUserConfigPage(req, res, userConfigProperties, userPropertiesCount);
+        return;
     }
 
-
-    resetDefaultPrompt(req);
-    res.sendFile(__dirname + '/chat.html');    
-})
+    // At this point, the hidden prompts are ready (either the user did not need to choose or the user has already configured the properties).
+    // Save the hidden prompts to the session and redirect to the chat page, where the main interaction happens.
+    setSelectedPromptToSession(req);
+    res.sendFile(__dirname + '/chat.html');
+});
 
 app.post('/user_config', async (req, res) => {
     // the user config is saved in the session, we redirect to the root route again, this time the config is already set.
     req.session.userConfigFilter = req.body;
     req.session.save();
     res.redirect('/');
-})
-
-// backdoor hacks for developing stages
-app.post('/chat-api-manipulation', async (req, res) => {
-    const message = req.body.manipulation;
-    if (message.length > 0) {
-        req.session.conversationSystemRole["content"] = message;
-    }
-    else {
-        resetDefaultPrompt(req)
-    }
-    req.session.save();
-    res.send(req.session.conversationSystemRole["content"]);
-});
-
-// backdoor hacks for developing stages
-app.get('/chat-api-reset', async (req, res) => {
-    req.session.conversationContext = [];
-    req.session.save();
-
-    res.send("Chat context reset");
 });
 
 // the main chat route.
@@ -220,6 +209,28 @@ app.post('/chat-api', async (req, res) => {
         console.error(error);
         res.status(500).json({ error: 'Error processing request' });
     }
+});
+
+
+// backdoor hacks for developing stages
+app.post('/chat-api-manipulation', async (req, res) => {
+    const message = req.body.manipulation;
+    if (message.length > 0) {
+        req.session.conversationSystemRole["content"] = message;
+    }
+    else {
+        setSelectedPromptToSession(req)
+    }
+    req.session.save();
+    res.send(req.session.conversationSystemRole["content"]);
+});
+
+// backdoor hacks for developing stages
+app.get('/chat-api-reset', async (req, res) => {
+    req.session.conversationContext = [];
+    req.session.save();
+
+    res.send("Chat context reset");
 });
 
 const port = process.env.PORT || 3030;
