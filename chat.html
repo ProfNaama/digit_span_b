@@ -26,10 +26,18 @@
         <input type="submit" value="Send">
     </form>
     <form id="chatFormReset">
-        <label for="resetContextButton">Reset Conversation Context</label> 
+        <p >Reset Conversation Context</p> 
         <input type="submit" value="Send">
     </form>
 
+    <br>
+    <br>
+
+    <form id="chatEndedForm">
+        <p >End Chat</p> 
+        <input type="submit" value="End Chat">
+    </form>
+    
 
     <script>
         $(document).ready(function(){
@@ -105,8 +113,20 @@
                         element.appendChild(document.createTextNode(response));
                         document.getElementById('responses').appendChild(element);
 
-                        $('#message').placeholder = "Type your message here";
+                        $('#chatForm')[0].reset();
                     },
+                    error: function(error){
+                        console.log(error);
+                    }
+                });
+            });
+
+            $('#chatEndedForm').on('submit', function(e){
+                e.preventDefault();
+                $.ajax({
+                    url: './chat-api-ended',
+                    type: 'GET',
+                    success: function(response) {},
                     error: function(error){
                         console.log(error);
                     }

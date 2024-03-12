@@ -13,7 +13,7 @@ html
             // submit all the radio labels as well as selected values to the server
             each value, key in userConfig
                 h3 
-                    label= key
+                  label #{key}
                 P
                 each option, index in value
                     input(type='radio', name=key, value=option, id=option, required="required")

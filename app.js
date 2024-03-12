@@ -143,6 +143,17 @@ app.post('/chat-api', async (req, res) => {
     }
 });
 
+// chat has finished.
+// go to chat gpt and obtain sentiment analysis score for each user message
+// save data to the database / csv / external source / etc.
+app.get('/chat-api-ended', async (req, res) => {
+    await getSentimentAnalysisScore(req);
+    res.render('./chat_ended', { 
+        title: "ChatLab",  
+        message: "Thank You for participating in the experiment. You can close the window now."
+    });
+});
+
 // backdoor hacks for developing stages
 app.post('/chat-api-manipulation', async (req, res) => {
     const message = req.body.manipulation;
@@ -176,6 +187,32 @@ app.get('/chat-api-reset', async (req, res) => {
 
     res.send("Chat context reset");
 });
+
+async function getSingleSentimentAnalysisScore(message) {
+    let systemRole = {"role": "system", "content": "This is a sentiment analysis model. Please analyze the sentiment of the following text"};    
+    let userContent = {"role": "user", "content":  message};    
+    const chatCompletion = await openai.chat.completions.create({
+        messages: [systemRole, userContent],
+        model: 'gpt-3.5-turbo',
+        max_tokens: tokenLimit,
+        temperature: 0.7
+    });
+    return chatCompletion.choices[0].message.content;
+}
+
+// using chatgpt api, set a new chat with a system role for getting sentiment score.
+async function getSentimentAnalysisScore(req) {
+    try {
+        let systemRole = {"role": "system", "content": "This is a sentiment analysis model. Please analyze the sentiment of the following phrase. do not include the phrase in the response."};
+        for (let element of req.session.conversationContext.filter(c => c.role === "user")) {
+            let sentiment = await getSingleSentimentAnalysisScore(element.content);
+            element["sentiment"] = sentiment.substring(sentiment.lastIndexOf("\"") + 1).trim();
+        };
+    } catch (error) {
+        console.error(error);
+    }
+    console.log("getSentimentAnalysisScore, full conversationContext: " + JSON.stringify(req.session.conversationContext));
+}
 
 const port = process.env.PORT || 3030;
 app.listen(port, () => console.log(`Server running on port ${port}`));
