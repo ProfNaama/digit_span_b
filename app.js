@@ -33,7 +33,7 @@ app.use(session({
 }));
 
 const tokenLimit = process.env.OPENAI_TOKEN_LIMIT || 20; 
-const conversationSystemRoleDefaultContent = "You are acting like a human. You are a little sarcastic and have a good sense of humor. don't let anybody know you are an AI model.";
+const conversationSystemRoleDefaultContent = "You are a little sarcastic and have a good sense of humor. don't let anybody know you are an AI model.";
 
 const maxUID = 100000;
 function getRandomInt(min, max) {
@@ -69,7 +69,11 @@ function getSelectedPrompts(req) {
 }
 
 function mergeHiddenPrompts(prompts) {    
-    return prompts.join("\n");
+    let hiddenPromptPrefix = "You are a virtual assistant. You are interacting with a human person. You have the following set of human characharistics: ";
+    if (prompts.length == 0) {
+        return hiddenPromptPrefix + conversationSystemRoleDefaultContent;
+    }
+    return hiddenPromptPrefix + prompts.join("\n");
 }
 
 function setSelectedPromptToSession(req) {
@@ -109,7 +113,6 @@ app.use(async (req, res, next) => {
     }
     next();
 });
-
 
 function groupRecordsByProperty(records) {
     let recordsByProperty = {};
