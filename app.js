@@ -5,24 +5,13 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const csv = require('csv-parser')
 const fs = require('fs');
-const { log } = require('console');
 const app = express();
+const helpers = require("./helpers.js");
+
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }))
 app.set('view engine', 'pug');
 
-const csvFileName = "experiment_config.csv";
-const csvRecords = [];
-let treatmentGroups = [];
-
-fs.createReadStream(csvFileName)
-    .pipe(csv())
-    .on('data', (data) => csvRecords.push(data))
-    .on('end', () => {
-        //console.log(csvRecords);
-        treatmentGroups = Array.from(new Set(csvRecords.map(r => parseInt(r["treatment_group"]))));
-        //console.log(treatmentGroups);
-    });
 
 // Initialization
 app.use(cookieParser());
@@ -33,65 +22,16 @@ app.use(session({
 }));
 
 const tokenLimit = process.env.OPENAI_TOKEN_LIMIT || 20; 
-const conversationSystemRoleDefaultContent = "You are a little sarcastic and have a good sense of humor. don't let anybody know you are an AI model.";
+const welcomeConsentMessage = "Welcome to the chat bot experiment. In this experiment, you are expected to solve a puzzle. "
+    + "The puzzle is decided by a chatbot. "
+    + "You will be interacting with the chatbot in order to solve the challange. "
+    + "You shoudl interact with the chatbot until you will solve. "
+    + "You can request help, request hints, work together etc. "
+    + "In clicking the button below you agree to take part in the experiment along with the privacy policy. "
+    + "Please click the button below to continue.";
 
 const maxUID = 100000;
-function getRandomInt(min, max) {
-    const minCeiled = Math.ceil(min);
-    const maxFloored = Math.floor(max);
-    return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); // The maximum is exclusive and the minimum is inclusive
-}
-
-function getSelectedRecords(req) {
-    // filter the records according to the user's treatment group and user config filter
-    const treatmentGroupRecords =  csvRecords.filter(r => parseInt(r["treatment_group"]) === req.session.treatmentGroupId);
-    let filteredRecords = [];
-    for (const record of treatmentGroupRecords) {
-        let match = true;
-        for (const [userK, userV] of Object.entries(req.session.userConfigFilter)) {
-            if (record["property_name"] == [userK]) {
-                match = false;
-                if (record["property_value"] == userV) {
-                    match = true;
-                    break;
-                }
-            }
-        }
-        if (match) {
-            filteredRecords.push(record);
-        }   
-    }
-    return filteredRecords;
-}
-
-function getSelectedPrompts(req) {
-    return getSelectedRecords(req).map(r => r["hidden_prompt"]);
-}
-
-function mergeHiddenPrompts(prompts) {    
-    let hiddenPromptPrefix = "You are a virtual assistant. You are interacting with a human person. You have the following set of human characharistics: ";
-    if (prompts.length == 0) {
-        return hiddenPromptPrefix + conversationSystemRoleDefaultContent;
-    }
-    return hiddenPromptPrefix + prompts.join("\n");
-}
-
-function setSelectedPromptToSession(req) {
-    req.session.conversationSystemRoleDefaultContent = mergeHiddenPrompts(getSelectedPrompts(req));
-    req.session.conversationSystemRole = {"role":"system", "content":req.session.conversationSystemRoleDefaultContent};
-    req.session.save();
-    console.log("uid: " + req.session.uid + ", treatment group: " + req.session.treatmentGroupId + ", hidden system role is set to : " + req.session.conversationSystemRoleDefaultContent);
-}
-
-function createFullConversationPrompt(req) {
-    // const messageWithContext = [req.session.conversationSystemRole].concat(req.session.conversationContext.concat);
-    // const messageWithContext = req.session.conversationContext.concat([req.session.conversationSystemRole]);
-
-    const messageWithContext = req.session.conversationContext.slice(0, -1).concat(
-        [req.session.conversationSystemRole]).concat(
-            req.session.conversationContext.slice(-1));
-    return messageWithContext;
-}
+const conversationSystemRoleDefaultContent = "You are a little sarcastic and have a good sense of humor. don't let anybody know you are an AI model.";
 
 const openai = new OpenAIApi({
     apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted
@@ -99,41 +39,29 @@ const openai = new OpenAIApi({
 
 // This middleware will be executed for every request to the app, making sure the session is initialized with uid, treatment group id, etc.
 app.use(async (req, res, next) => {
-    if (!req.session.uid) {
-        let uid = getRandomInt(0, maxUID);
-        if ("uid" in req.query) {
-            uid = parseInt(req.query["uid"]);
-        }
-        req.session.uid = uid;
-        req.session.treatmentGroupId = treatmentGroups[(req.session.uid % treatmentGroups.length)];
-        req.session.conversationContext = [];
-        req.session.userConfigFilter = {};
-        req.session.save();
-        console.log("new session. uid: " + req.session.uid + ", treatment group: " + req.session.treatmentGroupId);
+    if (req.session.uid) {
+        next();
+        return;
     }
-    next();
-});
 
-function groupRecordsByProperty(records) {
-    let recordsByProperty = {};
-    for (const record of records) {
-        if (!recordsByProperty[record["property_name"]]) {
-            recordsByProperty[record["property_name"]] = [];
-        }
-        recordsByProperty[record["property_name"]].push(record["property_value"]);
+    let uid = helpers.getRandomInt(0, maxUID);
+    if ("uid" in req.query) {
+        uid = parseInt(req.query["uid"]);
     }
-    return recordsByProperty;}
 
-function filterUserConfigProperties(recordsByProperty) {
-    // filter those properties that have more than one value, so the user can select a preference
-    let userConfigProperties = {};
-    Object.keys(recordsByProperty).forEach(k => {
-        if (recordsByProperty[k].length > 1) {
-            userConfigProperties[k] = recordsByProperty[k];
-        }
+    req.session.uid = uid;
+    req.session.treatmentGroupId = helpers.getTreatmentGroupId(uid);
+    req.session.conversationContext = [];
+    req.session.userConfigFilter = {};
+    req.session.save();
+    console.log("new session. uid: " + req.session.uid + ", treatment group: " + req.session.treatmentGroupId);
+    res.render('./welcome_consent', { 
+        "title":"ChatLab",  
+        "header_message":welcomeConsentMessage,  
+        "body_message": welcomeConsentMessage,
     });
-    return userConfigProperties;
-}
+
+});
 
 function renderUserConfigPage(req, res, userConfigProperties, userPropertiesCount) {
     let userMessage = "Please select your preference regarding the following property.";
@@ -161,9 +89,9 @@ function renderUserConfigPage(req, res, userConfigProperties, userPropertiesCoun
 }
 
 app.get('/', async (req, res) => {
-    const filteredRecords = getSelectedRecords(req);
-    let recordsByProperty = groupRecordsByProperty(filteredRecords);
-    let userConfigProperties = filterUserConfigProperties(recordsByProperty);
+    const filteredRecords = helpers.getSelectedRecords(req);
+    let recordsByProperty = helpers.groupRecordsByProperty(filteredRecords);
+    let userConfigProperties = helpers.filterUserConfigProperties(recordsByProperty);
     const userPropertiesCount = Object.keys(userConfigProperties).length;
 
     if (userPropertiesCount > 0) {
@@ -176,7 +104,7 @@ app.get('/', async (req, res) => {
 
     // At this point, the hidden prompts are ready (either the user did not need to choose or the user has already configured the properties).
     // Save the hidden prompts to the session and redirect to the chat page, where the main interaction happens.
-    setSelectedPromptToSession(req);
+    helpers.setSelectedPromptToSession(req);
     res.sendFile(__dirname + '/chat.html');
 });
 
@@ -194,7 +122,7 @@ app.post('/user_config', async (req, res) => {
 app.post('/chat-api', async (req, res) => {
     const message = req.body.message;
     req.session.conversationContext.push({ role: 'user', content: message });
-    const messageWithContext = createFullConversationPrompt(req);
+    const messageWithContext = helpers.createFullConversationPrompt(req);
     try {
         const chatCompletion = await openai.chat.completions.create({
             messages: messageWithContext,
@@ -214,7 +142,6 @@ app.post('/chat-api', async (req, res) => {
     }
 });
 
-
 // backdoor hacks for developing stages
 app.post('/chat-api-manipulation', async (req, res) => {
     const message = req.body.manipulation;
@@ -222,7 +149,7 @@ app.post('/chat-api-manipulation', async (req, res) => {
         req.session.conversationSystemRole["content"] = message;
     }
     else {
-        setSelectedPromptToSession(req)
+        helpers.setSelectedPromptToSession(req)
     }
     req.session.save();
     res.send(req.session.conversationSystemRole["content"]);
