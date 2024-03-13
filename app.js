@@ -180,10 +180,10 @@ app.get('/chat-api-reset', async (req, res) => {
 });
 
 async function getSingleSentimentAnalysisScore(message) {
-    let userContent = "This is a sentiment analysis model. provide a 3 numbers tuple for " +
-    "(positive sentiment, negative sentiment, neutral sentiment) score for the following text: " + 
+    let userContent = "This is a sentiment analysis model. provide a 4 numbers tuple for " +
+    "(positive sentiment, negative sentiment, neutral sentiment, engagement sentiment) score for the following text: " + 
     message + 
-    ". (positive sentiment, negative sentiment, neutral sentiment) 3 numbers tuple scores is: ";
+    ". (positive sentiment, negative sentiment, neutral sentiment, engagement sentiment) 4 numbers tuple scores is: ";
     
     const chatCompletion = await openai.chat.completions.create({
         messages: [{ role:"user", content: userContent }],
