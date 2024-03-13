@@ -75,15 +75,11 @@ function setSelectedHiddenPromptToSession(req) {
     req.session.save();
 }
 
-const defaultInitialTask = "You are a virtual assistant working with a human adult person. " + 
-"Your task is to come up with a simple fun riddle challange for the person to try and solve. " + 
-"User the following random value in order to randomize context: " + getRandomInt(1, 100).toString().join([...Array(10).keys()]) + ". ";
-
 function getInitialTaskContent(req) {
     if (req.session.initialTask) {
         return req.session.initialTask;
     }
-    return defaultInitialTask;
+    return  taskDescription = getFirstRecordValue(req, "task_description");
 }
 
 function createFullConversationPrompt(req) {
