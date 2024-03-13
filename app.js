@@ -180,10 +180,13 @@ app.get('/chat-api-reset', async (req, res) => {
 });
 
 async function getSingleSentimentAnalysisScore(message) {
-    let systemRole = {"role": "system", "content": "This is a sentiment analysis model. Please analyze the sentiment of the following text"};    
-    let userContent = {"role": "user", "content":  message};    
+    let userContent = "This is a sentiment analysis model. provide a 3 numbers tuple for " +
+    "(positive sentiment, negative sentiment, neutral sentiment) score for the following text: " + 
+    message + 
+    ". (positive sentiment, negative sentiment, neutral sentiment) 3 numbers tuple scores is: ";
+    
     const chatCompletion = await openai.chat.completions.create({
-        messages: [systemRole, userContent],
+        messages: [{ role:"user", content: userContent }],
         model: 'gpt-3.5-turbo',
         max_tokens: tokenLimit,
         temperature: 0.7
