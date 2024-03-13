@@ -179,19 +179,42 @@ app.get('/chat-api-reset', async (req, res) => {
     res.send("Chat context reset");
 });
 
-async function getSingleSentimentAnalysisScore(message) {
-    let userContent = "This is a sentiment analysis model. provide a 4 numbers tuple for " +
-    "(positive sentiment, negative sentiment, neutral sentiment, engagement sentiment) score for the following text: " + 
+async function getSentimentAnalysisScoreForMessage(message) {
+    let userContent = "This is a sentiment analysis model. provide a 3 numbers score in the range 0 to 1 " +
+    "(positive sentiment, negative sentiment, neutral sentiment) for the following text: " + 
     message + 
-    ". (positive sentiment, negative sentiment, neutral sentiment, engagement sentiment) 4 numbers tuple scores is: ";
-    
-    const chatCompletion = await openai.chat.completions.create({
+    ". the (positive sentiment, negative sentiment, neutral sentiment) 3 numbers score is: ";
+
+    const chatCompletion1 = await openai.chat.completions.create({
         messages: [{ role:"user", content: userContent }],
         model: 'gpt-3.5-turbo',
         max_tokens: tokenLimit,
-        temperature: 0.7
+        temperature: 0.1
     });
-    return chatCompletion.choices[0].message.content;
+
+    userContent = "This is a engagement analysis model. " + 
+    "provide an elaborated description for the engagement level as well as an engagement score in the range 0 to 1 for the following text : " + message;
+    const chatCompletion2 = await openai.chat.completions.create({
+        messages: [{ role:"user", content: userContent }],
+        model: 'gpt-3.5-turbo',
+        max_tokens: tokenLimit,
+        temperature: 0.1
+    });
+
+    userContent = "This is a engagement analysis model. " + 
+    "provide an engagement score number in the range 0 to 1 for the following text : " + message;
+    const chatCompletion3 = await openai.chat.completions.create({
+        messages: [{ role:"user", content: userContent }],
+        model: 'gpt-3.5-turbo',
+        max_tokens: tokenLimit,
+        temperature: 0.1
+    });
+
+    return { 
+        sentiment_score_tuple: chatCompletion1.choices[0].message.content, 
+        engagement_desc: chatCompletion2.choices[0].message.content, 
+        engagement_score: chatCompletion3.choices[0].message.content 
+    };
 }
 
 // using chatgpt api, set a new chat with a system role for getting sentiment score.
@@ -199,8 +222,10 @@ async function getSentimentAnalysisScore(req) {
     try {
         let systemRole = {"role": "system", "content": "This is a sentiment analysis model. Please analyze the sentiment of the following phrase. do not include the phrase in the response."};
         for (let element of req.session.conversationContext.filter(c => c.role === "user")) {
-            let sentiment = await getSingleSentimentAnalysisScore(element.content);
-            element["sentiment"] = sentiment.substring(sentiment.lastIndexOf("\"") + 1).trim();
+            let sentiment = await getSentimentAnalysisScoreForMessage(element.content);
+            element["sentiment_score"] = sentiment["sentiment_score_tuple"];
+            element["engagement_desc"] = sentiment["engagement_desc"];
+            element["engagement_score"] = sentiment["engagement_score"];
         };
     } catch (error) {
         console.error(error);
