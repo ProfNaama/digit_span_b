@@ -22,7 +22,7 @@ function getFirstRecordValue(req, property_name) {
     return treatmentGroupRecords[0][property_name];
 }
 
-
+// notice that in case we want to reproduce random numbers, we could add the flag --random_seed=42 (or whatever number) to the node command.
 function getRandomInt(min, max) {
     const minCeiled = Math.ceil(min);
     const maxFloored = Math.floor(max);
@@ -79,7 +79,41 @@ function getInitialTaskContent(req) {
     if (req.session.initialTask) {
         return req.session.initialTask;
     }
-    return  taskDescription = getFirstRecordValue(req, "task_description");
+
+    const randomWords = [
+        "Spaghetti Bolognese",
+        "Chicken Tikka Masala",
+        "Hamburger",
+        "Caesar Salad",
+        "Sushi",
+        "Pizza",
+        "Tacos",
+        "Fried Rice",
+        "Lasagna ",
+        "Beef Stroganoff",
+        "Chocolate Cake",
+        "Apple Pie",
+        "Ice Cream",
+        "Cheesecake",
+        "Brownies",
+        "Toyota",
+        "Mercedes",
+        "BMW",
+        "Ford",
+        "Honda",
+        "Nissan",
+        "Chevrolet",
+        "NewYork",
+        "Los Angeles",
+        "Chicago",
+        "Houston",
+        "Miami",
+        "San Francisco",
+        "Las Vegas",
+        "Seattle",
+    ]
+    return  taskDescription = getFirstRecordValue(req, "task_description") + 
+        ". Find such a task that resembles to the word " + randomWords[getRandomInt(0, randomWords.length)];   
 }
 
 function createFullConversationPrompt(req) {
