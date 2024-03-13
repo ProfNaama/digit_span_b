@@ -17,6 +17,12 @@ function getTreatmentGroupId(uid) {
     return treatmentGroups[(uid % treatmentGroups.length)];
 }
 
+function getFirstRecordValue(req, property_name) { 
+    const treatmentGroupRecords =  csvRecords.filter(r => parseInt(r["treatment_group"]) === req.session.treatmentGroupId);
+    return treatmentGroupRecords[0][property_name];
+}
+
+
 function getRandomInt(min, max) {
     const minCeiled = Math.ceil(min);
     const maxFloored = Math.floor(max);
@@ -120,6 +126,7 @@ function getAndResetInteractionTime(req) {
 
 module.exports = {
     getTreatmentGroupId,
+    getFirstRecordValue,
     getRandomInt,
     getSelectedRecords,
     createFullConversationPrompt,

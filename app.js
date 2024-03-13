@@ -20,14 +20,6 @@ app.use(session({
 }));
 
 const tokenLimit = process.env.OPENAI_TOKEN_LIMIT || 50; 
-const welcomeConsentMessage = "Welcome to the chat bot experiment. In this experiment, you are expected to solve a puzzle. "
-    + "The puzzle is decided by a chatbot. "
-    + "You will be interacting with the chatbot in order to solve the challange. "
-    + "You shoudl interact with the chatbot until you will solve. "
-    + "You can request help, request hints, work together etc. "
-    + "In clicking the button below you agree to take part in the experiment along with the privacy policy. "
-    + "Please click the button below to continue.";
-
 const maxUID = 100000;
 
 const openai = new OpenAIApi({
@@ -57,10 +49,9 @@ app.use(async (req, res, next) => {
     console.log("new session. uid: " + req.session.uid + ", treatment group: " + req.session.treatmentGroupId);
     res.render('./welcome_consent', { 
         "title":"ChatLab",  
-        "header_message":welcomeConsentMessage,  
-        "body_message": welcomeConsentMessage,
+        "header_message": helpers.getFirstRecordValue(req, "welcome_consent_header"),  
+        "body_message": helpers.getFirstRecordValue(req, "welcome_consent_body")
     });
-
 });
 
 function renderUserConfigPage(req, res, userConfigProperties, userPropertiesCount) {
