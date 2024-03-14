@@ -47,7 +47,6 @@ async function waitForSystemInitializiation() {
 }
 
 function getCsvRecords(csv_file) {
-    console.log("getCsvRecords " + csv_file);
     return csvDB[csv_file];
 }
 
