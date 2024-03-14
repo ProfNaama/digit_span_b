@@ -1,10 +1,8 @@
-html
-  head
-    title= title
-  body
+extends layout
+block content 
     h1= header_message
     h2= body_message
 
     form(method='get' action='/')
-      p
+        p
         input(type='submit' value='Agree')
