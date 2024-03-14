@@ -114,7 +114,6 @@ function logHiddenPrompts(req) {
         ", hidden system role is set to : " + req.session.systemRoleHiddenContent +
         ", initial task: " + getInitialTaskContent(req)
     );
-
 }
 
 function setSelectedHiddenPromptToSession(req) {
@@ -127,41 +126,7 @@ function getInitialTaskContent(req) {
     if (req.session.initialTask) {
         return req.session.initialTask;
     }
-
-    const randomWords = [
-        "Spaghetti Bolognese",
-        "Chicken Tikka Masala",
-        "Hamburger",
-        "Caesar Salad",
-        "Sushi",
-        "Pizza",
-        "Tacos",
-        "Fried Rice",
-        "Lasagna ",
-        "Beef Stroganoff",
-        "Chocolate Cake",
-        "Apple Pie",
-        "Ice Cream",
-        "Cheesecake",
-        "Brownies",
-        "Toyota",
-        "Mercedes",
-        "BMW",
-        "Ford",
-        "Honda",
-        "Nissan",
-        "Chevrolet",
-        "NewYork",
-        "Los Angeles",
-        "Chicago",
-        "Houston",
-        "Miami",
-        "San Francisco",
-        "Las Vegas",
-        "Seattle",
-    ]
-    return  taskDescription = getFirstCsvRecordValue(getTreatmentGroupCsvRecords(req), "task_description") +
-        ". Find such a task that resembles to the word " + randomWords[getRandomInt(0, randomWords.length)];   
+    return  taskDescription = getFirstCsvRecordValue(getTreatmentGroupCsvRecords(req), "task_description");
 }
 
 function createFullConversationPrompt(req) {
