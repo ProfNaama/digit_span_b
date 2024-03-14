@@ -180,33 +180,22 @@ app.get('/chat-api-reset', async (req, res) => {
 });
 
 async function getSentimentAnalysisScoreForMessage(message) {
-
-    const userContent1 = "This is a sentiment analysis model. provide a 3 numbers score in the range 0 to 1 " +
-    "(positive sentiment, negative sentiment, neutral sentiment) for the following text: " + 
-    message + 
-    ". the (positive sentiment, negative sentiment, neutral sentiment) 3 numbers score is: ";
-    
-    const userContent2 = "This is a engagement analysis model. " + 
-    "provide an elaborated description for the engagement level as well as an engagement score in the range 0 to 1 for the following text : " + message;
-    
-    const userContent3 = "This is a engagement analysis model. " + 
-    "provide an engagement score number in the range 0 to 1 for the following text : " + message;
-
     const completions = await Promise.all(
-        [userContent1, userContent2, userContent3].map(async (contentElement) => { 
+        helpers.getMeasuresRecords().map(async (measureRecord) => {
+            const measureContent =  measureRecord["measure_prompt_prefix"].replace("{}", message);
             return await openai.chat.completions.create({
-                messages: [{ role:"user", content: contentElement }],
+                messages: [{ role:"user", content: measureContent }],
                 model: 'gpt-3.5-turbo',
                 max_tokens: tokenLimit,
                 temperature: 0.1
             });    
     }));
 
-    return { 
-        sentiment_score_tuple: completions[0].choices[0].message.content, 
-        engagement_desc: completions[1].choices[0].message.content, 
-        engagement_score: completions[2].choices[0].message.content 
-    };
+    let measures = [];
+    helpers.getMeasuresRecords().map((measureRecord, index) => {
+        measures.push({"measure_name" : measureRecord["measure_name"], "measure_value" : completions[index].choices[0].message.content});
+    });
+    return measures;
 }
 
 // using chatgpt api, set a new chat with a system role for getting sentiment score.
@@ -214,10 +203,10 @@ async function getSentimentAnalysisScore(req) {
     try {
         await Promise.all(
             req.session.conversationContext.filter(c => c.role === "user").map(async (element) => {
-                let sentiment = await getSentimentAnalysisScoreForMessage(element.content);
-                element["sentiment_score"] = sentiment["sentiment_score_tuple"];
-                element["engagement_desc"] = sentiment["engagement_desc"];
-                element["engagement_score"] = sentiment["engagement_score"];    
+                let measures = await getSentimentAnalysisScoreForMessage(element.content);
+                measures.forEach((measure) => {
+                    element[measure["measure_name"]] = measure["measure_value"];
+                });
             })
         );
         req.session.save()

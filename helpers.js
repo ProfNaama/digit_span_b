@@ -1,24 +1,35 @@
 const csv = require('csv-parser')
 const fs = require('fs');
 
-const csvFileName = "experiment_config.csv";
-const csvRecords = [];
+const experimentFlowCsvFileName = "experiment_config.csv";
+const chatgptMeasuresCsvFileName = "chatgpt_measures.csv";
+const experimentFlowRecords = [];
+const measuresRecords = [];
 let treatmentGroups = [];
 
-fs.createReadStream(csvFileName)
+fs.createReadStream(experimentFlowCsvFileName)
     .pipe(csv())
-    .on('data', (data) => csvRecords.push(data))
+    .on('data', (data) => experimentFlowRecords.push(data))
     .on('end', () => {
-        treatmentGroups = Array.from(new Set(csvRecords.map(r => parseInt(r["treatment_group"]))));
+        treatmentGroups = Array.from(new Set(experimentFlowRecords.map(r => parseInt(r["treatment_group"]))));
     }
 );
+
+fs.createReadStream(chatgptMeasuresCsvFileName)
+    .pipe(csv())
+    .on('data', (data) => measuresRecords.push(data)
+);
+
+function getMeasuresRecords() {
+    return measuresRecords;
+}
 
 function getTreatmentGroupId(uid) { 
     return treatmentGroups[(uid % treatmentGroups.length)];
 }
 
 function getFirstRecordValue(req, property_name) { 
-    const treatmentGroupRecords =  csvRecords.filter(r => parseInt(r["treatment_group"]) === req.session.treatmentGroupId);
+    const treatmentGroupRecords =  experimentFlowRecords.filter(r => parseInt(r["treatment_group"]) === req.session.treatmentGroupId);
     return treatmentGroupRecords[0][property_name];
 }
 
@@ -31,7 +42,7 @@ function getRandomInt(min, max) {
 
 function getSelectedRecords(req) {
     // filter the records according to the user's treatment group and user config filter
-    const treatmentGroupRecords =  csvRecords.filter(r => parseInt(r["treatment_group"]) === req.session.treatmentGroupId);
+    const treatmentGroupRecords =  experimentFlowRecords.filter(r => parseInt(r["treatment_group"]) === req.session.treatmentGroupId);
     let filteredRecords = [];
     for (const record of treatmentGroupRecords) {
         let match = true;
@@ -158,6 +169,7 @@ function getAndResetInteractionTime(req) {
 }
 
 module.exports = {
+    getMeasuresRecords,
     getTreatmentGroupId,
     getFirstRecordValue,
     getRandomInt,
