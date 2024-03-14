@@ -1,0 +1,24 @@
+html
+  head
+    title= title
+  body
+    h1= header_message
+    h2= body_message
+
+    form(method='post' action='/user_questionnaire-ended')
+      P 
+        if questions
+            // Loop through the elements of questions object keys (question name) and values (question text).
+            // have numbered questions and a submit button.
+            // present each value as a label and a text box for the user to enter their answer.
+            // submit all the question names and user answers to the server
+            each value, key in questions
+                h3 
+                  label #{key}
+                P
+                input(type='text', name=key, required="required")
+                br
+                br
+                br  
+      p
+        input(type='submit' value='Finish')

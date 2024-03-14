@@ -2,3 +2,5 @@ measure_name,measure_prompt_prefix
 sentiment_score_tuple,"This is a sentiment analysis model. provide a 3 numbers score in the range 0 to 1 (positive sentiment, negative sentiment, neutral sentiment) for the following text: {}. the (positive sentiment, negative sentiment, neutral sentiment) 3 numbers score is: "
 engagement_desc,"This is a engagement analysis model. provide an elaborated description for the engagement level as well as an engagement score in the range 0 to 1 for the following text : {}"
 engagement_score,"This is a engagement analysis model. provide an engagement score number in the range 0 to 1 for the following text : {}"
+enthusiasm_score,"You are a language analysis tool. provide a score in the range 0 to 100 about the level of enthusiasm of the following text: {}"
+enthusiasm_desc,"You are a language analysis tool. provide a detailed analysis about the level of enthusiasm of the following text: {}"

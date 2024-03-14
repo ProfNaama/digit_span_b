@@ -33,7 +33,7 @@
     <br>
     <br>
 
-    <form id="chatEndedForm">
+    <form id="chatEndedForm" method='get' action='/chat-api-ended'>
         <p >End Chat</p> 
         <input type="submit" value="End Chat">
     </form>
@@ -115,18 +115,6 @@
 
                         $('#chatForm')[0].reset();
                     },
-                    error: function(error){
-                        console.log(error);
-                    }
-                });
-            });
-
-            $('#chatEndedForm').on('submit', function(e){
-                e.preventDefault();
-                $.ajax({
-                    url: './chat-api-ended',
-                    type: 'GET',
-                    success: function(response) {},
                     error: function(error){
                         console.log(error);
                     }

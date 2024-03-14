@@ -3,8 +3,10 @@ const fs = require('fs');
 
 const experimentFlowCsvFileName = "experiment_config.csv";
 const chatgptMeasuresCsvFileName = "chatgpt_measures.csv";
+const userQuestionnaireCsvFileName = "user_questionnaire.csv";
 const experimentFlowRecords = [];
 const measuresRecords = [];
+const userQuestionnaireRecords = [];
 let treatmentGroups = [];
 
 fs.createReadStream(experimentFlowCsvFileName)
@@ -20,8 +22,17 @@ fs.createReadStream(chatgptMeasuresCsvFileName)
     .on('data', (data) => measuresRecords.push(data)
 );
 
+fs.createReadStream(userQuestionnaireCsvFileName)
+    .pipe(csv())
+    .on('data', (data) => userQuestionnaireRecords.push(data)
+);
+
 function getMeasuresRecords() {
     return measuresRecords;
+}
+
+function getUserQuestionnaireRecords() {
+    return userQuestionnaireRecords;
 }
 
 function getTreatmentGroupId(uid) { 
@@ -170,6 +181,7 @@ function getAndResetInteractionTime(req) {
 
 module.exports = {
     getMeasuresRecords,
+    getUserQuestionnaireRecords,
     getTreatmentGroupId,
     getFirstRecordValue,
     getRandomInt,

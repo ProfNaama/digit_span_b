@@ -26,8 +26,8 @@ const openai = new OpenAIApi({
     apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted
 });
 
-// This middleware will be executed for every request to the app, making sure the session is initialized with uid, treatment group id, etc.
-app.use(async (req, res, next) => {
+// Middlewares to be executed for every request to the app, making sure the session is initialized with uid, treatment group id, etc.
+async function verifySessionMiddleware(req, res, next) {
     if (req.session.uid) {
         next();
         return;
@@ -45,6 +45,8 @@ app.use(async (req, res, next) => {
     req.session.conversationContext = [];
     req.session.userConfigFilter = {};
     req.session.lastInteractionTime = null;
+    req.session.quessionsAnswers = null;
+    req.session.finished = false;
     req.session.save();
     console.log("new session. uid: " + req.session.uid + ", treatment group: " + req.session.treatmentGroupId);
     res.render('./welcome_consent', { 
@@ -52,7 +54,21 @@ app.use(async (req, res, next) => {
         "header_message": helpers.getFirstRecordValue(req, "welcome_consent_header"),  
         "body_message": helpers.getFirstRecordValue(req, "welcome_consent_body")
     });
-});
+}
+
+// Middlewares to be executed for every request to the app, making sure the session has not already finished.
+async function verifySessionEndedMiddleware(req, res, next) {
+    if (req.session.finished) {
+        res.render('./session_ended', { 
+            title: "ChatLab",  
+            message: "Thank You for participating in the experiment. You can close the window now."
+        });
+        return;
+    }
+    next();
+};
+
+app.use([verifySessionMiddleware, verifySessionEndedMiddleware]);
 
 function renderUserConfigPage(req, res, userConfigProperties, userPropertiesCount) {
     let userMessage = "Please select your preference regarding the following property.";
@@ -134,15 +150,44 @@ app.post('/chat-api', async (req, res) => {
     }
 });
 
-// chat has finished.
+app.get('/chat-api-ended', async (req, res) => {
+    let params = {
+        title : "ChatGptLab", 
+        header_message: "Thank You for chatting..",
+        body_message: "Please fill out the next set of questions.",
+        questions: {}
+    };
+
+    helpers.getUserQuestionnaireRecords().map((record) => { 
+        const k = record["question_name"];
+        const v = record["question_text"];
+        params["questions"][k] = v;
+    });
+    res.render('./user_questionnaire',  params);
+});
+
+// session has finished.
+// questionnaires answers are obtained.
 // go to chat gpt and obtain sentiment analysis score for each user message
 // save data to the database / csv / external source / etc.
-app.get('/chat-api-ended', async (req, res) => {
-    await getSentimentAnalysisScore(req);
-    res.render('./chat_ended', { 
+app.post('/user_questionnaire-ended', async (req, res) => {
+    req.session.finished = true;
+    req.session.save();
+    res.render('./session_ended', { 
         title: "ChatLab",  
         message: "Thank You for participating in the experiment. You can close the window now."
     });
+
+    if (!req.session.quessionsAnswers) {
+        // collect the questionnaire answers from request body
+        let questionnaireAnswers = {};
+        helpers.getUserQuestionnaireRecords().map((record) => { questionnaireAnswers[record["question_name"]] = req.body[record["question_name"]] });
+        req.session.quessionsAnswers = questionnaireAnswers;
+        
+        await getSentimentAnalysisScore(req);
+        req.session.save();
+        console.log("user_questionnaire-ended: quessionsAnswers: " + JSON.stringify(req.session.quessionsAnswers));
+    }
 });
 
 // backdoor hacks for developing stages
@@ -182,9 +227,10 @@ app.get('/chat-api-reset', async (req, res) => {
 async function getSentimentAnalysisScoreForMessage(message) {
     const completions = await Promise.all(
         helpers.getMeasuresRecords().map(async (measureRecord) => {
-            const measureContent =  measureRecord["measure_prompt_prefix"].replace("{}", message);
+            // const measureContent =  measureRecord["measure_prompt_prefix"].replace("{}", message);
+            const measureContent =  measureRecord["measure_prompt_prefix"].replace("{}", "");
             return await openai.chat.completions.create({
-                messages: [{ role:"user", content: measureContent }],
+                messages: [{role:"system", content: measureContent}, { role:"user", content: message }],
                 model: 'gpt-3.5-turbo',
                 max_tokens: tokenLimit,
                 temperature: 0.1
@@ -209,6 +255,12 @@ async function getSentimentAnalysisScore(req) {
                 });
             })
         );
+
+        const generalEngagementRole = "You are an user engagement analysis tool. Please provide a score for the user engagement in the following conversation between user and assistant.";
+        let interactions = [{role:"system", content: generalEngagementRole}];
+        req.session.conversationContext.filter(c => c.role === "user" || c.role === "assistant" ).map(element => {
+            interactions.push({"role": element.role, "content": element.content});
+        });
         req.session.save()
     } catch (error) {
         console.error(error);
