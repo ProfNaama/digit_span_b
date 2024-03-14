@@ -26,6 +26,12 @@ const openai = new OpenAIApi({
     apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted
 });
 
+// Middleware to initilaize the system
+async function verifySystemInitialized(req, res, next) {
+    helpers.waitForSystemInitializiation(); 
+    next();
+};
+
 // Middlewares to be executed for every request to the app, making sure the session is initialized with uid, treatment group id, etc.
 async function verifySessionMiddleware(req, res, next) {
     if (req.session.uid) {
@@ -51,8 +57,8 @@ async function verifySessionMiddleware(req, res, next) {
     console.log("new session. uid: " + req.session.uid + ", treatment group: " + req.session.treatmentGroupId);
     res.render('./welcome_consent', { 
         "title":"ChatLab",  
-        "header_message": helpers.getFirstRecordValue(req, "welcome_consent_header"),  
-        "body_message": helpers.getFirstRecordValue(req, "welcome_consent_body")
+        "header_message": helpers.getFirstCsvRecordValue(helpers.getCsvRecords("experiment_desc.csv"), "welcome_consent_header"),  
+        "body_message": helpers.getFirstCsvRecordValue(helpers.getCsvRecords("experiment_desc.csv"), "welcome_consent_body")
     });
 }
 
@@ -68,7 +74,7 @@ async function verifySessionEndedMiddleware(req, res, next) {
     next();
 };
 
-app.use([verifySessionMiddleware, verifySessionEndedMiddleware]);
+app.use([verifySystemInitialized, verifySessionMiddleware, verifySessionEndedMiddleware]);
 
 function renderUserConfigPage(req, res, userConfigProperties, userPropertiesCount) {
     let userMessage = "Please select your preference regarding the following property.";

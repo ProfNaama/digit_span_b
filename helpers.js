@@ -1,31 +1,63 @@
 const csv = require('csv-parser')
 const fs = require('fs');
+const path = require('path');
 
-const experimentFlowCsvFileName = "experiment_config.csv";
-const chatgptMeasuresCsvFileName = "chatgpt_measures.csv";
-const userQuestionnaireCsvFileName = "user_questionnaire.csv";
-const experimentFlowRecords = [];
-const measuresRecords = [];
-const userQuestionnaireRecords = [];
-let treatmentGroups = [];
+const csvBasePath = "experiment_configuration/";
+const csvDB = {};
 
-fs.createReadStream(experimentFlowCsvFileName)
-    .pipe(csv())
-    .on('data', (data) => experimentFlowRecords.push(data))
-    .on('end', () => {
-        treatmentGroups = Array.from(new Set(experimentFlowRecords.map(r => parseInt(r["treatment_group"]))));
-    }
-);
+let treatmentFroupConfigRecords;
+let measuresRecords;
+let userQuestionnaireRecords;
+let experimentDescRecords;
+let treatmentGroups;
 
-fs.createReadStream(chatgptMeasuresCsvFileName)
-    .pipe(csv())
-    .on('data', (data) => measuresRecords.push(data)
-);
+// read the csv files and store them in the csvDB
+// we use async createReadStream to parse records
+// se we wrap it in promise and wait for all of them to finish
+async function readAllCsvFiles() {
+    await Promise.all(
+        fs.readdirSync(csvBasePath).filter(fileName => fileName.endsWith(".csv")).map(fileName => {
+            let records = [];
+            return new Promise((resolve, reject) => {
+                fs.createReadStream(path.join(csvBasePath, fileName))
+                .pipe(csv())
+                .on('data', (data) => records.push(data))
+                .on('end', () => {
+                    csvDB[fileName] = records;
+                    resolve()
+                });
+            });
+        })
+    );
+    treatmentFroupConfigRecords = getCsvRecords("treatment_groups_config.csv");
+    measuresRecords = getCsvRecords("chatgpt_measures.csv");
+    userQuestionnaireRecords = getCsvRecords("user_questionnaire.csv");
+    experimentDescRecords = getCsvRecords("experiment_desc.csv");
+    treatmentGroups = Array.from(new Set(treatmentFroupConfigRecords.map(r => parseInt(r["treatment_group"]))));
+}
 
-fs.createReadStream(userQuestionnaireCsvFileName)
-    .pipe(csv())
-    .on('data', (data) => userQuestionnaireRecords.push(data)
-);
+let initializationPromise = new Promise((resolve, reject) => {
+    readAllCsvFiles().then(() => {
+        resolve();
+    });
+});
+
+async function waitForSystemInitializiation() {   
+    await initializationPromise;
+}
+
+function getCsvRecords(csv_file) {
+    console.log("getCsvRecords " + csv_file);
+    return csvDB[csv_file];
+}
+
+function getFirstCsvRecordValue(csvRecords, property_name) { 
+    return csvRecords[0][property_name];
+}
+
+function getTreatmentGroupCsvRecords(req) {
+    return treatmentFroupConfigRecords.filter(r => parseInt(r["treatment_group"]) === req.session.treatmentGroupId);
+}
 
 function getMeasuresRecords() {
     return measuresRecords;
@@ -39,11 +71,6 @@ function getTreatmentGroupId(uid) {
     return treatmentGroups[(uid % treatmentGroups.length)];
 }
 
-function getFirstRecordValue(req, property_name) { 
-    const treatmentGroupRecords =  experimentFlowRecords.filter(r => parseInt(r["treatment_group"]) === req.session.treatmentGroupId);
-    return treatmentGroupRecords[0][property_name];
-}
-
 // notice that in case we want to reproduce random numbers, we could add the flag --random_seed=42 (or whatever number) to the node command.
 function getRandomInt(min, max) {
     const minCeiled = Math.ceil(min);
@@ -53,7 +80,7 @@ function getRandomInt(min, max) {
 
 function getSelectedRecords(req) {
     // filter the records according to the user's treatment group and user config filter
-    const treatmentGroupRecords =  experimentFlowRecords.filter(r => parseInt(r["treatment_group"]) === req.session.treatmentGroupId);
+    const treatmentGroupRecords =  treatmentFroupConfigRecords.filter(r => parseInt(r["treatment_group"]) === req.session.treatmentGroupId);
     let filteredRecords = [];
     for (const record of treatmentGroupRecords) {
         let match = true;
@@ -134,7 +161,7 @@ function getInitialTaskContent(req) {
         "Las Vegas",
         "Seattle",
     ]
-    return  taskDescription = getFirstRecordValue(req, "task_description") + 
+    return  taskDescription = getFirstCsvRecordValue(getTreatmentGroupCsvRecords(req), "task_description") +
         ". Find such a task that resembles to the word " + randomWords[getRandomInt(0, randomWords.length)];   
 }
 
@@ -180,10 +207,12 @@ function getAndResetInteractionTime(req) {
 }
 
 module.exports = {
+    waitForSystemInitializiation,
     getMeasuresRecords,
     getUserQuestionnaireRecords,
     getTreatmentGroupId,
-    getFirstRecordValue,
+    getCsvRecords,
+    getFirstCsvRecordValue,
     getRandomInt,
     getSelectedRecords,
     createFullConversationPrompt,
