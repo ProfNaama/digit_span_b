@@ -9,6 +9,7 @@ const helpers = require("./helpers.js");
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }))
 app.set('view engine', 'pug');
+app.use('/static', express.static('static'));
 
 
 // Initialization
