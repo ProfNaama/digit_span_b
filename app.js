@@ -28,13 +28,13 @@ const openai = new OpenAIApi({
 
 // Middleware to initilaize the system
 async function verifySystemInitialized(req, res, next) {
-    helpers.waitForSystemInitializiation(); 
+    await helpers.waitForSystemInitializiation(); 
     next();
 };
 
 // Middlewares to be executed for every request to the app, making sure the session is initialized with uid, treatment group id, etc.
 async function verifySessionMiddleware(req, res, next) {
-    if (req.session.uid) {
+        if (req.session.uid) {
         next();
         return;
     }
