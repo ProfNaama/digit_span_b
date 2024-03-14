@@ -113,7 +113,11 @@ app.get('/', async (req, res) => {
     // Save the hidden prompts to the session and redirect to the chat page, where the main interaction happens.
     helpers.setSelectedHiddenPromptToSession(req);
     helpers.logHiddenPrompts(req);
-    res.sendFile(__dirname + '/chat.html');
+    res.render('./chat', {
+        "title":"ChatLab",  
+        "header_message":"Error",  
+        "body_message": "Properties are not filtered correctly! Please contact the experimenter."
+    });
 });
 
 app.post('/user_config', async (req, res) => {
