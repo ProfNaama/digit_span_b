@@ -34,7 +34,7 @@ async function verifySystemInitialized(req, res, next) {
 };
 
 // Middlewares to be executed for every request to the app, making sure the session is initialized with uid, treatment group id, etc.
-async function verifySessionMiddleware(req, res, next) {
+function verifySessionMiddleware(req, res, next) {
         if (req.session.uid) {
         next();
         return;
@@ -64,7 +64,7 @@ async function verifySessionMiddleware(req, res, next) {
 }
 
 // Middlewares to be executed for every request to the app, making sure the session has not already finished.
-async function verifySessionEndedMiddleware(req, res, next) {
+function verifySessionEndedMiddleware(req, res, next) {
     if (req.session.finished) {
         res.render('./session_ended', { 
             title: "ChatLab",  
@@ -102,7 +102,7 @@ function renderUserConfigPage(req, res, userConfigProperties, userPropertiesCoun
     }
 }
 
-app.get('/', async (req, res) => {
+app.get('/', (req, res) => {
     const filteredRecords = helpers.getSelectedRecords(req);
     let recordsByProperty = helpers.groupRecordsByProperty(filteredRecords);
     let userConfigProperties = helpers.filterUserConfigProperties(recordsByProperty);
@@ -127,7 +127,7 @@ app.get('/', async (req, res) => {
     });
 });
 
-app.post('/user_config', async (req, res) => {
+app.post('/user_config', (req, res) => {
     // the user config is saved in the session, we redirect to the root route again, this time the config is already set.
     req.session.userConfigFilter = req.body;
     req.session.save();
@@ -161,7 +161,7 @@ app.post('/chat-api', async (req, res) => {
     }
 });
 
-app.get('/chat-api-ended', async (req, res) => {
+app.get('/chat-api-ended', (req, res) => {
     let params = {
         title : "ChatGptLab", 
         header_message: "Thank You for chatting..",
@@ -202,7 +202,7 @@ app.post('/user_questionnaire-ended', async (req, res) => {
 });
 
 // backdoor hacks for developing stages
-app.post('/chat-api-manipulation', async (req, res) => {
+app.post('/chat-api-manipulation', (req, res) => {
     const message = req.body.manipulation;
     
     if (message.length > 0) {
@@ -217,7 +217,7 @@ app.post('/chat-api-manipulation', async (req, res) => {
 });
 
 // backdoor hacks for developing stages
-app.post('/chat-api-manipulation-task', async (req, res) => {
+app.post('/chat-api-manipulation-task', (req, res) => {
     const task = req.body.task;
     
     req.session.initialTask = task;
@@ -227,7 +227,7 @@ app.post('/chat-api-manipulation-task', async (req, res) => {
 });
 
 // backdoor hacks for developing stages
-app.get('/chat-api-reset', async (req, res) => {
+app.get('/chat-api-reset', (req, res) => {
     req.session.conversationContext = [];
     req.session.save();
     helpers.logHiddenPrompts(req);
