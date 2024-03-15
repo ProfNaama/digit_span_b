@@ -240,20 +240,22 @@ app.get('/chat-api-reset', (req, res) => {
 async function getSentimentAnalysisScoreForMessage(message) {
     const completions = await Promise.all(
         helpers.getMeasuresRecords().map(async (measureRecord) => {
-            // const measureContent =  measureRecord["measure_prompt_prefix"].replace("{}", message);
+            //const measureContent =  measureRecord["measure_prompt_prefix"].replace("{}", message);
             const measureContent =  measureRecord["measure_prompt_prefix"].replace("{}", "");
             return await openai.chat.completions.create({
-                messages: [{role:"system", content: measureContent}, { role:"user", content: message }],
-                model: 'gpt-3.5-turbo',
-                max_tokens: tokenLimit,
-                temperature: 0.1
-            });    
-    }));
+                    messages: [{role:"system", content: measureContent}, { role:"user", content: message }],
+                    //messages: [{ role:"user", content: measureContent }],
+                    model: 'gpt-3.5-turbo',
+                    max_tokens: tokenLimit,
+                    temperature: 0.1
+                            });    
+        }));
 
     let measures = [];
     helpers.getMeasuresRecords().map((measureRecord, index) => {
         measures.push({"measure_name" : measureRecord["measure_name"], "measure_value" : completions[index].choices[0].message.content});
     });
+    
     return measures;
 }
 
@@ -268,17 +270,10 @@ async function getSentimentAnalysisScore(req) {
                 });
             })
         );
-
-        const generalEngagementRole = "You are an user engagement analysis tool. Please provide a score for the user engagement in the following conversation between user and assistant.";
-        let interactions = [{role:"system", content: generalEngagementRole}];
-        req.session.conversationContext.filter(c => c.role === "user" || c.role === "assistant" ).map(element => {
-            interactions.push({"role": element.role, "content": element.content});
-        });
         req.session.save()
     } catch (error) {
         console.error(error);
     }
-    console.log("getSentimentAnalysisScore, full conversationContext: " + JSON.stringify(req.session.conversationContext));
 }
 
 const port = process.env.PORT || 3030;
