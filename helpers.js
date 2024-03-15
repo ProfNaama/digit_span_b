@@ -187,8 +187,7 @@ function sessionToText(req) {
 function saveSessionResults(req) {
     const resultsFile = appConfig.resultsFile;
     const sessionText = sessionToText(req);
-
-    fs.appendFileSync(resultsFile, sessionText, { flush: true } );
+    fs.appendFileSync(resultsFile, sessionText + "\n", { flush: true } );
 }
 
 module.exports = {
