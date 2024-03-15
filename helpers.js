@@ -1,6 +1,7 @@
 const csv = require('csv-parser')
 const fs = require('fs');
 const path = require('path');
+const appConfig = require('./config.js');
 
 const csvBasePath = "experiment_configuration/";
 const csvDB = {};
@@ -103,7 +104,7 @@ function getSelectedPrompts(req) {
     return getSelectedRecords(req).map(r => r["hidden_prompt"]);
 }
 
-const hiddenPromptPrefix = "You are a virtual assistant. You are interacting with a human person. You have the following set of human characharistics: ";
+const hiddenPromptPrefix = "You have the following set of human characharistics: ";
 function mergeHiddenPrompts(prompts) {    
     return hiddenPromptPrefix + prompts.join("\n");
 }
@@ -123,10 +124,10 @@ function setSelectedHiddenPromptToSession(req) {
 }
 
 function getInitialTaskContent(req) {
-    if (req.session.initialTask) {
-        return req.session.initialTask;
+    if (!req.session.initialTask) {
+        req.session.initialTask = getFirstCsvRecordValue(getTreatmentGroupCsvRecords(req), "task_description");
     }
-    return  taskDescription = getFirstCsvRecordValue(getTreatmentGroupCsvRecords(req), "task_description");
+    return req.session.initialTask;
 }
 
 function createFullConversationPrompt(req) {
@@ -170,6 +171,26 @@ function getAndResetInteractionTime(req) {
     return Math.floor((currentTime - prevInteractionTime));
 }
 
+function sessionToText(req) {   
+    const sessionSua = {
+        "uid": req.session.uid,
+        "treatmentGroupId": req.session.treatmentGroupId,
+        "initialTask": req.session.initialTask,
+        "systemRoleHiddenContent": req.session.systemRoleHiddenContent,
+        "conversationContext": req.session.conversationContext,
+        "userConfigFilter": req.session.userConfigFilter,
+        "quessionsAnswers": req.session.quessionsAnswers
+    }
+    return JSON.stringify(sessionSua);
+}
+
+function saveSessionResults(req) {
+    const resultsFile = appConfig.resultsFile;
+    const sessionText = sessionToText(req);
+
+    fs.appendFileSync(resultsFile, sessionText, { flush: true } );
+}
+
 module.exports = {
     waitForSystemInitializiation,
     getMeasuresRecords,
@@ -184,5 +205,6 @@ module.exports = {
     groupRecordsByProperty,
     setSelectedHiddenPromptToSession,
     logHiddenPrompts,
-    getInteractionTime: getAndResetInteractionTime
+    getAndResetInteractionTime,
+    saveSessionResults
 }

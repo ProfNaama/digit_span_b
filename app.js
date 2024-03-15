@@ -140,7 +140,7 @@ app.post('/user_config', (req, res) => {
 // response is sent back to the client
 app.post('/chat-api', async (req, res) => {
     const message = req.body.message;
-    req.session.conversationContext.push({ role: 'user', content: message, interactionTime: helpers.getInteractionTime(req) });
+    req.session.conversationContext.push({ role: 'user', content: message, interactionTime: helpers.getAndResetInteractionTime(req) });
     const messageWithContext = helpers.createFullConversationPrompt(req);
     try {
         const chatCompletion = await openai.chat.completions.create({
@@ -152,7 +152,7 @@ app.post('/chat-api', async (req, res) => {
             temperature: 0.7
         });
         const apiReply = chatCompletion.choices[0].message.content;
-        req.session.conversationContext.push({ role: 'assistant', content: apiReply, interactionTime: helpers.getInteractionTime(req) });
+        req.session.conversationContext.push({ role: 'assistant', content: apiReply, interactionTime: helpers.getAndResetInteractionTime(req) });
         req.session.save();
         res.send(apiReply);
     } catch (error) {
@@ -198,7 +198,9 @@ app.post('/user_questionnaire-ended', async (req, res) => {
         await getSentimentAnalysisScore(req);
         req.session.save();
         console.log("user_questionnaire-ended: quessionsAnswers: " + JSON.stringify(req.session.quessionsAnswers));
+        helpers.saveSessionResults(req);
     }
+    req.session.destroy();
 });
 
 // backdoor hacks for developing stages
