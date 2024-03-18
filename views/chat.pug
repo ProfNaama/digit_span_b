@@ -2,7 +2,7 @@ extends layout
 block content 
     script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js")
     
-    div(id="responses")
+    div(id="conversation", class="conversation")
     form(id="chatForm")
         label(for="message") User Text
         input(type="text" id="message" placeholder="Type your message here" required)
@@ -37,6 +37,11 @@ block content
     br
 
     script.
+        function updateConversationScroll(){
+            var element = document.getElementById("conversation");
+            element.scrollTop = element.scrollHeight - element.clientHeight;
+        }
+
         let preferences_user_avatar = !{JSON.stringify(preferences.user_avatar)} ? !{JSON.stringify(preferences.user_avatar)} : "";
         let preferences_agent_avatar = !{JSON.stringify(preferences.agent_avatar)} ? !{JSON.stringify(preferences.agent_avatar)} : "";
         let preferences_user_name = !{JSON.stringify(preferences.user_name)} ? !{JSON.stringify(preferences.user_name)} : "";
@@ -49,7 +54,7 @@ block content
                     url: './chat-api-reset',
                     type: 'GET',
                     success: function(response) {
-                        document.getElementById('responses').innerHTML = "";
+                        document.getElementById('conversation').innerHTML = "";
                     },
                     error: function(error){
                         console.log(error);
@@ -97,10 +102,11 @@ block content
 
             $('#chatForm').on('submit', function(e){
                 e.preventDefault();
+                $("#conversation").children().removeClass("chat-last");
 
                 const message = $('#message').val();
                 let element = document.createElement("div");
-                element.className = "chat-user";
+                element.className = "chat-user chat-last";
                 let img_elem = document.createElement("img");
                 img_elem.className = "chat-avatar";
                 img_elem.setAttribute("src", preferences_user_avatar);
@@ -108,7 +114,9 @@ block content
                 element.appendChild(document.createTextNode(preferences_user_name));
                 element.appendChild(img_elem);
                 element.appendChild(document.createTextNode(message));
-                document.getElementById('responses').appendChild(element);
+                document.getElementById('conversation').appendChild(element);
+                updateConversationScroll();
+
                 $.ajax({
                     url: './chat-api',
                     type: 'POST',
@@ -117,7 +125,7 @@ block content
                     },
                     success: function(response) {
                         let element = document.createElement("div");
-                        element.className = "chat-agent";
+                        element.className = "chat-agent chat-last";
                         let img_elem = document.createElement("img");
                         img_elem.className = "chat-avatar";
                         img_elem.setAttribute("src", preferences_agent_avatar);
@@ -125,9 +133,10 @@ block content
                         element.appendChild(document.createTextNode(preferences_agent_name));
                         element.appendChild(img_elem);
                         element.appendChild(document.createTextNode(response));
-                        document.getElementById('responses').appendChild(element);
+                        document.getElementById('conversation').appendChild(element);
 
                         $('#chatForm')[0].reset();
+                        updateConversationScroll();
                     },
                     error: function(error){
                         console.log(error);

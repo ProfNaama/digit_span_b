@@ -31,6 +31,14 @@
     background-color: #a9cc57;
 }
 
+.conversation {
+    /* max height is 75% of the screen height; */
+    max-height: 75vh;
+    overflow-y: scroll;
+    display: flex; 
+    flex-direction: column; 
+}
+
 .chat-user {
     color: black;
     background-color: rgb(173, 168, 168);
@@ -48,21 +56,27 @@
     background-color: var(--gray);
 }
 
+.chat-last {
+    border: 10px solid #5088b6; margin: 10px
+}
 
 .avatar_grid {
     display: grid;
     grid-template-areas: 
     "user_avatar agent_avatar";
-    height: fit-content;
-    width: fit-content;
+    
+}
+
+.avatar_selection {
+    height: 200px; 
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 
 .agent_avatar {
     grid-area: agent_avatar;
-    height: 40px;
 }
 
 .user_avatar {
     grid-area: user_avatar;
-    height: 40px;
 }
