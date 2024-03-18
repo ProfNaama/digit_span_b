@@ -196,7 +196,7 @@ function saveSessionResults(req) {
     if (config.encodeBase64){
         sessionText = Buffer.from(sessionText).toString('base64');
     }
-    const sessionResultObj = { uid:req.session.uid, userid:req.session.userid, data: sessionText };
+    const sessionResultObj = {time: new Date(), uid:req.session.uid, userid:req.session.userid, data: sessionText };
     if (config.resultsFile){
         fs.appendFileSync(config.resultsFile, JSON.stringify(sessionResultObj) + "\n", { flush: true } );
     }
