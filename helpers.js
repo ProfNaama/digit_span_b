@@ -1,7 +1,8 @@
 const csv = require('csv-parser')
 const fs = require('fs');
 const path = require('path');
-const appConfig = require('./config.js');
+const config = require('./config.js');
+const { Pool } = require('pg');
 
 const csvBasePath = "experiment_configuration/";
 const csvDB = {};
@@ -176,8 +177,8 @@ function getAndResetInteractionTime(req) {
     return Math.floor((currentTime - prevInteractionTime));
 }
 
-function sessionToText(req) {   
-    const sessionSua = {
+function sessionToJsonObject(req) {   
+    const sessionJson = {
         "uid": req.session.uid,
         "treatmentGroupId": req.session.treatmentGroupId,
         "initialTask": req.session.initialTask,
@@ -187,13 +188,46 @@ function sessionToText(req) {
         "userConfigFilter": req.session.userConfigFilter,
         "quessionsAnswers": req.session.quessionsAnswers
     }
-    return JSON.stringify(sessionSua);
+    return sessionJson;
 }
 
 function saveSessionResults(req) {
-    const resultsFile = appConfig.resultsFile;
-    const sessionText = sessionToText(req);
-    fs.appendFileSync(resultsFile, sessionText + "\n", { flush: true } );
+    let sessionText = JSON.stringify(sessionToJsonObject(req));
+    if (config.encodeBase64){
+        sessionText = Buffer.from(sessionText).toString('base64');
+    }
+    const sessionResultObj = { uid:req.session.uid, userid:req.session.userid, data: sessionText };
+    if (config.resultsFile){
+        fs.appendFileSync(config.resultsFile, JSON.stringify(sessionResultObj) + "\n", { flush: true } );
+    }
+    if (config.pgUser && config.pgHost && config.pgDatabase && config.pgTable && config.pgPassword) {
+        // use pg to insert results to the database table
+        const pool = new Pool({
+            user: config.pgUser,
+            host: config.pgHost,
+            database: config.pgDatabase,
+            password: config.pgPassword,
+            port: config.pgPort,
+            ssl: { rejectUnauthorized: false },
+        }); 
+        
+        const query = {
+            text: 'INSERT INTO results (uuid, userid, result) VALUES ($1, $2, $3)',
+            values: [sessionResultObj.uid, sessionResultObj.userid, sessionResultObj]
+        }
+    
+        pool.query(query, (error) => {
+            if (error) {
+                console.log("Error: " + error);
+            }
+            pool.end();
+        });
+    }
+    return sessionResultObj;
+
+    // base64 back to object
+    //const base64 = JSON.parse(JSON.stringify(Buffer.from(sessionText, 'base64').toString('utf-8')));
+    //console.log("base64 to json: " + base64);
 }
 
 module.exports = {

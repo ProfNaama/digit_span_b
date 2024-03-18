@@ -5,6 +5,7 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const app = express();
 const helpers = require("./helpers.js");
+const config = require('./config.js');
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -20,11 +21,10 @@ app.use(session({
     resave: true
 }));
 
-const tokenLimit = process.env.OPENAI_TOKEN_LIMIT || 50; 
 const maxUID = 100000;
 
 const openai = new OpenAIApi({
-    apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted
+    apiKey: config.apiKey
 });
 
 // Middleware to initilaize the system
@@ -173,7 +173,7 @@ app.post('/chat-api', async (req, res) => {
             model: 'gpt-3.5-turbo',
             //model: "gpt-3.5-turbo-0125",
             //model: "gpt-4",
-            max_tokens: tokenLimit,
+            max_tokens: config.apiTokenLimit,
             temperature: 0.7
         });
         const apiReply = chatCompletion.choices[0].message.content;
@@ -209,23 +209,29 @@ app.get('/chat-api-ended', (req, res) => {
 app.post('/user_questionnaire-ended', async (req, res) => {
     req.session.finished = true;
     req.session.save();
-    res.render('./session_ended', { 
-        title: "ChatLab",  
-        message: "Thank You for participating in the experiment. You can close the window now."
-    });
-
-    if (!req.session.quessionsAnswers) {
-        // collect the questionnaire answers from request body
-        let questionnaireAnswers = {};
-        helpers.getUserQuestionnaireRecords().map((record) => { questionnaireAnswers[record["question_name"]] = req.body[record["question_name"]] });
-        req.session.quessionsAnswers = questionnaireAnswers;
-        
-        await getSentimentAnalysisScore(req);
-        req.session.save();
-        console.log("user_questionnaire-ended: quessionsAnswers: " + JSON.stringify(req.session.quessionsAnswers));
-        helpers.saveSessionResults(req);
+    if (!config.resultsRedirectUrl){
+        res.render('./session_ended', { 
+            title: "ChatLab",  
+            message: "Thank You for participating in the experiment. You can close the window now."
+        });
     }
+
+    // collect the questionnaire answers from request body
+    let questionnaireAnswers = {};
+    helpers.getUserQuestionnaireRecords().map((record) => { questionnaireAnswers[record["question_name"]] = req.body[record["question_name"]] });
+    req.session.quessionsAnswers = questionnaireAnswers;
+    
+    await getSentimentAnalysisScore(req);
+    req.session.save();
+    const savedResultsObj = helpers.saveSessionResults(req);
     req.session.destroy();
+    
+    if (config.resultsRedirectUrl) {
+        req.body = savedResultsObj;
+        // redirect to the results page with POST method
+        res.redirect(307, config.resultsRedirectUrl);
+    }
+    
 });
 
 // backdoor hacks for developing stages
@@ -271,7 +277,7 @@ async function getSentimentAnalysisScoreForMessage(message) {
                     messages: [{role:"system", content: measureContent}, { role:"user", content: message }],
                     //messages: [{ role:"user", content: measureContent }],
                     model: 'gpt-3.5-turbo',
-                    max_tokens: tokenLimit,
+                    max_tokens: config.apiTokenLimit,
                     temperature: 0.1
                             });    
         }));
