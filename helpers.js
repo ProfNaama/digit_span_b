@@ -37,6 +37,11 @@ async function readAllCsvFiles() {
     treatmentGroups = Array.from(new Set(treatmentFroupConfigRecords.map(r => parseInt(r["treatment_group"]))));
 }
 
+async function listAvatars() {
+    const avatars = await fs.promises.readdir('static/images/avatars/');
+    return avatars.map(f => path.join('static/images/avatars', f));
+}
+
 let initializationPromise = new Promise((resolve, reject) => {
     readAllCsvFiles().then(() => {
         resolve();
@@ -176,6 +181,7 @@ function sessionToText(req) {
         "uid": req.session.uid,
         "treatmentGroupId": req.session.treatmentGroupId,
         "initialTask": req.session.initialTask,
+        "preference": req.session.preference,
         "systemRoleHiddenContent": req.session.systemRoleHiddenContent,
         "conversationContext": req.session.conversationContext,
         "userConfigFilter": req.session.userConfigFilter,
@@ -205,5 +211,6 @@ module.exports = {
     setSelectedHiddenPromptToSession,
     logHiddenPrompts,
     getAndResetInteractionTime,
-    saveSessionResults
+    saveSessionResults,
+    listAvatars
 }

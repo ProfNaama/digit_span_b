@@ -50,6 +50,7 @@ function verifySessionMiddleware(req, res, next) {
     req.session.initialTask = ""
     req.session.systemRoleHiddenContent = "";
     req.session.conversationContext = [];
+    req.session.preferences = null;
     req.session.userConfigFilter = {};
     req.session.lastInteractionTime = null;
     req.session.quessionsAnswers = null;
@@ -102,7 +103,25 @@ function renderUserConfigPage(req, res, userConfigProperties, userPropertiesCoun
     }
 }
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
+    if (!req.session.preferences) {
+        const avatars = await helpers.listAvatars();
+        let params = {
+            title : "ChatGptLab", 
+            header_message: "Welcome to the experiment",
+            body_message: "Please select you preferences:",
+            user_avatar: avatars,
+            agent_avatar: avatars,
+            text_preferences: {
+                "user_name": "Choose your prefferred chat name:",
+                "agent_name": "Choose your prefferred agent name:",
+            } 
+        };
+    
+        res.render('./user_preferences',  params);
+        return;
+    }
+
     const filteredRecords = helpers.getSelectedRecords(req);
     let recordsByProperty = helpers.groupRecordsByProperty(filteredRecords);
     let userConfigProperties = helpers.filterUserConfigProperties(recordsByProperty);
@@ -123,8 +142,14 @@ app.get('/', (req, res) => {
     res.render('./chat', {
         "title":"ChatLab",  
         "header_message":"Error",  
-        "body_message": "Properties are not filtered correctly! Please contact the experimenter."
+        "body_message": "Properties are not filtered correctly! Please contact the experimenter.",
+        "preferences": req.session.preferences,
     });
+});
+
+app.post('/user_preferences', async (req, res) => {
+    req.session.preferences = req.body;
+    res.redirect('/');
 });
 
 app.post('/user_config', (req, res) => {
