@@ -1,7 +1,7 @@
 let config = {}
 // openai
 config.apiKey = process.env['OPENAI_API_KEY'];
-config.apiTokenLimit = process.env["OPENAI_TOKEN_LIMIT"] || 50;
+config.apiTokenLimit = parseInt(process.env["OPENAI_TOKEN_LIMIT"] || "50");
 
 // postgres
 config.pgUser = process.env['PGUSER'];
