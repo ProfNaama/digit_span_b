@@ -271,15 +271,13 @@ app.get('/chat-api-reset', (req, res) => {
 async function getSentimentAnalysisScoreForMessage(message) {
     const completions = await Promise.all(
         helpers.getMeasuresRecords().map(async (measureRecord) => {
-            //const measureContent =  measureRecord["measure_prompt_prefix"].replace("{}", message);
-            const measureContent =  measureRecord["measure_prompt_prefix"].replace("{}", "");
+            const measureContent =  measureRecord["measure_prompt_prefix"];
             return await openai.chat.completions.create({
                     messages: [{role:"system", content: measureContent}, { role:"user", content: message }],
-                    //messages: [{ role:"user", content: measureContent }],
                     model: 'gpt-3.5-turbo',
                     max_tokens: config.apiTokenLimit,
                     temperature: 0.1
-                            });    
+            });    
         }));
 
     let measures = [];
