@@ -54,6 +54,7 @@ function verifySessionMiddleware(req, res, next) {
     req.session.userConfigFilter = {};
     req.session.lastInteractionTime = null;
     req.session.quessionsAnswers = null;
+    req.session.global_measures = {}
     req.session.finished = false;
     req.session.save();
     console.log("new session. uid: " + req.session.uid + ", treatment group: " + req.session.treatmentGroupId);
@@ -269,8 +270,9 @@ app.get('/chat-api-reset', (req, res) => {
 });
 
 async function getSentimentAnalysisScoreForMessage(message) {
+    const measurementRecords = helpers.getMeasuresRecords().filter((measureRecord) => measureRecord["is_global"] === "0" );
     const completions = await Promise.all(
-        helpers.getMeasuresRecords().map(async (measureRecord) => {
+        measurementRecords.map(async (measureRecord) => {
             const measureContent =  measureRecord["measure_prompt_prefix"];
             return await openai.chat.completions.create({
                     messages: [{role:"system", content: measureContent}, { role:"user", content: message }],
@@ -281,24 +283,44 @@ async function getSentimentAnalysisScoreForMessage(message) {
         }));
 
     let measures = [];
-    helpers.getMeasuresRecords().map((measureRecord, index) => {
+    measurementRecords.map((measureRecord, index) => {
         measures.push({"measure_name" : measureRecord["measure_name"], "measure_value" : completions[index].choices[0].message.content});
     });
     
     return measures;
 }
 
+async function getSentimentAnalysisScoreForConversation(req) {
+    const measurementRecords = helpers.getMeasuresRecords().filter((measureRecord) =>  measureRecord["is_global"] !== "0" );
+    const completions = await Promise.all(
+        measurementRecords.map(async (measureRecord) => {
+            const measureContent =  measureRecord["measure_prompt_prefix"];
+            const conversation = req.session.conversationContext.filter((c) => c.role != "system");
+            const messages = [{role:"system", content: measureContent}].concat(conversation).map(c => ({role: c.role, content: c.content }));
+            return await openai.chat.completions.create({
+                    messages: messages,
+                    model: 'gpt-3.5-turbo',
+                    max_tokens: config.apiTokenLimit,
+                    temperature: 0.1
+            });    
+        }));
+
+    measurementRecords.map((measureRecord, index) => {
+        req.session.global_measures[measureRecord["measure_name"]] = completions[index].choices[0].message.content;
+    });
+}
+
 // using chatgpt api, set a new chat with a system role for getting sentiment score.
 async function getSentimentAnalysisScore(req) {
     try {
-        await Promise.all(
-            req.session.conversationContext.filter(c => c.role === "user").map(async (element) => {
-                let measures = await getSentimentAnalysisScoreForMessage(element.content);
-                measures.forEach((measure) => {
-                    element[measure["measure_name"]] = measure["measure_value"];
-                });
-            })
-        );
+        const messageMeasuresPromises = req.session.conversationContext.filter(c => c.role === "user").map(async (element) => {
+            let measures = await getSentimentAnalysisScoreForMessage(element.content);
+            measures.forEach((measure) => {
+                element[measure["measure_name"]] = measure["measure_value"];
+            });
+        })
+        await Promise.all(messageMeasuresPromises);
+        await getSentimentAnalysisScoreForConversation(req);
         req.session.save()
     } catch (error) {
         console.error(error);

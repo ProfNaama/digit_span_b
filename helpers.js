@@ -186,7 +186,8 @@ function sessionToJsonObject(req) {
         "systemRoleHiddenContent": req.session.systemRoleHiddenContent,
         "conversationContext": req.session.conversationContext,
         "userConfigFilter": req.session.userConfigFilter,
-        "quessionsAnswers": req.session.quessionsAnswers
+        "quessionsAnswers": req.session.quessionsAnswers,
+        "global_measures": req.session.global_measures
     }
     return sessionJson;
 }
@@ -197,6 +198,7 @@ function saveSessionResults(req) {
         sessionText = Buffer.from(sessionText).toString('base64');
     }
     const sessionResultObj = {time: new Date(), uid:req.session.uid, userid:req.session.userid, data: sessionText };
+    
     if (config.resultsFile){
         fs.appendFileSync(config.resultsFile, JSON.stringify(sessionResultObj) + "\n", { flush: true } );
     }
