@@ -90,8 +90,9 @@
     flex-wrap: wrap;
 }
 .cardA {
-    width: 20vw;
+    width: 100px;
     background-color: white;
+    margin: auto;
 }
 
 .cardB {
@@ -100,6 +101,11 @@
 }
 
 .avatarIMG {
-    background-color: gray;
+    background-color: rgb(235, 235, 235);
     border-radius: 50%;
+    margin: auto;
+}
+
+#avatarName {
+    margin: auto;
 }
