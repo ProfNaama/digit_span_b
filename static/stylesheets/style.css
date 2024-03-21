@@ -54,23 +54,26 @@
 }
 
 .chat-user {
-    background-color: rgb(173, 168, 168);
-    border: 1px solid #000; 
+    /* this is the box of the user */
     margin: 10px
 }
 
 .chat-agent {
-    background-color: rgb(121, 118, 118);
-    border: 1px solid #000; margin: 10px
+    /* this is the box of the AI */
+    margin: 10px
 }
 
 .chat-avatar {
+    /* this is the box of both icons */
+    border-radius: 50%;
+    background-color: var(--beigh);
     height: 40px;
-    background-color: var(--gray);
 }
 
 .chat-last {
-    border: 10px solid #5088b6; margin: 10px
+    border: 2px solid var(--grayBLU);
+    border-radius: 12px;     
+    margin: 10px
 }
 
 .avatar_grid {
@@ -142,6 +145,17 @@ input[type=submit] {
   
 }
 
-#img1 {
-    width: 100px;
+#avaterSelect {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+form * {
+    width: max-content;
+    margin: auto;
+}
+
+.AvatarOption * {
+    display: block;
 }
