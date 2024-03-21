@@ -80,3 +80,9 @@
 .user_avatar {
     grid-area: user_avatar;
 }
+
+.cardContainer {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
