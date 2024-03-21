@@ -95,7 +95,7 @@
 }
 
 .cardB {
-    width: 60vw;
+    width: max-content;
     background-color: white;
 }
 
