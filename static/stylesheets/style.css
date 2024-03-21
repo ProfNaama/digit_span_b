@@ -90,7 +90,7 @@
     flex-wrap: wrap;
 }
 .cardA {
-    width: 100px;
+    width: fit-content;
     background-color: white;
     margin: auto;
 }
