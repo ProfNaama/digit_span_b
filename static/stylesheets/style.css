@@ -6,8 +6,7 @@
     padding: 5px;
     margin: 5px;
     font-family: MyFont;
-    border: 1px solid gray;
-
+    /* border: 1px solid gray; */
 }
 .container {
     display: grid;
@@ -44,13 +43,11 @@
 }
 
 .chat-user {
-    color: black;
     background-color: rgb(173, 168, 168);
     border: 1px solid #000; margin: 10px
 }
 
 .chat-agent {
-    color: black;
     background-color: rgb(121, 118, 118);
     border: 1px solid #000; margin: 10px
 }
@@ -111,4 +108,22 @@
 
 #avatarName {
     text-align: center;
+}
+
+#chatForm {
+    padding: 5% 0;
+}
+
+input[type=submit] {
+    background-color:gray;
+    color: white;
+    border-radius: 16px;
+    border: 1px solid gray;
+}
+
+#message {
+    border-radius: 16px;  
+    border: 1px solid gray;
+    padding-right: 10px;
+  
 }
