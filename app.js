@@ -273,6 +273,10 @@ app.get("/DesignTest", (req,res)=>{
     res.render("chat_design");
 })
 
+app.get("/DesignTest2", (req,res)=>{
+    res.render("config_design");
+})
+
 
 async function getSentimentAnalysisScoreForMessage(message) {
     const measurementRecords = helpers.getMeasuresRecords().filter((measureRecord) => measureRecord["is_global"] === "0" );

@@ -1,3 +1,10 @@
+:root {
+    --gray: rgb(234, 234, 234);
+    --beigh: rgb(237, 228, 197);
+    --grayBLU: rgb(206, 227, 233);
+}
+
+
 @font-face {
     font-family: MyFont;
     src: url(../fonts/Comfortaa/Comfortaa-VariableFont_wght.ttf);
@@ -17,21 +24,25 @@
 }
 .header {
     grid-area: header;
-    background-color: #c44545;
+    background-color: var(--gray);
+    border-radius: 12px;
 }
 
 .left {
     grid-area: left;
-    background-color: #cbdb3c;
+    background-color: var(--gray);
+    border-radius: 12px;
 }
 
 .content {
     grid-area: main;
+    border-radius: 12px;
 }
 
 .footer {
     grid-area: footer;
-    background-color: #a9cc57;
+    background-color: var(--gray);
+    border-radius: 12px;
 }
 
 .conversation {
@@ -44,7 +55,8 @@
 
 .chat-user {
     background-color: rgb(173, 168, 168);
-    border: 1px solid #000; margin: 10px
+    border: 1px solid #000; 
+    margin: 10px
 }
 
 .chat-agent {
@@ -83,7 +95,8 @@
 }
 
 .cardContainer {
-    border: 1px solid gray;
+    border: 2px solid var(--gray);
+    border-radius: 12px;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -111,19 +124,20 @@
 }
 
 #chatForm {
-    padding: 5% 0;
+    padding: 12% 0 0;
 }
 
 input[type=submit] {
     background-color:gray;
     color: white;
-    border-radius: 16px;
+    border-radius: 12px;
     border: 1px solid gray;
 }
 
 #message {
-    border-radius: 16px;  
+    border-radius: 12px;  
     border: 1px solid gray;
     padding-right: 10px;
+    width: 80%;
   
 }
