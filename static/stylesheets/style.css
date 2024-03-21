@@ -90,12 +90,12 @@
     flex-wrap: wrap;
 }
 .cardA {
-    width: fit-content;
+    width: 16%;
     background-color: white;
 }
 
 .cardB {
-    width: max-content;
+    width: 80%;
     background-color: white;
 }
 
