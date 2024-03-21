@@ -102,6 +102,7 @@
 .avatarIMG {
     background-color: rgb(235, 235, 235);
     border-radius: 50%;
+    width: fit-content;
     margin: auto;
 }
 
