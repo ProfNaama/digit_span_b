@@ -1,8 +1,11 @@
+@font-face {
+    font-family: MyFont;
+    src: url(../fonts/Paytone_One/PaytoneOne-Regular.ttf);
+}
 * {
     padding: 5px;
     margin: 5px;
-    color: blue;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: MyFont;
 }
 .container {
     display: grid;
@@ -85,4 +88,18 @@
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+}
+.cardA {
+    width: 20vw;
+    background-color: white;
+}
+
+.cardB {
+    width: 60vw;
+    background-color: white;
+}
+
+.avatarIMG {
+    background-color: gray;
+    border-radius: 50%;
 }
