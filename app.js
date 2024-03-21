@@ -268,7 +268,7 @@ app.get('/chat-api-reset', (req, res) => {
 
     res.send("Chat context reset");
 });
-
+// test design route
 app.get("/DesignTest", (req,res)=>{
     res.render("chat_design");
 })
