@@ -1,0 +1,13 @@
+extends layout
+block content 
+
+    div(class="cardContainer") 
+        div(class="cardA") 
+            img(src="../static/avatars/avatar_1.png", alt="avatar")
+            h2(id="avatarName") David 
+        div(class="cardB") 
+            div(id="responses")
+                form(id="chatForm")
+                label(for="message") User Text
+                input(type="text" id="message" placeholder="Type your message here" required)
+                input(type="submit" value="Send")

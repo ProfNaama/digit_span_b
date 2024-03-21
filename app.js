@@ -237,6 +237,11 @@ app.get('/chat-api-reset', (req, res) => {
     res.send("Chat context reset");
 });
 
+app.get("/DesignTest", (req,res)=>{
+    res.render("chat_design");
+})
+
+
 async function getSentimentAnalysisScoreForMessage(message) {
     const completions = await Promise.all(
         helpers.getMeasuresRecords().map(async (measureRecord) => {
