@@ -6,6 +6,8 @@
     padding: 5px;
     margin: 5px;
     font-family: MyFont;
+    border: 1px solid gray;
+
 }
 .container {
     display: grid;
@@ -102,10 +104,11 @@
 .avatarIMG {
     background-color: rgb(235, 235, 235);
     border-radius: 50%;
-    width: fit-content;
-    margin: auto;
-}
+    width: 80%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;}
 
 #avatarName {
-    width: fit-content;
+    text-align: center;
 }
