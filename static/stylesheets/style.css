@@ -26,7 +26,6 @@
 
 .content {
     grid-area: main;
-    background-color: #dd8dd0;
 }
 
 .footer {
@@ -85,6 +84,7 @@
 }
 
 .cardContainer {
+    border: 1px solid gray;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
