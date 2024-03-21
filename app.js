@@ -5,6 +5,7 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const app = express();
 const helpers = require("./helpers.js");
+const config = require('./config.js');
 
 app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -20,11 +21,10 @@ app.use(session({
     resave: true
 }));
 
-const tokenLimit = process.env.OPENAI_TOKEN_LIMIT || 50; 
 const maxUID = 100000;
 
 const openai = new OpenAIApi({
-    apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted
+    apiKey: config.apiKey
 });
 
 // Middleware to initilaize the system
@@ -50,9 +50,11 @@ function verifySessionMiddleware(req, res, next) {
     req.session.initialTask = ""
     req.session.systemRoleHiddenContent = "";
     req.session.conversationContext = [];
+    req.session.preferences = null;
     req.session.userConfigFilter = {};
     req.session.lastInteractionTime = null;
     req.session.quessionsAnswers = null;
+    req.session.global_measures = {}
     req.session.finished = false;
     req.session.save();
     console.log("new session. uid: " + req.session.uid + ", treatment group: " + req.session.treatmentGroupId);
@@ -102,7 +104,25 @@ function renderUserConfigPage(req, res, userConfigProperties, userPropertiesCoun
     }
 }
 
-app.get('/', (req, res) => {
+app.get('/', async (req, res) => {
+    if (!req.session.preferences) {
+        const avatars = await helpers.listAvatars();
+        let params = {
+            title : "ChatGptLab", 
+            header_message: "Welcome to the experiment",
+            body_message: "Please select you preferences:",
+            user_avatar: avatars,
+            agent_avatar: avatars,
+            text_preferences: {
+                "user_name": "Choose your prefferred chat name:",
+                "agent_name": "Choose your prefferred agent name:",
+            } 
+        };
+    
+        res.render('./user_preferences',  params);
+        return;
+    }
+
     const filteredRecords = helpers.getSelectedRecords(req);
     let recordsByProperty = helpers.groupRecordsByProperty(filteredRecords);
     let userConfigProperties = helpers.filterUserConfigProperties(recordsByProperty);
@@ -123,8 +143,14 @@ app.get('/', (req, res) => {
     res.render('./chat', {
         "title":"ChatLab",  
         "header_message":"Error",  
-        "body_message": "Properties are not filtered correctly! Please contact the experimenter."
+        "body_message": "Properties are not filtered correctly! Please contact the experimenter.",
+        "preferences": req.session.preferences,
     });
+});
+
+app.post('/user_preferences', async (req, res) => {
+    req.session.preferences = req.body;
+    res.redirect('/');
 });
 
 app.post('/user_config', (req, res) => {
@@ -148,7 +174,7 @@ app.post('/chat-api', async (req, res) => {
             model: 'gpt-3.5-turbo',
             //model: "gpt-3.5-turbo-0125",
             //model: "gpt-4",
-            max_tokens: tokenLimit,
+            max_tokens: config.apiTokenLimit,
             temperature: 0.7
         });
         const apiReply = chatCompletion.choices[0].message.content;
@@ -184,23 +210,29 @@ app.get('/chat-api-ended', (req, res) => {
 app.post('/user_questionnaire-ended', async (req, res) => {
     req.session.finished = true;
     req.session.save();
-    res.render('./session_ended', { 
-        title: "ChatLab",  
-        message: "Thank You for participating in the experiment. You can close the window now."
-    });
-
-    if (!req.session.quessionsAnswers) {
-        // collect the questionnaire answers from request body
-        let questionnaireAnswers = {};
-        helpers.getUserQuestionnaireRecords().map((record) => { questionnaireAnswers[record["question_name"]] = req.body[record["question_name"]] });
-        req.session.quessionsAnswers = questionnaireAnswers;
-        
-        await getSentimentAnalysisScore(req);
-        req.session.save();
-        console.log("user_questionnaire-ended: quessionsAnswers: " + JSON.stringify(req.session.quessionsAnswers));
-        helpers.saveSessionResults(req);
+    if (!config.resultsRedirectUrl){
+        res.render('./session_ended', { 
+            title: "ChatLab",  
+            message: "Thank You for participating in the experiment. You can close the window now."
+        });
     }
+
+    // collect the questionnaire answers from request body
+    let questionnaireAnswers = {};
+    helpers.getUserQuestionnaireRecords().map((record) => { questionnaireAnswers[record["question_name"]] = req.body[record["question_name"]] });
+    req.session.quessionsAnswers = questionnaireAnswers;
+    
+    await getSentimentAnalysisScore(req);
+    req.session.save();
+    const savedResultsObj = helpers.saveSessionResults(req);
     req.session.destroy();
+    
+    if (config.resultsRedirectUrl) {
+        req.body = savedResultsObj;
+        // redirect to the results page with POST method
+        res.redirect(307, config.resultsRedirectUrl);
+    }
+    
 });
 
 // backdoor hacks for developing stages
@@ -243,38 +275,57 @@ app.get("/DesignTest", (req,res)=>{
 
 
 async function getSentimentAnalysisScoreForMessage(message) {
+    const measurementRecords = helpers.getMeasuresRecords().filter((measureRecord) => measureRecord["is_global"] === "0" );
     const completions = await Promise.all(
-        helpers.getMeasuresRecords().map(async (measureRecord) => {
-            //const measureContent =  measureRecord["measure_prompt_prefix"].replace("{}", message);
-            const measureContent =  measureRecord["measure_prompt_prefix"].replace("{}", "");
+        measurementRecords.map(async (measureRecord) => {
+            const measureContent =  measureRecord["measure_prompt_prefix"];
             return await openai.chat.completions.create({
                     messages: [{role:"system", content: measureContent}, { role:"user", content: message }],
-                    //messages: [{ role:"user", content: measureContent }],
                     model: 'gpt-3.5-turbo',
-                    max_tokens: tokenLimit,
+                    max_tokens: config.apiTokenLimit,
                     temperature: 0.1
-                            });    
+            });    
         }));
 
     let measures = [];
-    helpers.getMeasuresRecords().map((measureRecord, index) => {
+    measurementRecords.map((measureRecord, index) => {
         measures.push({"measure_name" : measureRecord["measure_name"], "measure_value" : completions[index].choices[0].message.content});
     });
     
     return measures;
 }
 
+async function getSentimentAnalysisScoreForConversation(req) {
+    const measurementRecords = helpers.getMeasuresRecords().filter((measureRecord) =>  measureRecord["is_global"] !== "0" );
+    const completions = await Promise.all(
+        measurementRecords.map(async (measureRecord) => {
+            const measureContent =  measureRecord["measure_prompt_prefix"];
+            const conversation = req.session.conversationContext.filter((c) => c.role != "system");
+            const messages = [{role:"system", content: measureContent}].concat(conversation).map(c => ({role: c.role, content: c.content }));
+            return await openai.chat.completions.create({
+                    messages: messages,
+                    model: 'gpt-3.5-turbo',
+                    max_tokens: config.apiTokenLimit,
+                    temperature: 0.1
+            });    
+        }));
+
+    measurementRecords.map((measureRecord, index) => {
+        req.session.global_measures[measureRecord["measure_name"]] = completions[index].choices[0].message.content;
+    });
+}
+
 // using chatgpt api, set a new chat with a system role for getting sentiment score.
 async function getSentimentAnalysisScore(req) {
     try {
-        await Promise.all(
-            req.session.conversationContext.filter(c => c.role === "user").map(async (element) => {
-                let measures = await getSentimentAnalysisScoreForMessage(element.content);
-                measures.forEach((measure) => {
-                    element[measure["measure_name"]] = measure["measure_value"];
-                });
-            })
-        );
+        const messageMeasuresPromises = req.session.conversationContext.filter(c => c.role === "user").map(async (element) => {
+            let measures = await getSentimentAnalysisScoreForMessage(element.content);
+            measures.forEach((measure) => {
+                element[measure["measure_name"]] = measure["measure_value"];
+            });
+        })
+        await Promise.all(messageMeasuresPromises);
+        await getSentimentAnalysisScoreForConversation(req);
         req.session.save()
     } catch (error) {
         console.error(error);

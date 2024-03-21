@@ -11,19 +11,72 @@
     "left main main main main"
     "left footer footer footer footer";
 }
-
 .header {
     grid-area: header;
+    background-color: #c44545;
 }
 
 .left {
     grid-area: left;
+    background-color: #cbdb3c;
 }
 
 .content {
     grid-area: main;
+    background-color: #dd8dd0;
 }
 
 .footer {
     grid-area: footer;
+    background-color: #a9cc57;
+}
+
+.conversation {
+    /* max height is 75% of the screen height; */
+    max-height: 75vh;
+    overflow-y: scroll;
+    display: flex; 
+    flex-direction: column; 
+}
+
+.chat-user {
+    color: black;
+    background-color: rgb(173, 168, 168);
+    border: 1px solid #000; margin: 10px
+}
+
+.chat-agent {
+    color: black;
+    background-color: rgb(121, 118, 118);
+    border: 1px solid #000; margin: 10px
+}
+
+.chat-avatar {
+    height: 40px;
+    background-color: var(--gray);
+}
+
+.chat-last {
+    border: 10px solid #5088b6; margin: 10px
+}
+
+.avatar_grid {
+    display: grid;
+    grid-template-areas: 
+    "user_avatar agent_avatar";
+    
+}
+
+.avatar_selection {
+    height: 200px; 
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.agent_avatar {
+    grid-area: agent_avatar;
+}
+
+.user_avatar {
+    grid-area: user_avatar;
 }

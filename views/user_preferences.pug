@@ -1,0 +1,42 @@
+extends layout
+block content 
+    h1= header_message
+    h2= body_message
+
+    form(method='post' action='/user_preferences')
+        if text_preferences
+            // Loop through the elements of preferences object keys (preference key name) and values (preference text).
+            each value, key in text_preferences
+                h3 
+                    label #{value}
+                P
+                input(type='text', name=key, required="required")
+                br
+                br
+            br  
+        // two radio button groups for the user to select their avatar and the agent's avatar.
+        // we want to have the two groups of radio buttons in two coumns visible side by side.
+        // we will use the grid layout to achieve this.
+        div(class="avatar_grid")
+            if agent_avatar
+                div(class="agent_avatar")
+                    h3 
+                        label Agent Avatar
+                    div(class="avatar_selection")
+                        each value, key in agent_avatar
+                            P
+                            input(type='radio', name='agent_avatar', value=value, required="required")
+                            img(src=value, alt=key, id=key, width='100', height='100')
+                            br
+            br
+            if user_avatar
+                div(class="user_avatar")
+                    h3 
+                        label User Avatar
+                    div(class="avatar_selection")
+                        each value, key in user_avatar
+                            P
+                            input(type='radio', name='user_avatar', value=value, required="required")
+                            img(src=value, alt=key, id=key, width='100', height='100')
+                            br
+        input(type='submit' value='Finish')
