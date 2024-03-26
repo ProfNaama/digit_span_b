@@ -122,7 +122,7 @@ function getSelectedPrompts(req) {
     return getSelectedRecords(req).map(r => r["hidden_prompt"]);
 }
 
-const hiddenPromptPrefix = "You have the following set of human characharistics: ";
+const hiddenPromptPrefix = "You have the following set of properties:\n";
 function mergeHiddenPrompts(prompts) {    
     return hiddenPromptPrefix + prompts.join("\n");
 }

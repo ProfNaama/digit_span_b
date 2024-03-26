@@ -77,9 +77,9 @@ function verifySessionEndedMiddleware(req, res, next) {
 app.use([verifySystemInitialized, verifySessionMiddleware, verifySessionEndedMiddleware]);
 
 function renderUserConfigPage(req, res, userConfigProperties, userPropertiesCount) {
-    let userMessage = "Please select your preference regarding the following property.";
+    let userMessage = "Please select your preference:";
     if (userPropertiesCount > 1) {
-        userMessage = "For each of the following properties, please select your preferences.";
+        userMessage = "For each of the following, please select your preferences.";
     }
     if (Object.keys(req.session.userConfigFilter).length == 0) {
         // this is the expected case, when the csv is set to let the user choose the properties.
