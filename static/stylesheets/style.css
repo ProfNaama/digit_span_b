@@ -1,8 +1,19 @@
+:root {
+    --gray: rgb(234, 234, 234);
+    --beigh: rgb(237, 228, 197);
+    --grayBLU: rgb(206, 227, 233);
+}
+
+
+@font-face {
+    font-family: MyFont;
+    src: url(../fonts/Comfortaa/Comfortaa-VariableFont_wght.ttf);
+}
 * {
     padding: 5px;
     margin: 5px;
-    color: blue;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: MyFont;
+    /* border: 1px solid gray; */
 }
 .container {
     display: grid;
@@ -13,22 +24,25 @@
 }
 .header {
     grid-area: header;
-    background-color: #c44545;
+    background-color: var(--gray);
+    border-radius: 12px;
 }
 
 .left {
     grid-area: left;
-    background-color: #cbdb3c;
+    background-color: var(--gray);
+    border-radius: 12px;
 }
 
 .content {
     grid-area: main;
-    background-color: #dd8dd0;
+    border-radius: 12px;
 }
 
 .footer {
     grid-area: footer;
-    background-color: #a9cc57;
+    background-color: var(--gray);
+    border-radius: 12px;
 }
 
 .conversation {
@@ -40,24 +54,26 @@
 }
 
 .chat-user {
-    color: black;
-    background-color: rgb(173, 168, 168);
-    border: 1px solid #000; margin: 10px
+    /* this is the box of the user */
+    margin: 10px
 }
 
 .chat-agent {
-    color: black;
-    background-color: rgb(121, 118, 118);
-    border: 1px solid #000; margin: 10px
+    /* this is the box of the AI */
+    margin: 10px
 }
 
 .chat-avatar {
+    /* this is the box of both icons */
+    border-radius: 50%;
+    background-color: var(--beigh);
     height: 40px;
-    background-color: var(--gray);
 }
 
 .chat-last {
-    border: 10px solid #5088b6; margin: 10px
+    border: 2px solid var(--grayBLU);
+    border-radius: 12px;     
+    margin: 10px
 }
 
 .avatar_grid {
@@ -79,4 +95,67 @@
 
 .user_avatar {
     grid-area: user_avatar;
+}
+
+.cardContainer {
+    border: 2px solid var(--gray);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.cardA {
+    width: 12%;
+    background-color: white;
+}
+
+.cardB {
+    width: 80%;
+    background-color: white;
+}
+
+.avatarIMG {
+    background-color: rgb(235, 235, 235);
+    border-radius: 50%;
+    width: 80%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;}
+
+#avatarName {
+    text-align: center;
+}
+
+#chatForm {
+    padding: 12% 0 0;
+}
+
+input[type=submit] {
+    background-color:gray;
+    color: white;
+    border-radius: 12px;
+    border: 1px solid gray;
+}
+
+#message {
+    border-radius: 12px;  
+    border: 1px solid gray;
+    padding-right: 10px;
+    width: 80%;
+  
+}
+
+#avaterSelect {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+form * {
+    width: max-content;
+    margin: auto;
+}
+
+.AvatarOption * {
+    display: block;
 }

@@ -266,6 +266,15 @@ app.get('/chat-api-reset', (req, res) => {
 
     res.send("Chat context reset");
 });
+// test design route
+app.get("/DesignTest", (req,res)=>{
+    res.render("chat_design");
+})
+
+app.get("/DesignTest2", (req,res)=>{
+    res.render("config_design");
+})
+
 
 // backdoor hacks for developing stages
 app.get('/re-initialize-system', async (req, res) => {
