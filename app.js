@@ -35,15 +35,12 @@ async function verifySystemInitialized(req, res, next) {
 
 // Middlewares to be executed for every request to the app, making sure the session is initialized with uid, treatment group id, etc.
 function verifySessionMiddleware(req, res, next) {
-        if (req.session.uid) {
+    if (req.session.uid) {
         next();
         return;
     }
 
-    let uid = helpers.getRandomInt(0, maxUID);
-    if ("uid" in req.query) {
-        uid = parseInt(req.query["uid"]);
-    }
+    let uid = parseInt(req.query["uid"]) || helpers.getRandomInt(0, maxUID);
 
     req.session.uid = uid;
     req.session.treatmentGroupId = helpers.getTreatmentGroupId(uid);
@@ -226,6 +223,7 @@ app.post('/user_questionnaire-ended', async (req, res) => {
     req.session.save();
     const savedResultsObj = helpers.saveSessionResults(req);
     req.session.destroy();
+    console.log("Session ended. uid: " + savedResultsObj.uid);
     
     if (config.resultsRedirectUrl) {
         req.body = savedResultsObj;
@@ -268,6 +266,14 @@ app.get('/chat-api-reset', (req, res) => {
 
     res.send("Chat context reset");
 });
+
+// backdoor hacks for developing stages
+app.get('/re-initialize-system', async (req, res) => {
+    await helpers.ResetSystem();
+    req.session.destroy();
+    res.send({redirect: "/"});
+});
+
 
 async function getSentimentAnalysisScoreForMessage(message) {
     const measurementRecords = helpers.getMeasuresRecords().filter((measureRecord) => measureRecord["is_global"] === "0" );
@@ -326,6 +332,8 @@ async function getSentimentAnalysisScore(req) {
         console.error(error);
     }
 }
+
+
 
 const port = process.env.PORT || 3030;
 app.listen(port, () => console.log(`Server running on port ${port}`));
