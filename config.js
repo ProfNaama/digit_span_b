@@ -10,7 +10,7 @@ config.pgTable = process.env['PGTABLE'] || "results";
 // save results
 config.resultsFile = process.env['RESULTS_FILE'];
 config.resultsRedirectUrl = process.env['REDIRECT_URL'];
-config.encodeBase64 = process.env['BASE64_ENCODE'];
+config.encodeBase64 = process.env['BASE64_ENCODE'] && parseInt(process.env['BASE64_ENCODE']) != 0;
 
 // secret... temporary
 config.secret = process.env['SECRET'] || "secretsecret!";
