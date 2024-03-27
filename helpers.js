@@ -202,14 +202,11 @@ function saveSessionResults(req) {
     if (config.resultsFile){
         fs.appendFileSync(config.resultsFile, JSON.stringify(sessionResultObj) + "\n", { flush: true } );
     }
-    if (config.pgUser && config.pgHost && config.pgDatabase && config.pgTable && config.pgPassword) {
+    
+    if (config.connectionString) {
         // use pg to insert results to the database table
         const pool = new Pool({
-            user: config.pgUser,
-            host: config.pgHost,
-            database: config.pgDatabase,
-            password: config.pgPassword,
-            port: config.pgPort,
+            connectionString: config.connectionString,
             ssl: { rejectUnauthorized: false },
         }); 
         
