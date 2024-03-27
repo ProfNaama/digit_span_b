@@ -45,7 +45,7 @@ function verifySessionMiddleware(req, res, next) {
     req.session.uid = uid;
     req.session.treatmentGroupId = helpers.getTreatmentGroupId(uid);
     req.session.initialTask = ""
-    req.session.systemRoleHiddenContent = "";
+        req.session.systemRoleHiddenContent = "";
     req.session.conversationContext = [];
     req.session.preferences = null;
     req.session.userConfigFilter = {};
@@ -161,8 +161,7 @@ app.get('/', async (req, res) => {
     helpers.logHiddenPrompts(req);
     res.render('./chat', {
         "title":"ChatLab",  
-        "header_message":"Error",  
-        "body_message": "Properties are not filtered correctly! Please contact the experimenter.",
+        "header_message":"Chat with the AI",  
         "preferences": req.session.preferences,
     });
 });

@@ -1,14 +1,14 @@
 extends layout
 block content 
     script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js")
-    
+    h1= header_message
+
     div(id="conversation", class="conversation")
     form(id="chatForm")
         label(for="message") User Text
         input(type="text" id="message" placeholder="Type your message here" required)
         input(type="submit" value="Send")
     
-    br
     br
 
     form(id="chatEndedForm" method='get' action='/chat-api-ended')
@@ -17,33 +17,67 @@ block content
     br
 
     script.
+        const preferences_user_avatar = !{JSON.stringify(preferences.user_avatar)} ? !{JSON.stringify(preferences.user_avatar)} : "";
+        const preferences_agent_avatar = !{JSON.stringify(preferences.agent_avatar)} ? !{JSON.stringify(preferences.agent_avatar)} : "";
+        const preferences_user_name = !{JSON.stringify(preferences.user_name)} ? !{JSON.stringify(preferences.user_name)} : "";
+        const preferences_agent_name = !{JSON.stringify(preferences.agent_name)} ? !{JSON.stringify(preferences.agent_name)} : "";
+
+
         function updateConversationScroll(){
             var element = document.getElementById("conversation");
             element.scrollTop = element.scrollHeight - element.clientHeight;
         }
 
-        let preferences_user_avatar = !{JSON.stringify(preferences.user_avatar)} ? !{JSON.stringify(preferences.user_avatar)} : "";
-        let preferences_agent_avatar = !{JSON.stringify(preferences.agent_avatar)} ? !{JSON.stringify(preferences.agent_avatar)} : "";
-        let preferences_user_name = !{JSON.stringify(preferences.user_name)} ? !{JSON.stringify(preferences.user_name)} : "";
-        let preferences_agent_name = !{JSON.stringify(preferences.agent_name)} ? !{JSON.stringify(preferences.agent_name)} : "";
+        function addUserText(userText){
+            let element = document.createElement("div");
+            element.className = "chat-user chat-last";
+            let img_elem = document.createElement("img");
+            img_elem.className = "chat-avatar";
+            img_elem.setAttribute("src", preferences_user_avatar);
+
+            element.appendChild(document.createTextNode(preferences_user_name));
+            element.appendChild(img_elem);
+            element.appendChild(document.createTextNode(userText));
+            document.getElementById('conversation').appendChild(element);
+            updateConversationScroll();
+            $('#chatForm')[0].reset();
+        }
+
+        function addAgentText(agentText){
+            let element = document.createElement("div");
+            element.className = "chat-agent chat-last";
+            let img_elem = document.createElement("img");
+            img_elem.className = "chat-avatar";
+            img_elem.setAttribute("src", preferences_agent_avatar);
+
+            element.appendChild(document.createTextNode(preferences_agent_name));
+            element.appendChild(img_elem);
+            element.appendChild(document.createTextNode(agentText));
+            document.getElementById('conversation').appendChild(element);
+
+            updateConversationScroll();
+        }
+    
+        function EngageAgent() {
+            $.ajax({
+                url: './chat-api',
+                type: 'POST',
+                data: {
+                    message: "hi, I am a user."
+                },
+                success: addAgentText,
+                error: console.error
+            });
+        }
 
         $(document).ready(function(){
+            EngageAgent();
             $('#chatForm').on('submit', function(e){
                 e.preventDefault();
                 $("#conversation").children().removeClass("chat-last");
 
                 const message = $('#message').val();
-                let element = document.createElement("div");
-                element.className = "chat-user chat-last";
-                let img_elem = document.createElement("img");
-                img_elem.className = "chat-avatar";
-                img_elem.setAttribute("src", preferences_user_avatar);
-
-                element.appendChild(document.createTextNode(preferences_user_name));
-                element.appendChild(img_elem);
-                element.appendChild(document.createTextNode(message));
-                document.getElementById('conversation').appendChild(element);
-                updateConversationScroll();
+                addUserText(message);
 
                 $.ajax({
                     url: './chat-api',
@@ -51,24 +85,8 @@ block content
                     data: {
                         message: message
                     },
-                    success: function(response) {
-                        let element = document.createElement("div");
-                        element.className = "chat-agent chat-last";
-                        let img_elem = document.createElement("img");
-                        img_elem.className = "chat-avatar";
-                        img_elem.setAttribute("src", preferences_agent_avatar);
-
-                        element.appendChild(document.createTextNode(preferences_agent_name));
-                        element.appendChild(img_elem);
-                        element.appendChild(document.createTextNode(response));
-                        document.getElementById('conversation').appendChild(element);
-
-                        $('#chatForm')[0].reset();
-                        updateConversationScroll();
-                    },
-                    error: function(error){
-                        console.log(error);
-                    }
+                    success: addAgentText,
+                    error: console.error
                 });
             });
         });
