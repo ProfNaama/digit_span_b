@@ -11,31 +11,6 @@ block content
     br
     br
 
-    form(id="chatFormManipulation")
-        label(for="manipulation") Hidden Prompt - Manipulation
-        input(type="text" id="manipulation" placeholder="Type chat gpt manipulation prefix here")
-        input(type="submit" value="Send")
-    br
-
-    form(id="chatFormInitialTask")
-        label(for="task") Initial Task - Manipulation
-        input(type="text" id="task" placeholder="Type chat gpt task here")
-        input(type="submit" value="Send")
-    
-    br
-    
-    form(id="chatFormReset")
-        p Reset Conversation Context
-        input(type="submit" value="Send")
-    br
-    br
-    form(id="ReInitializeSystem")
-        p Re - Initialize System (csv, Session)
-        input(type="submit" value="Send")
-
-    br
-    br
-
     form(id="chatEndedForm" method='get' action='/chat-api-ended')
         p End Chat
         input(type="submit" value="End Chat")
@@ -53,73 +28,6 @@ block content
         let preferences_agent_name = !{JSON.stringify(preferences.agent_name)} ? !{JSON.stringify(preferences.agent_name)} : "";
 
         $(document).ready(function(){
-            $('#ReInitializeSystem').on('submit', function(e){
-                e.preventDefault();
-                $.ajax({
-                    url: './re-initialize-system',
-                    type: 'GET',
-                    success: function(response) {
-                        document.getElementById('conversation').innerHTML = "";
-                        window.location.reload(response);
-                    },
-                    error: function(error){
-                        console.log(error);
-                    }
-                });
-            });
-
-            $('#chatFormReset').on('submit', function(e){
-                e.preventDefault();
-                $.ajax({
-                    url: './chat-api-reset',
-                    type: 'GET',
-                    success: function(response) {
-                        document.getElementById('conversation').innerHTML = "";
-                    },
-                    error: function(error){
-                        console.log(error);
-                    }
-                });
-            });
-
-            $('#chatFormManipulation').on('submit', function(e){
-                e.preventDefault();
-
-                const manipulationHint = $('#manipulation').val();
-                $.ajax({
-                    url: './chat-api-manipulation',
-                    type: 'POST',
-                    data: {
-                        "manipulation": manipulationHint
-                    },
-                    success: function(response) {
-                        $('#manipulation').text = response["manipulation"];
-                    },
-                    error: function(error){
-                        console.log(error);
-                    }
-                });
-            });
-
-            $('#chatFormInitialTask').on('submit', function(e){
-                e.preventDefault();
-
-                const taskHint = $('#task').val();
-                $.ajax({
-                    url: './chat-api-manipulation-task',
-                    type: 'POST',
-                    data: {
-                        "task": taskHint
-                    },
-                    success: function(response) {
-                        $('#task').text = response["task"];
-                    },
-                    error: function(error){
-                        console.log(error);
-                    }
-                });
-            });
-
             $('#chatForm').on('submit', function(e){
                 e.preventDefault();
                 $("#conversation").children().removeClass("chat-last");

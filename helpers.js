@@ -49,18 +49,6 @@ let initializationPromise = new Promise((resolve, reject) => {
     });
 });
 
-// backdoor for reseting system (reloadign csv files)
-async function ResetSystem() {   
-    initializationPromise = new Promise((resolve, reject) => {
-        readAllCsvFiles().then(() => {
-            console.log("System has been reset");
-            resolve();
-        });
-    });
-    await initializationPromise;
-}
-
-
 async function waitForSystemInitializiation() {   
     await initializationPromise;
 }
@@ -260,6 +248,5 @@ module.exports = {
     logHiddenPrompts,
     getAndResetInteractionTime,
     saveSessionResults,
-    listAvatars,
-    ResetSystem
+    listAvatars
 }

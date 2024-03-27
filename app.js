@@ -230,42 +230,8 @@ app.post('/user_questionnaire-ended', async (req, res) => {
         // redirect to the results page with POST method
         res.redirect(307, config.resultsRedirectUrl);
     }
-    
 });
 
-// backdoor hacks for developing stages
-app.post('/chat-api-manipulation', (req, res) => {
-    const message = req.body.manipulation;
-    
-    if (message.length > 0) {
-        req.session.systemRoleHiddenContent = message;
-        req.session.save();
-    }
-    else {
-        helpers.setSelectedHiddenPromptToSession(req)
-    }
-    helpers.logHiddenPrompts(req);
-    res.send({"manipulation": req.session.systemRoleHiddenContent}); 
-});
-
-// backdoor hacks for developing stages
-app.post('/chat-api-manipulation-task', (req, res) => {
-    const task = req.body.task;
-    
-    req.session.initialTask = task;
-    req.session.save();
-    helpers.logHiddenPrompts(req);
-    res.send({"task": task}); 
-});
-
-// backdoor hacks for developing stages
-app.get('/chat-api-reset', (req, res) => {
-    req.session.conversationContext = [];
-    req.session.save();
-    helpers.logHiddenPrompts(req);
-
-    res.send("Chat context reset");
-});
 // test design route
 app.get("/DesignTest", (req,res)=>{
     res.render("chat_design");
@@ -274,15 +240,6 @@ app.get("/DesignTest", (req,res)=>{
 app.get("/DesignTest2", (req,res)=>{
     res.render("config_design");
 })
-
-
-// backdoor hacks for developing stages
-app.get('/re-initialize-system', async (req, res) => {
-    await helpers.ResetSystem();
-    req.session.destroy();
-    res.send({redirect: "/"});
-});
-
 
 async function getSentimentAnalysisScoreForMessage(message) {
     const measurementRecords = helpers.getMeasuresRecords().filter((measureRecord) => measureRecord["is_global"] === "0" );
