@@ -12,4 +12,6 @@ config.resultsFile = process.env['RESULTS_FILE'];
 config.resultsRedirectUrl = process.env['REDIRECT_URL'];
 config.encodeBase64 = process.env['BASE64_ENCODE'];
 
+// secret... temporary
+config.secret = process.env['SECRET'] || "secretsecret!";
 module.exports = config;

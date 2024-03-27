@@ -74,7 +74,25 @@ function verifySessionEndedMiddleware(req, res, next) {
     next();
 };
 
-app.use([verifySystemInitialized, verifySessionMiddleware, verifySessionEndedMiddleware]);
+// Temporary... Middlewares to make sure the secret is there, so not to abuse the API
+function verifySessionSecret(req, res, next) {
+    if (!req.session.secret) {
+        if (req.query["secret"] !== config.secret) {
+            res.render('./welcome_consent', { 
+                "title":"ChatLab",  
+                "header_message": helpers.getFirstCsvRecordValue(helpers.getCsvRecords("experiment_desc.csv"), "welcome_consent_header"),  
+                "body_message": helpers.getFirstCsvRecordValue(helpers.getCsvRecords("experiment_desc.csv"), "welcome_consent_body")
+            });
+            return;
+        }
+        req.session.secret = config.secret;
+        req.session.save();
+    }
+    next();
+};
+
+
+app.use([verifySystemInitialized, verifySessionMiddleware, verifySessionEndedMiddleware, verifySessionSecret]);
 
 function renderUserConfigPage(req, res, userConfigProperties, userPropertiesCount) {
     let userMessage = "Please select your preference:";
