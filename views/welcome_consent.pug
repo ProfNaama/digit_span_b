@@ -3,7 +3,7 @@ block content
     h1= header_message
     h2= body_message
 
-    form(method='get' action='/')
+    form(method='POST' action='/')
         p
         label(for="message") Temporary... Please Enter Secret...
         input(type="text" id="message" name="secret" placeholder="Type your secret here... " required)

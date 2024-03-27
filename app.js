@@ -77,7 +77,7 @@ function verifySessionEndedMiddleware(req, res, next) {
 // Temporary... Middlewares to make sure the secret is there, so not to abuse the API
 function verifySessionSecret(req, res, next) {
     if (!req.session.secret) {
-        if (req.query["secret"] !== config.secret) {
+        if (req.body["secret"] !== config.secret) {
             res.render('./welcome_consent', { 
                 "title":"ChatLab",  
                 "header_message": helpers.getFirstCsvRecordValue(helpers.getCsvRecords("experiment_desc.csv"), "welcome_consent_header"),  
@@ -118,6 +118,10 @@ function renderUserConfigPage(req, res, userConfigProperties, userPropertiesCoun
         });
     }
 }
+
+app.post('/', async (req, res) => {
+    res.redirect('/');
+})
 
 app.get('/', async (req, res) => {
     if (!req.session.preferences) {
