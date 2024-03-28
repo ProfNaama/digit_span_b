@@ -130,10 +130,10 @@ app.get('/', async (req, res) => {
             title : "ChatGptLab", 
             header_message: "Welcome to the experiment",
             body_message: "Please select you preferences:",
-            user_avatar: avatars,
+            //user_avatar: avatars,
             agent_avatar: avatars,
             text_preferences: {
-                "user_name": "Choose your prefferred chat name:",
+                //"user_name": "Choose your prefferred chat name:",
                 "agent_name": "Choose your prefferred agent name:",
             } 
         };
@@ -168,6 +168,11 @@ app.get('/', async (req, res) => {
 
 app.post('/user_preferences', async (req, res) => {
     req.session.preferences = req.body;
+    req.session.preferences["user_name"] = "user";
+    const avatars = await helpers.listAvatars();
+    req.session.preferences["user_avatar"] = avatars[avatars.length-2]
+    req.session.save();
+    
     res.redirect('/');
 });
 
