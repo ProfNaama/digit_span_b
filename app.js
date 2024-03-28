@@ -120,28 +120,10 @@ function renderUserConfigPage(req, res, userConfigProperties, userPropertiesCoun
 }
 
 app.post('/', async (req, res) => {
-    res.redirect('/');
+    res.redirect('/user_preferences');
 })
 
 app.get('/', async (req, res) => {
-    if (!req.session.preferences) {
-        const avatars = await helpers.listAvatars();
-        let params = {
-            title : "ChatGptLab", 
-            header_message: "Welcome to the experiment",
-            body_message: "Please select you preferences:",
-            //user_avatar: avatars,
-            agent_avatar: avatars,
-            text_preferences: {
-                //"user_name": "Choose your prefferred chat name:",
-                "agent_name": "Choose your prefferred agent name:",
-            } 
-        };
-    
-        res.render('./user_preferences',  params);
-        return;
-    }
-
     const filteredRecords = helpers.getSelectedRecords(req);
     let recordsByProperty = helpers.groupRecordsByProperty(filteredRecords);
     let userConfigProperties = helpers.filterUserConfigProperties(recordsByProperty);
@@ -166,13 +148,41 @@ app.get('/', async (req, res) => {
     });
 });
 
-app.post('/user_preferences', async (req, res) => {
-    req.session.preferences = req.body;
-    req.session.preferences["user_name"] = "user";
-    const avatars = await helpers.listAvatars();
-    req.session.preferences["user_avatar"] = avatars[avatars.length-2]
-    req.session.save();
+app.get('/user_preferences', async (req, res) => {
+    if (!req.session.preferences) {
+        const avatars = await helpers.listAvatars();
+        
+        const preferences_default = {
+            "user_name": "user", 
+            "user_avatar" : avatars[avatars.length-2]
+        };
+
+        req.session.preferences = preferences_default;
+
+        let params = {
+            title : "ChatGptLab", 
+            header_message: "Welcome to the experiment",
+            body_message: "Please select you preferences:",
+            //user_avatar: avatars,
+            agent_avatar: avatars,
+            text_preferences: {
+                //"user_name": "Choose your prefferred chat name:",
+                "agent_name": "Choose your prefferred agent name:",
+            } 
+        };
     
+        res.render('./user_preferences',  params);
+        return;
+    }
+    
+    res.redirect('/');
+});
+
+app.post('/user_preferences', async (req, res) => {
+    Object.keys(req.body).forEach(key => {
+        req.session.preferences[key] = req.body[key];
+    });
+    req.session.save();
     res.redirect('/');
 });
 
