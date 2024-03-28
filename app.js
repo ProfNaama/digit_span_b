@@ -50,7 +50,7 @@ function verifySessionMiddleware(req, res, next) {
     req.session.preferences = null;
     req.session.userConfigFilter = {};
     req.session.lastInteractionTime = null;
-    req.session.quessionsAnswers = null;
+    req.session.quessionsAnswers = {};
     req.session.global_measures = {}
     req.session.finished = false;
     req.session.save();
@@ -231,7 +231,9 @@ app.get('/chat-api-ended', (req, res) => {
     helpers.getUserQuestionnaireRecords().map((record) => { 
         const k = record["question_name"];
         const v = record["question_text"];
-        params["questions"][k] = v;
+        const is_text = record["is_text"] == "1" ? true : false;
+        const is_radio_selection = record["is_radio_selection"] == "1" ? true : false ;
+        params["questions"][k] = {"label": v, "is_text": is_text, "is_radio_selection": is_radio_selection};
     });
     res.render('./user_questionnaire',  params);
 });
@@ -251,9 +253,7 @@ app.post('/user_questionnaire-ended', async (req, res) => {
     }
 
     // collect the questionnaire answers from request body
-    let questionnaireAnswers = {};
-    helpers.getUserQuestionnaireRecords().map((record) => { questionnaireAnswers[record["question_name"]] = req.body[record["question_name"]] });
-    req.session.quessionsAnswers = questionnaireAnswers;
+    helpers.getUserQuestionnaireRecords().map((record) => { req.session.quessionsAnswers[record["question_name"]] = req.body[record["question_name"]] });
     
     await getSentimentAnalysisScore(req);
     req.session.save();
