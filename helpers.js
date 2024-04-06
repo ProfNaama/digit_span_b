@@ -229,6 +229,61 @@ function saveSessionResults(req) {
     //console.log("base64 to json: " + base64);
 }
 
+async function isCodeValid(code) {
+    if (code) {
+        if (config.connectionString) {
+            const pool = new Pool({
+                connectionString: config.connectionString,
+                ssl: { rejectUnauthorized: false },
+            }); 
+            
+            const query = {
+                text: 'SELECT completed FROM codes WHERE code = $1',
+                values: [code]
+            }
+        
+            const result = await new Promise((resolve, reject) => {
+                pool.query(query, (error, result) => {
+                    pool.end();
+                    if (error) {
+                        console.log("Error: " + error);
+                        resolve(false);
+                    }
+                    resolve(result);
+                });
+            });
+            return result && result.rows && result.rows[0] && !result.rows[0].completed;
+        }
+    }
+    return false;
+}
+
+async function setCodeCompleted(code, obj) {
+    if (config.connectionString) {
+        const pool = new Pool({
+            connectionString: config.connectionString,
+            ssl: { rejectUnauthorized: false },
+        }); 
+        
+        const query = {
+            text: 'UPDATE codes SET completed = $2 WHERE code = $1',
+            values: [code, obj]
+        }
+    
+        const result = await new Promise((resolve, reject) => {
+            pool.query(query, (error, result) => {
+                pool.end();
+                if (error) {
+                    console.log("Error: " + error);
+                    resolve(false);
+                }
+                resolve(result);
+            });
+        });
+        return result;
+    }
+}
+
 module.exports = {
     waitForSystemInitializiation,
     getMeasuresRecords,
@@ -245,5 +300,7 @@ module.exports = {
     logHiddenPrompts,
     getAndResetInteractionTime,
     saveSessionResults,
-    listAvatars
+    listAvatars,
+    isCodeValid,
+    setCodeCompleted
 }

@@ -74,10 +74,11 @@ function verifySessionEndedMiddleware(req, res, next) {
     next();
 };
 
-// Temporary... Middlewares to make sure the secret is there, so not to abuse the API
-function verifySessionSecret(req, res, next) {
-    if (!req.session.secret) {
-        if (req.body["secret"] !== config.secret) {
+// Temporary... Middlewares to make sure the code is there, so not to abuse the API
+async function verifySessionCode(req, res, next) {
+    if (!req.session.code) {
+        const isCodeValid = await helpers.isCodeValid(req.body["code"]);
+        if (!isCodeValid) {
             res.render('./welcome_consent', { 
                 "title":"ChatLab",  
                 "header_message": helpers.getFirstCsvRecordValue(helpers.getCsvRecords("experiment_desc.csv"), "welcome_consent_header"),  
@@ -85,14 +86,13 @@ function verifySessionSecret(req, res, next) {
             });
             return;
         }
-        req.session.secret = config.secret;
+        req.session.code = req.body["code"];
         req.session.save();
     }
     next();
 };
 
-
-app.use([verifySystemInitialized, verifySessionMiddleware, verifySessionEndedMiddleware, verifySessionSecret]);
+app.use([verifySystemInitialized, verifySessionMiddleware, verifySessionEndedMiddleware, verifySessionCode]);
 
 function renderUserConfigPage(req, res, userConfigProperties, userPropertiesCount) {
     let userMessage = "Please select your preference:";
@@ -259,6 +259,7 @@ app.post('/user_questionnaire-ended', async (req, res) => {
     await getSentimentAnalysisScore(req);
     req.session.save();
     const savedResultsObj = helpers.saveSessionResults(req);
+    await helpers.setCodeCompleted(req.session.code, {time:Date.now(), uid:req.session.uid});
     req.session.destroy();
     console.log("Session ended. uid: " + savedResultsObj.uid);
     

@@ -13,5 +13,4 @@ config.resultsRedirectUrl = process.env['REDIRECT_URL'];
 config.encodeBase64 = process.env['BASE64_ENCODE'] && parseInt(process.env['BASE64_ENCODE']) != 0;
 
 // secret... temporary
-config.secret = process.env['SECRET'] || "secretsecret!";
 module.exports = config;
