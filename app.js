@@ -124,7 +124,7 @@ app.post('/', async (req, res) => {
 })
 // added cosent
 app.get('/consent', (req,res)=>{
-    res.render('cosent')
+    res.render('./cosent')
 
 })
 
