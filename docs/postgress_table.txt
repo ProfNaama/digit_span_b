@@ -1,0 +1,13 @@
+
+CREATE TABLE results (
+    uuid        integer,
+    userid      varchar(256),
+    result      json
+);
+
+
+CREATE TABLE codes (
+    code      varchar(256) NOT NULL,
+    completed   json,
+    PRIMARY KEY (code)
+);
