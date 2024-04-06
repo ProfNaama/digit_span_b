@@ -124,6 +124,19 @@ app.post('/', async (req, res) => {
 })
 // added cosent
 app.get('/consent', (req,res)=>{
+    req.session.preferences = preferences_default;
+
+        let params = {
+            title : "ChatGptLab", 
+            header_message: "Welcome to the experiment",
+            body_message: "Please select you preferences:",
+            //user_avatar: avatars,
+            agent_avatar: avatars,
+            text_preferences: {
+                //"user_name": "Choose your prefferred chat name:",
+                "agent_name": "Choose your prefferred agent name:",
+            } 
+        };
     res.render('./cosent')
 
 })
