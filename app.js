@@ -119,15 +119,8 @@ function renderUserConfigPage(req, res, userConfigProperties, userPropertiesCoun
     }
 }
 
-app.post('/', async (req, res) => {
-    res.redirect('/consent');
-})
-// added cosent
-app.get('/consent', async(req,res)=>{
-    res.render('./cosent')
-})
 
-app.post('/consent', async (req, res) => {
+app.post('/', async (req, res) => {
     res.redirect('/user_preferences');
 })
 
