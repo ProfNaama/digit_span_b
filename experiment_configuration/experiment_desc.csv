@@ -1,2 +1,3 @@
-welcome_consent_header,welcome_consent_body
-Welcome to the experiment website,
+page,header,body1,body2
+code_page,"Welcome to the experiment website","this is the body1 text of code page","this is the body2 text of code page"
+consent_page,"Welcome to the experiment website","this is the body1 text of consent page. By selecting the following check box you consent to the experiment","this is the body2 text of consent page"

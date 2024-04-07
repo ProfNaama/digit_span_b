@@ -35,31 +35,26 @@ async function verifySystemInitialized(req, res, next) {
 
 // Middlewares to be executed for every request to the app, making sure the session is initialized with uid, treatment group id, etc.
 function verifySessionMiddleware(req, res, next) {
-    if (req.session.uid) {
-        next();
-        return;
-    }
+    if (!req.session.uid) {
+        let uid = parseInt(req.query["uid"]) || helpers.getRandomInt(0, maxUID);
 
-    let uid = parseInt(req.query["uid"]) || helpers.getRandomInt(0, maxUID);
-
-    req.session.uid = uid;
-    req.session.treatmentGroupId = helpers.getTreatmentGroupId(uid);
-    req.session.initialTask = ""
+        req.session.uid = uid;
+        req.session.treatmentGroupId = helpers.getTreatmentGroupId(uid);
+        req.session.initialTask = ""
         req.session.systemRoleHiddenContent = "";
-    req.session.conversationContext = [];
-    req.session.preferences = null;
-    req.session.userConfigFilter = {};
-    req.session.lastInteractionTime = null;
-    req.session.quessionsAnswers = {};
-    req.session.global_measures = {}
-    req.session.finished = false;
-    req.session.save();
-    console.log("new session. uid: " + req.session.uid + ", treatment group: " + req.session.treatmentGroupId);
-    res.render('./welcome_consent', { 
-        "title":"ChatLab",  
-        "header_message": helpers.getFirstCsvRecordValue(helpers.getCsvRecords("experiment_desc.csv"), "welcome_consent_header"),  
-        "body_message": helpers.getFirstCsvRecordValue(helpers.getCsvRecords("experiment_desc.csv"), "welcome_consent_body")
-    });
+        req.session.conversationContext = [];
+        req.session.preferences = null;
+        req.session.userConfigFilter = {};
+        req.session.lastInteractionTime = null;
+        req.session.quessionsAnswers = {};
+        req.session.global_measures = {}
+        req.session.code = null;
+        req.session.consent = false;
+        req.session.finished = false;
+        req.session.save();
+        console.log("new session. uid: " + req.session.uid + ", treatment group: " + req.session.treatmentGroupId);
+    }
+    next();
 }
 
 // Middlewares to be executed for every request to the app, making sure the session has not already finished.
@@ -74,15 +69,14 @@ function verifySessionEndedMiddleware(req, res, next) {
     next();
 };
 
-// Temporary... Middlewares to make sure the code is there, so not to abuse the API
 async function verifySessionCode(req, res, next) {
     if (!req.session.code) {
         const isCodeValid = await helpers.isCodeValid(req.body["code"]);
         if (!isCodeValid) {
-            res.render('./welcome_consent', { 
+            res.render('./welcome_code', { 
                 "title":"ChatLab",  
-                "header_message": helpers.getFirstCsvRecordValue(helpers.getCsvRecords("experiment_desc.csv"), "welcome_consent_header"),  
-                "body_message": helpers.getFirstCsvRecordValue(helpers.getCsvRecords("experiment_desc.csv"), "welcome_consent_body")
+                "header_message": helpers.getFirstCsvRecordValue(helpers.getCsvRecords("experiment_desc.csv").filter(raw => raw["page"] === "code_page"), "header"),  
+                "body_message": helpers.getFirstCsvRecordValue(helpers.getCsvRecords("experiment_desc.csv").filter(raw => raw["page"] === "code_page"), "body1")
             });
             return;
         }
@@ -92,7 +86,23 @@ async function verifySessionCode(req, res, next) {
     next();
 };
 
-app.use([verifySystemInitialized, verifySessionMiddleware, verifySessionEndedMiddleware, verifySessionCode]);
+async function verifySessionConsent(req, res, next) {
+    if (!req.session.consent) {
+        if (!req.body["consent"]) {
+            res.render('./consent', { 
+                "title":"ChatLab",  
+                "header_message": helpers.getFirstCsvRecordValue(helpers.getCsvRecords("experiment_desc.csv").filter(raw => raw["page"] === "consent_page"), "header"),  
+                "body_message": helpers.getFirstCsvRecordValue(helpers.getCsvRecords("experiment_desc.csv").filter(raw => raw["page"] === "consent_page"), "body1")
+            });
+            return;
+        }
+        req.session.consent = true;
+        req.session.save();
+    }
+    next();
+};
+
+app.use([verifySystemInitialized, verifySessionMiddleware, verifySessionEndedMiddleware, verifySessionCode, verifySessionConsent]);
 
 function renderUserConfigPage(req, res, userConfigProperties, userPropertiesCount) {
     let userMessage = "Please select your preference:";
