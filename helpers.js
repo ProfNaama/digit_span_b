@@ -231,6 +231,10 @@ function saveSessionResults(req) {
 
 async function isCodeValid(code) {
     if (code) {
+        if (config.reusableCode && (code === config.reusableCode)) {
+            return true;
+        }
+
         if (config.connectionString) {
             const pool = new Pool({
                 connectionString: config.connectionString,
@@ -259,6 +263,10 @@ async function isCodeValid(code) {
 }
 
 async function setCodeCompleted(code, obj) {
+    if (config.reusableCode && (code === config.reusableCode)) {
+        return true;
+    }
+
     if (config.connectionString) {
         const pool = new Pool({
             connectionString: config.connectionString,
