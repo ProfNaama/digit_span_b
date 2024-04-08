@@ -69,15 +69,11 @@ function verifySessionEndedMiddleware(req, res, next) {
 app.use([verifySystemInitialized, verifySessionMiddleware, verifySessionEndedMiddleware]);
 
 async function renderUserPreferencesPage(req, res) {
+    // user preferences page. consists of (1) user preferences and (2) agent configuration.
+    
+    // (1) user preferences: the name and image of the agent.
     const avatars = await helpers.listAvatars();
     
-    const preferences_default = {
-        "user_name": "user", 
-        "user_avatar" : avatars[avatars.length-2]
-    };
-
-    req.session.preferences = preferences_default;
-
     let renderParams = helpers.getRenderingParamsForPage("user_preferences");
     // renderParams["user_avatar"] = avatars;
     renderParams["agent_avatar"] = avatars;
@@ -85,23 +81,30 @@ async function renderUserPreferencesPage(req, res) {
         //"user_name": "Choose your prefferred chat name:",
         "agent_name": "Choose your prefferred agent name:",
     } 
-    res.render('./user_preferences',  renderParams);
-}
 
-function renderUserConfigPage(req, res, userConfigProperties, userPropertiesCount) {
-    if (Object.keys(req.session.userConfigFilter).length == 0) {
-        // this is the expected case, when the csv is set to let the user choose the properties.
-        let renderParams = helpers.getRenderingParamsForPage("user_config");
-        renderParams["userConfig"] = userConfigProperties
-        res.render('./user_config', renderParams);
-    } else {
-        // should not happen.
-        // if we reached here, this means the user was required to choose a property, but the user config is not complete (i.e. some properties were not decided).
-        console.log("Properties are not filtered correctly!. uid: " + req.session.uid + ", treatment group: " + req.session.treatmentGroupId + ", user config filter is set to : " + JSON.stringify(userConfigProperties));
-        let renderParams = helpers.getRenderingParamsForPage("error");
-        renderParams["body_message"] = "Properties are not filtered correctly! Please contact the experimenter.";
-        res.render('./error', renderParams);
+    // (2) agent configuration: the user might be required to choose some properties according to the treatment group configuration.
+    const filteredRecords = helpers.getSelectedRecords(req);
+    let recordsByProperty = helpers.groupRecordsByProperty(filteredRecords);
+    let userConfigProperties = helpers.filterUserConfigProperties(recordsByProperty);
+    const userPropertiesCount = Object.keys(userConfigProperties).length;
+
+    if (userPropertiesCount > 0) {
+        // according to the csv, the user has some properties to decide on.
+        if (Object.keys(req.session.userConfigFilter).length == 0) {
+            // this is the expected case, when the csv is set to let the user choose the properties.
+            renderParams["userConfig"] = userConfigProperties
+        } else {
+            // should not happen.
+            // if we reached here, this means the user was required to choose a property, but the user config is not complete (i.e. some properties were not decided).
+            console.log("Properties are not filtered correctly!. uid: " + req.session.uid + ", treatment group: " + req.session.treatmentGroupId + ", user config filter is set to : " + JSON.stringify(userConfigProperties));
+            renderParams = helpers.getRenderingParamsForPage("error");
+            renderParams["body_message"] = "Properties are not filtered correctly! Please contact the experimenter.";
+            res.render('./error', renderParams);
+            return;
+        }
     }
+
+    res.render('./user_preferences',  renderParams);
 }
 
 app.get('/', async (req, res) => {
@@ -117,19 +120,6 @@ app.get('/', async (req, res) => {
 
     if (!req.session.preferences) {
         await renderUserPreferencesPage(req, res);
-        return;
-    }
-
-    const filteredRecords = helpers.getSelectedRecords(req);
-    let recordsByProperty = helpers.groupRecordsByProperty(filteredRecords);
-    let userConfigProperties = helpers.filterUserConfigProperties(recordsByProperty);
-    const userPropertiesCount = Object.keys(userConfigProperties).length;
-
-    if (userPropertiesCount > 0) {
-        // according to the csv, the user has some properties to decide on.
-        // we redirect the user to the user_config page, where the user can configure the properties.
-        // after the user config is set, the user is redirected back to this route again.
-        renderUserConfigPage(req, res, userConfigProperties, userPropertiesCount);
         return;
     }
 
@@ -170,19 +160,25 @@ app.post('/consent', async (req, res) => {
 
 
 app.post('/user_preferences', async (req, res) => {
+    const preferences_default = {
+        "user_name": "user", 
+        "user_avatar" : avatars[avatars.length-2]
+    };
+
+    req.session.preferences = preferences_default;
+
     Object.keys(req.body).forEach(key => {
-        req.session.preferences[key] = req.body[key];
+        if (key.startsWith("preferences.")) {
+            req.session.preferences[key.replace("preferences.", "")] = req.body[key];
+        }
+        else if (key.startsWith("user_config")) {
+            req.session.userConfigFilter[key.replace("user_config.", "")] = req.body[key];
+        }
     });
     req.session.save();
     res.redirect('/');
 });
 
-app.post('/user_config', (req, res) => {
-    // the user config is saved in the session, we redirect to the root route again, this time the config is already set.
-    req.session.userConfigFilter = req.body;
-    req.session.save();
-    res.redirect('/');
-});
 
 // the main chat route.
 // each part of the conversation is stored in the session

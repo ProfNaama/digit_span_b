@@ -111,6 +111,7 @@ function getRenderingParamsForPage(page) {
         title: "ChatLab",
         header_message: getFirstCsvRecordValue(getCsvRecords("experiment_desc.csv").filter(raw => raw["page"] === page), "header"), 
         body_message: getFirstCsvRecordValue(getCsvRecords("experiment_desc.csv").filter(raw => raw["page"] === page), "body1"), 
+        body2_message: getFirstCsvRecordValue(getCsvRecords("experiment_desc.csv").filter(raw => raw["page"] === page), "body2"), 
     };
     
     return params;

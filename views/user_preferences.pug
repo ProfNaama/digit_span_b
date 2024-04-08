@@ -4,14 +4,14 @@ block content
     if body_message
         h3=body_message    
 
-    form(method='post' action='/user_preferences')
+    form(method='POST' action='/user_preferences')
         if text_preferences
             // Loop through the elements of preferences object keys (preference key name) and values (preference text).
             each value, key in text_preferences
                 h3 
                     label #{value}
                 P
-                input(type='text', name=key, required="required")
+                input(type='text', name="preferences."+key, required="required")
                 br
                 br
             br  
@@ -26,7 +26,7 @@ block content
                     div(class="avatar_selection")
                         each value, key in agent_avatar
                             P
-                            input(type='radio', name='agent_avatar', value=value, required="required")
+                            input(type='radio', name='preferences.agent_avatar', value=value, required="required")
                             img(src=value, alt=key, id=key, width='100', height='100')
                             br
             br
@@ -37,7 +37,30 @@ block content
                     div(class="avatar_selection")
                         each value, key in user_avatar
                             P
-                            input(type='radio', name='user_avatar', value=value, required="required")
+                            input(type='radio', name='preferences.user_avatar', value=value, required="required")
                             img(src=value, alt=key, id=key, width='100', height='100')
                             br
-        input(type='submit' value='Finish')
+        br
+
+        P 
+        if userConfig
+            if body2_message
+                h3=body2_message  
+                P
+            // Loop through the userConfig keys and values (which are arrays of options per key).
+            // present each key as a label and the values as radio button options
+            // submit all the radio labels as well as selected values to the server
+            each values, key in userConfig
+                h3 
+                  label #{key}
+                P
+                each option, index in values
+                    input(type='radio', name="user_config."+key, value=option, id=option, required="required")
+                    label(for=option) #{option}
+                    
+                    br
+                br
+                br
+
+
+        input(type='submit' value='Apply Preferences')
