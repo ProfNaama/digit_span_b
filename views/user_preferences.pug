@@ -1,6 +1,8 @@
 extends layout
 block content 
-    h2 Personalize your AI agent 
+    h2=header_message
+    if body_message
+        h3=body_message    
 
     form(method='post' action='/user_preferences')
         if text_preferences

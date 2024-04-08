@@ -1,3 +1,8 @@
 page,header,body1,body2
-code_page,"Welcome to the experiment website","this is the body1 text of code page","this is the body2 text of code page"
-consent_page,"Welcome to the experiment website","this is the body1 text of consent page. By selecting the following check box you consent to the experiment","this is the body2 text of consent page"
+welcome_code,"Welcome to the ChatLab experiment website","Please Enter the ChatLab participation code that you received",""
+consent,"Welcome to the ChatLab experiment website","By selecting the following check box and clicking on the 'agree' button, you consent to the experiment",""
+user_preferences,"Welcome to the ChatLab experiment website","Please personalize your AI agent:",""
+user_config,"This is an experiment in which you should configure the chat bot","Please select your preferences:",""
+chat,"Chat with the AI","Please free to use the AI during your task",""
+user_questionnaire,"Thank You for chatting..","Please fill out the next set of questions.",""
+session_ended,"Thank You for participating in the experiment.","You may close the window now",""

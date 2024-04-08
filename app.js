@@ -60,10 +60,7 @@ function verifySessionMiddleware(req, res, next) {
 // Middlewares to be executed for every request to the app, making sure the session has not already finished.
 function verifySessionEndedMiddleware(req, res, next) {
     if (req.session.finished) {
-        res.render('./session_ended', { 
-            title: "ChatLab",  
-            message: "Thank You for participating in the experiment. You can close the window now."
-        });
+        res.render('./session_ended', helpers.getRenderingParamsForPage("session_ended"));
         return;
     }
     next();
@@ -73,11 +70,7 @@ async function verifySessionCode(req, res, next) {
     if (!req.session.code) {
         const isCodeValid = await helpers.isCodeValid(req.body["code"]);
         if (!isCodeValid) {
-            res.render('./welcome_code', { 
-                "title":"ChatLab",  
-                "header_message": helpers.getFirstCsvRecordValue(helpers.getCsvRecords("experiment_desc.csv").filter(raw => raw["page"] === "code_page"), "header"),  
-                "body_message": helpers.getFirstCsvRecordValue(helpers.getCsvRecords("experiment_desc.csv").filter(raw => raw["page"] === "code_page"), "body1")
-            });
+            res.render('./welcome_code', helpers.getRenderingParamsForPage("welcome_code"));
             return;
         }
         req.session.code = req.body["code"];
@@ -89,11 +82,7 @@ async function verifySessionCode(req, res, next) {
 async function verifySessionConsent(req, res, next) {
     if (!req.session.consent) {
         if (!req.body["consent"]) {
-            res.render('./consent', { 
-                "title":"ChatLab",  
-                "header_message": helpers.getFirstCsvRecordValue(helpers.getCsvRecords("experiment_desc.csv").filter(raw => raw["page"] === "consent_page"), "header"),  
-                "body_message": helpers.getFirstCsvRecordValue(helpers.getCsvRecords("experiment_desc.csv").filter(raw => raw["page"] === "consent_page"), "body1")
-            });
+            res.render('./consent', helpers.getRenderingParamsForPage("consent"));
             return;
         }
         req.session.consent = true;
@@ -105,18 +94,11 @@ async function verifySessionConsent(req, res, next) {
 app.use([verifySystemInitialized, verifySessionMiddleware, verifySessionEndedMiddleware, verifySessionCode, verifySessionConsent]);
 
 function renderUserConfigPage(req, res, userConfigProperties, userPropertiesCount) {
-    let userMessage = "Please select your preference:";
-    if (userPropertiesCount > 1) {
-        userMessage = "For each of the following, please select your preferences.";
-    }
     if (Object.keys(req.session.userConfigFilter).length == 0) {
         // this is the expected case, when the csv is set to let the user choose the properties.
-        res.render('./user_config', { 
-            "title":"ChatLab",  
-            "header_message":"This is an experiment in which you should configure the chat bot",  
-            "body_message": userMessage,
-            userConfig: userConfigProperties
-        });
+        let renderParams = helpers.getRenderingParamsForPage("user_config");
+        renderParams["userConfig"] = userConfigProperties
+        res.render('./user_config', renderParams);
     } else {
         // should not happen.
         // if we reached here, this means the user was required to choose a property, but the user config is not complete (i.e. some properties were not decided).
@@ -152,11 +134,9 @@ app.get('/', async (req, res) => {
     // Save the hidden prompts to the session and redirect to the chat page, where the main interaction happens.
     helpers.setSelectedHiddenPromptToSession(req);
     helpers.logHiddenPrompts(req);
-    res.render('./chat', {
-        "title":"ChatLab",  
-        "header_message":"Chat with the AI",  
-        "preferences": req.session.preferences,
-    });
+    let renderParams = helpers.getRenderingParamsForPage("chat");
+    renderParams["preferences"] = req.session.preferences;
+    res.render('./chat', renderParams);
 });
 
 app.get('/user_preferences', async (req, res) => {
@@ -170,19 +150,14 @@ app.get('/user_preferences', async (req, res) => {
 
         req.session.preferences = preferences_default;
 
-        let params = {
-            title : "ChatGptLab", 
-            header_message: "Welcome to the experiment",
-            body_message: "Please select you preferences:",
-            //user_avatar: avatars,
-            agent_avatar: avatars,
-            text_preferences: {
-                //"user_name": "Choose your prefferred chat name:",
-                "agent_name": "Choose your prefferred agent name:",
-            } 
-        };
-    
-        res.render('./user_preferences',  params);
+        let renderParams = helpers.getRenderingParamsForPage("user_preferences");
+        // renderParams["user_avatar"] = avatars;
+        renderParams["agent_avatar"] = avatars;
+        renderParams["text_preferences"] = {
+            //"user_name": "Choose your prefferred chat name:",
+            "agent_name": "Choose your prefferred agent name:",
+        } 
+        res.render('./user_preferences',  renderParams);
         return;
     }
     
@@ -232,21 +207,18 @@ app.post('/chat-api', async (req, res) => {
 });
 
 app.get('/chat-api-ended', (req, res) => {
-    let params = {
-        title : "ChatGptLab", 
-        header_message: "Thank You for chatting..",
-        body_message: "Please fill out the next set of questions.",
-        questions: {}
-    };
+    let renderParams = helpers.getRenderingParamsForPage("user_questionnaire");
+    renderParams["questions"] = {};
 
     helpers.getUserQuestionnaireRecords().map((record) => { 
         const k = record["question_name"];
         const v = record["question_text"];
         const is_text = record["is_text"] == "1" ? true : false;
         const is_radio_selection = record["is_radio_selection"] == "1" ? true : false ;
-        params["questions"][k] = {"label": v, "is_text": is_text, "is_radio_selection": is_radio_selection};
+        renderParams["questions"][k] = {"label": v, "is_text": is_text, "is_radio_selection": is_radio_selection};
     });
-    res.render('./user_questionnaire',  params);
+
+    res.render('./user_questionnaire',  renderParams);
 });
 
 // session has finished.
@@ -257,10 +229,7 @@ app.post('/user_questionnaire-ended', async (req, res) => {
     req.session.finished = true;
     req.session.save();
     if (!config.resultsRedirectUrl){
-        res.render('./session_ended', { 
-            title: "ChatLab",  
-            message: "Thank You for participating in the experiment. You can close the window now."
-        });
+        res.render('./session_ended', helpers.getRenderingParamsForPage("session_ended"));
     }
 
     // collect the questionnaire answers from request body

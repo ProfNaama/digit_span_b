@@ -106,6 +106,16 @@ function getSelectedRecords(req) {
     return filteredRecords;
 }
 
+function getRenderingParamsForPage(page) {
+    let params = {
+        title: "ChatLab",
+        header_message: getFirstCsvRecordValue(getCsvRecords("experiment_desc.csv").filter(raw => raw["page"] === page), "header"), 
+        body_message: getFirstCsvRecordValue(getCsvRecords("experiment_desc.csv").filter(raw => raw["page"] === page), "body1"), 
+    };
+    
+    return params;
+}
+
 function getSelectedPrompts(req) {
     return getSelectedRecords(req).map(r => r["hidden_prompt"]);
 }
@@ -311,5 +321,6 @@ module.exports = {
     saveSessionResults,
     listAvatars,
     isCodeValid,
-    setCodeCompleted
+    setCodeCompleted,
+    getRenderingParamsForPage
 }

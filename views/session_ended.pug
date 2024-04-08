@@ -1,3 +1,5 @@
 extends layout
 block content 
-    h1= message
+    h1= header_message
+    if body_message 
+        h2= body_message
