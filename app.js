@@ -103,11 +103,9 @@ function renderUserConfigPage(req, res, userConfigProperties, userPropertiesCoun
         // should not happen.
         // if we reached here, this means the user was required to choose a property, but the user config is not complete (i.e. some properties were not decided).
         console.log("Properties are not filtered correctly!. uid: " + req.session.uid + ", treatment group: " + req.session.treatmentGroupId + ", user config filter is set to : " + JSON.stringify(userConfigProperties));
-        res.render('./error', {
-            "title":"ChatLab",  
-            "header_message":"Error",  
-            "body_message": "Properties are not filtered correctly! Please contact the experimenter."
-        });
+        let renderParams = helpers.getRenderingParamsForPage("error");
+        renderParams["body_message"] = "Properties are not filtered correctly! Please contact the experimenter.";
+        res.render('./error', renderParams);
     }
 }
 
