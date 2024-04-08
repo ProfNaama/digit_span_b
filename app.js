@@ -34,7 +34,7 @@ async function verifySystemInitialized(req, res, next) {
 };
 
 // Middlewares to be executed for every request to the app, making sure the session is initialized with uid, treatment group id, etc.
-function verifySessionMiddleware(req, res, next) {
+function verifySession(req, res, next) {
     if (!req.session.uid) {
         let uid = parseInt(req.query["uid"]) || helpers.getRandomInt(0, maxUID);
 
@@ -59,7 +59,7 @@ function verifySessionMiddleware(req, res, next) {
 }
 
 // Middlewares to be executed for every request to the app, making sure the session has not already finished.
-function verifySessionEndedMiddleware(req, res, next) {
+function verifySessionEnded(req, res, next) {
     if (req.session.finished) {
         let renderParams = helpers.getRenderingParamsForPage("session_ended");
         if (req.session.completionCode) {
@@ -71,21 +71,86 @@ function verifySessionEndedMiddleware(req, res, next) {
     next();
 };
 
-app.use([verifySystemInitialized, verifySessionMiddleware, verifySessionEndedMiddleware]);
+// Middlewares to be executed for every request to the app, making sure the session is initialized with code.
+async function verifySessionCode(req, res, next) {
+    if (!req.session.code) {
+        if (req.path === "/welcome_code" && req.method === "POST") {
+            const isCodeValid = await helpers.isCodeValid(req.body["code"]);
+            if (isCodeValid) {
+                req.session.code = req.body["code"];
+                req.session.save();
+                next();
+                return;
+            }
+        }
+        res.render('./welcome_code', helpers.getRenderingParamsForPage("welcome_code"));
+        return;
+    }
+    next();
+};
+
+// Middlewares to be executed for every request to the app, making sure the session is initialized with user consent.
+function verifyUserConsent(req, res, next) {
+    if (!req.session.consent) {
+        if (req.path === "/consent" && req.method === "POST") {
+            if (req.body["consent"]) {
+                req.session.consent = true;
+                req.session.save();
+                next();
+                return;
+            }
+        }
+
+        res.render('./consent', helpers.getRenderingParamsForPage("consent"));
+        return;
+    }
+    next();
+};
+
+// Middlewares to be executed for every request to the app, making sure the session is initialized with user preferences.
+async function verifyUserPreferences(req, res, next) {
+    if (!req.session.preferences) {
+        if (req.path === "/user_preferences" && req.method === "POST") {
+            const avatars = await helpers.listAvatars();
+            const preferences_default = {
+                "user_name": "user", 
+                "user_avatar" : avatars[avatars.length-2]
+            };
+
+            req.session.preferences = preferences_default;
+            Object.keys(req.body).forEach(key => {
+                if (key.startsWith("preferences.")) {
+                    req.session.preferences[key.replace("preferences.", "")] = req.body[key];
+                }
+                else if (key.startsWith("user_config")) {
+                    req.session.userConfigFilter[key.replace("user_config.", "")] = req.body[key];
+                }
+            });
+            req.session.save();
+            next();
+            return;
+        }
+
+        await renderUserPreferencesPage(req, res);
+        return;
+    }
+    next();
+};
+
+app.use([
+    verifySystemInitialized, 
+    verifySession, 
+    verifySessionEnded, 
+    verifySessionCode, 
+    verifyUserConsent,
+    verifyUserPreferences
+]);
 
 async function renderUserPreferencesPage(req, res) {
     // user preferences page. consists of (1) user preferences and (2) agent configuration.
     
     // (1) user preferences: the name and image of the agent.
     const avatars = await helpers.listAvatars();
-    const preferences_default = {
-        "user_name": "user", 
-        "user_avatar" : avatars[avatars.length-2]
-    };
-
-    req.session.preferences = preferences_default;
-    req.session.save();
-
     let renderParams = helpers.getRenderingParamsForPage("user_preferences");
     // renderParams["user_avatar"] = avatars;
     renderParams["agent_avatar"] = avatars;
@@ -120,21 +185,6 @@ async function renderUserPreferencesPage(req, res) {
 }
 
 app.get('/', async (req, res) => {
-    if (!req.session.code) {
-        res.render('./welcome_code', helpers.getRenderingParamsForPage("welcome_code"));
-        return;
-    }
-
-    if (!req.session.consent) {
-        res.render('./consent', helpers.getRenderingParamsForPage("consent"));
-        return;
-    }
-
-    if (!req.session.preferences) {
-        await renderUserPreferencesPage(req, res);
-        return;
-    }
-
     // At this point, the hidden prompts are ready (either the user did not need to choose or the user has already configured the properties).
     // Save the hidden prompts to the session and redirect to the chat page, where the main interaction happens.
     helpers.setSelectedHiddenPromptToSession(req);
@@ -143,47 +193,6 @@ app.get('/', async (req, res) => {
     renderParams["preferences"] = req.session.preferences;
     res.render('./chat', renderParams);
 });
-
-app.post('/welcome_code', async (req, res) => {
-    if (!req.session.code) {
-        const isCodeValid = await helpers.isCodeValid(req.body["code"]);
-        if (!isCodeValid) {
-            res.render('./welcome_code', helpers.getRenderingParamsForPage("welcome_code"));
-            return;
-        }
-        req.session.code = req.body["code"];
-        req.session.save();
-    }
-    res.redirect('/');
-});
-
-
-app.post('/consent', async (req, res) => {
-    if (!req.session.consent) {
-        if (!req.body["consent"]) {
-            res.render('./consent', helpers.getRenderingParamsForPage("consent"));
-            return;
-        }
-        req.session.consent = true;
-        req.session.save();
-    }
-    res.redirect('/');
-});
-
-
-app.post('/user_preferences', async (req, res) => {
-    Object.keys(req.body).forEach(key => {
-        if (key.startsWith("preferences.")) {
-            req.session.preferences[key.replace("preferences.", "")] = req.body[key];
-        }
-        else if (key.startsWith("user_config")) {
-            req.session.userConfigFilter[key.replace("user_config.", "")] = req.body[key];
-        }
-    });
-    req.session.save();
-    res.redirect('/');
-});
-
 
 // the main chat route.
 // each part of the conversation is stored in the session
@@ -265,6 +274,10 @@ app.get("/DesignTest", (req,res)=>{
 app.get("/DesignTest2", (req,res)=>{
     res.render("config_design");
 })
+
+app.use("*", (req, res) => { 
+    res.redirect('/');
+});
 
 async function getSentimentAnalysisScoreForMessage(message) {
     const measurementRecords = helpers.getMeasuresRecords().filter((measureRecord) => measureRecord["is_global"] === "0" );
