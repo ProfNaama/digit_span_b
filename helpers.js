@@ -199,7 +199,8 @@ function sessionToJsonObject(req) {
         "conversationContext": req.session.conversationContext,
         "userConfigFilter": req.session.userConfigFilter,
         "quessionsAnswers": req.session.quessionsAnswers,
-        "global_measures": req.session.global_measures
+        "global_measures": req.session.global_measures,
+        "completionCode": req.session.completionCode
     }
     return sessionJson;
 }

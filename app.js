@@ -49,6 +49,7 @@ function verifySessionMiddleware(req, res, next) {
         req.session.quessionsAnswers = {};
         req.session.global_measures = {}
         req.session.code = null;
+        req.session.completionCode = null;
         req.session.consent = false;
         req.session.finished = false;
         req.session.save();
@@ -60,7 +61,11 @@ function verifySessionMiddleware(req, res, next) {
 // Middlewares to be executed for every request to the app, making sure the session has not already finished.
 function verifySessionEndedMiddleware(req, res, next) {
     if (req.session.finished) {
-        res.render('./session_ended', helpers.getRenderingParamsForPage("session_ended"));
+        let renderParams = helpers.getRenderingParamsForPage("session_ended");
+        if (req.session.completionCode) {
+            renderParams["completion_code"] = req.session.completionCode;
+        }
+        res.render('./session_ended', renderParams);
         return;
     }
     next();
@@ -73,7 +78,14 @@ async function renderUserPreferencesPage(req, res) {
     
     // (1) user preferences: the name and image of the agent.
     const avatars = await helpers.listAvatars();
-    
+    const preferences_default = {
+        "user_name": "user", 
+        "user_avatar" : avatars[avatars.length-2]
+    };
+
+    req.session.preferences = preferences_default;
+    req.session.save();
+
     let renderParams = helpers.getRenderingParamsForPage("user_preferences");
     // renderParams["user_avatar"] = avatars;
     renderParams["agent_avatar"] = avatars;
@@ -160,13 +172,6 @@ app.post('/consent', async (req, res) => {
 
 
 app.post('/user_preferences', async (req, res) => {
-    const preferences_default = {
-        "user_name": "user", 
-        "user_avatar" : avatars[avatars.length-2]
-    };
-
-    req.session.preferences = preferences_default;
-
     Object.keys(req.body).forEach(key => {
         if (key.startsWith("preferences.")) {
             req.session.preferences[key.replace("preferences.", "")] = req.body[key];
@@ -228,18 +233,20 @@ app.get('/chat-ended', (req, res) => {
 // save data to the database / csv / external source / etc.
 app.post('/user_questionnaire-ended', async (req, res) => {
     req.session.finished = true;
+    req.session.completionCode = helpers.getRandomInt(1000000000, 9999999999);
     req.session.save();
     if (!config.resultsRedirectUrl){
-        res.render('./session_ended', helpers.getRenderingParamsForPage("session_ended"));
+        let renderParams = helpers.getRenderingParamsForPage("session_ended");
+        renderParams["completion_code"] = req.session.completionCode;
+        res.render('./session_ended', renderParams);
     }
 
     // collect the questionnaire answers from request body
     helpers.getUserQuestionnaireRecords().map((record) => { req.session.quessionsAnswers[record["question_name"]] = req.body[record["question_name"]] });
     
     await getSentimentAnalysisScore(req);
-    req.session.save();
     const savedResultsObj = helpers.saveSessionResults(req);
-    await helpers.setCodeCompleted(req.session.code, {time:Date.now(), uid:req.session.uid});
+    await helpers.setCodeCompleted(req.session.code, {time: Date.now(), uid: req.session.uid, completionCode: req.session.completionCode});
     req.session.destroy();
     console.log("Session ended. uid: " + savedResultsObj.uid);
     
