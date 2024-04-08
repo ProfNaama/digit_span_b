@@ -2,7 +2,7 @@ extends layout
 block content 
     h2=header_message
 
-    form(method='post' action='/')
+    form(method='POST' action='/consent')
         p=body_message
         input(type='radio', class="radio_selection" name="consent", value="1", required="required")
         input(type='submit' value='agree')

@@ -66,32 +66,27 @@ function verifySessionEndedMiddleware(req, res, next) {
     next();
 };
 
-async function verifySessionCode(req, res, next) {
-    if (!req.session.code) {
-        const isCodeValid = await helpers.isCodeValid(req.body["code"]);
-        if (!isCodeValid) {
-            res.render('./welcome_code', helpers.getRenderingParamsForPage("welcome_code"));
-            return;
-        }
-        req.session.code = req.body["code"];
-        req.session.save();
-    }
-    next();
-};
+app.use([verifySystemInitialized, verifySessionMiddleware, verifySessionEndedMiddleware]);
 
-async function verifySessionConsent(req, res, next) {
-    if (!req.session.consent) {
-        if (!req.body["consent"]) {
-            res.render('./consent', helpers.getRenderingParamsForPage("consent"));
-            return;
-        }
-        req.session.consent = true;
-        req.session.save();
-    }
-    next();
-};
+async function renderUserPreferencesPage(req, res) {
+    const avatars = await helpers.listAvatars();
+    
+    const preferences_default = {
+        "user_name": "user", 
+        "user_avatar" : avatars[avatars.length-2]
+    };
 
-app.use([verifySystemInitialized, verifySessionMiddleware, verifySessionEndedMiddleware, verifySessionCode, verifySessionConsent]);
+    req.session.preferences = preferences_default;
+
+    let renderParams = helpers.getRenderingParamsForPage("user_preferences");
+    // renderParams["user_avatar"] = avatars;
+    renderParams["agent_avatar"] = avatars;
+    renderParams["text_preferences"] = {
+        //"user_name": "Choose your prefferred chat name:",
+        "agent_name": "Choose your prefferred agent name:",
+    } 
+    res.render('./user_preferences',  renderParams);
+}
 
 function renderUserConfigPage(req, res, userConfigProperties, userPropertiesCount) {
     if (Object.keys(req.session.userConfigFilter).length == 0) {
@@ -109,12 +104,22 @@ function renderUserConfigPage(req, res, userConfigProperties, userPropertiesCoun
     }
 }
 
-
-app.post('/', async (req, res) => {
-    res.redirect('/user_preferences');
-})
-
 app.get('/', async (req, res) => {
+    if (!req.session.code) {
+        res.render('./welcome_code', helpers.getRenderingParamsForPage("welcome_code"));
+        return;
+    }
+
+    if (!req.session.consent) {
+        res.render('./consent', helpers.getRenderingParamsForPage("consent"));
+        return;
+    }
+
+    if (!req.session.preferences) {
+        await renderUserPreferencesPage(req, res);
+        return;
+    }
+
     const filteredRecords = helpers.getSelectedRecords(req);
     let recordsByProperty = helpers.groupRecordsByProperty(filteredRecords);
     let userConfigProperties = helpers.filterUserConfigProperties(recordsByProperty);
@@ -137,30 +142,32 @@ app.get('/', async (req, res) => {
     res.render('./chat', renderParams);
 });
 
-app.get('/user_preferences', async (req, res) => {
-    if (!req.session.preferences) {
-        const avatars = await helpers.listAvatars();
-        
-        const preferences_default = {
-            "user_name": "user", 
-            "user_avatar" : avatars[avatars.length-2]
-        };
-
-        req.session.preferences = preferences_default;
-
-        let renderParams = helpers.getRenderingParamsForPage("user_preferences");
-        // renderParams["user_avatar"] = avatars;
-        renderParams["agent_avatar"] = avatars;
-        renderParams["text_preferences"] = {
-            //"user_name": "Choose your prefferred chat name:",
-            "agent_name": "Choose your prefferred agent name:",
-        } 
-        res.render('./user_preferences',  renderParams);
-        return;
+app.post('/welcome_code', async (req, res) => {
+    if (!req.session.code) {
+        const isCodeValid = await helpers.isCodeValid(req.body["code"]);
+        if (!isCodeValid) {
+            res.render('./welcome_code', helpers.getRenderingParamsForPage("welcome_code"));
+            return;
+        }
+        req.session.code = req.body["code"];
+        req.session.save();
     }
-    
     res.redirect('/');
 });
+
+
+app.post('/consent', async (req, res) => {
+    if (!req.session.consent) {
+        if (!req.body["consent"]) {
+            res.render('./consent', helpers.getRenderingParamsForPage("consent"));
+            return;
+        }
+        req.session.consent = true;
+        req.session.save();
+    }
+    res.redirect('/');
+});
+
 
 app.post('/user_preferences', async (req, res) => {
     Object.keys(req.body).forEach(key => {
@@ -204,7 +211,7 @@ app.post('/chat-api', async (req, res) => {
     }
 });
 
-app.get('/chat-api-ended', (req, res) => {
+app.get('/chat-ended', (req, res) => {
     let renderParams = helpers.getRenderingParamsForPage("user_questionnaire");
     renderParams["questions"] = {};
 
