@@ -1,6 +1,39 @@
 page,header,body1,body2
 welcome_code,Welcome to the ChatLab experiment website,Please Enter the ChatLab participation code that you received,
-consent,Welcome to the ChatLab experiment website,consent text,
+consent,Welcome to the ChatLab experiment website,"This task is part of a research study conducted by Dr. Naama Ilany-Tzur at Carnegie Mellon University.
+
+Purpose 
+The purpose of the research is to investigate human AI interactions.
+
+Procedure 
+Next you will be redirected to a webpage in which you will be asked to interact with an AI agent. The expected duration of participation is 10-15 minuets.   
+
+Limitation 
+Participation in this study is limited to individuals age 18 and older.
+
+Risk 
+The risks and discomfort associated with participation in this study are no greater than those ordinarily encountered in daily life or during other online activities.
+
+Benefits
+There may be no personal benefit from your participation in the study but the knowledge received may be of value the general understanding of the topic. 
+
+Compensation & Costs
+You will be compensated with 3 USD for your time. 
+There will be no cost to you if you participate in this study 
+
+Future Use of Information and/or Bio-Specimens 
+In the future once we have removed all identifiable information from your data we may use the data for our future research studies or we may distribute the data to other researchers for their research studies.  We would do this without getting additional informed consent from you (or your legally authorized representative).  Sharing of data with other researchers will only be done in such a manner that you will not be identified.
+
+Confidentiality
+The data captured for the research does not include any personally identifiable information about you.  Your IP address will not be captured.
+
+Right to Ask Questions & Contact Information
+If you have any questions about this study you should feel free to ask them by contacting the Principal Investigator now at nilanytz@andrew.cmu.edu. If you have questions later desire additional information or wish to withdraw your participation please contact the Principal Investigator by e-mail in accordance with the contact information listed above.  
+
+If you have questions pertaining to your rights as a research participant; or to report concerns to this study you should contact the Office of Research integrity and Compliance at Carnegie Mellon University.  Email: irb-review@andrew.cmu.edu . Phone: 412-268-1901 or 412-268-5460.
+
+Voluntary Participation
+Your participation in this research is voluntary. You may discontinue participation at any time during the research activity. You may print a copy of this consent form for your records. ",
 user_preferences,Welcome to the ChatLab experiment website,Please personalize your AI agent:,Please select the following properties of the agent
 chat,Chat with the AI,Please free to use the AI during your task,
 user_questionnaire,Thank You for chatting..,Please fill out the next set of questions.,
