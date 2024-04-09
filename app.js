@@ -93,12 +93,26 @@ async function verifySessionCode(req, res, next) {
 function verifyUserConsent(req, res, next) {
     if (!req.session.consent) {
         if (req.path === "/consent" && req.method === "POST") {
-            if (req.body["consent"]) {
-                req.session.consent = true;
-                req.session.save();
-                next();
+            let declined = false;
+            Object.keys(req.body).forEach(key => {
+                if (key.startsWith("consent.")) {
+                    if (req.body[key] !== "1") {
+                        declined = true;
+                    }
+                }
+            });
+            if (declined) {
+                let renderParams = helpers.getRenderingParamsForPage("session_ended");
+                renderParams["body_message"] = "You opted not to consent. Thank You.";
+                res.render('./session_ended', renderParams);
+                req.session.destroy();
                 return;
             }
+
+            req.session.consent = true;
+            req.session.save();
+            next();
+            return;            
         }
 
         res.render('./consent', helpers.getRenderingParamsForPage("consent"));
