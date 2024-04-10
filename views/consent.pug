@@ -23,22 +23,33 @@ block content
     p Your participation in this research is voluntary.  You may discontinue participation at any time during the research activity.  You may print a copy of this consent form for your records. 
 
     form(method='POST' action='/consent')
-        span I am age 18 or older. 
-        input(type='radio', class="radio_selection" name="18YES", value="YES", required="required")
-        label(for="18YES") Yes
-        input(type='radio', class="radio_selection" name="18NO", value="NO", required="required")
-        label(for="18NO") No  
-        br
-        span I have read and understand the information above. 
-        input(type='radio', class="radio_selection" name="informYES", value="YES", required="required")
-        label(for="informYES") Yes
-        input(type='radio', class="radio_selection" name="informNO", value="NO", required="required")
-        label(for="informNO") No 
-        br
-        span I want to participate in this research and continue with the task 
-        input(type='radio', class="radio_selection" name="consentYES", value="YES", required="required")
-        label(for="consentYES") Yes
-        input(type='radio', class="radio_selection" name="consentNO", value="NO", required="required")
-        label(for="consentNO") No 
-        br
+        table 
+            tr
+                td  
+                    span I am age 18 or older.
+                td 
+                    input(type='radio', class="radio_selection" name="18YES", value="YES", required="required")
+                    label(for="18YES") Yes
+                td
+                    input(type='radio', class="radio_selection" name="18NO", value="NO", required="required")
+                    label(for="18NO") No  
+            tr
+                td
+                    span I have read and understand the information above. 
+                td
+                    input(type='radio', class="radio_selection" name="informYES", value="YES", required="required")
+                    label(for="informYES") Yes
+                td
+                    input(type='radio', class="radio_selection" name="informNO", value="NO", required="required")
+                    label(for="informNO") No 
+            tr
+                td
+                    span I want to participate in this research and continue with the task.
+                td
+                    input(type='radio', class="radio_selection" name="consentYES", value="YES", required="required")
+                    label(for="consentYES") Yes
+                td
+                    input(type='radio', class="radio_selection" name="consentNO", value="NO", required="required")
+                    label(for="consentNO") No 
+        
         input(type="submit", value="Submit")
