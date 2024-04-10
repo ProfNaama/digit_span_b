@@ -24,18 +24,21 @@ block content
         | Voluntary Participation - Your participation in this research is voluntary.  You may discontinue participation at any time during the research activity.  You may print a copy of this consent form for your records. 
 
     form(method='POST' action='/consent')
+        p=body_message
         p I am age 18 or older. 
-        input(type='radio', class="radio_selection" name="18YES", value="YES", required="required")
+        input(type='radio', class="radio_selection" id="18YES" name="consent.18" value="1", required="required")
         label(for="18YES") Yes
-        input(type='radio', class="radio_selection" name="18NO", value="NO", required="required")
-        label(for="18NO") No  
-        p I have read and understand the information above. 
-        input(type='radio', class="radio_selection" name="informYES", value="YES", required="required")
+        input(type='radio', class="radio_selection" id="18NO" name="consent.18" value="0", required="required")
+        label(for="18NO") NO 
+        P I have read and understand the information above. 
+        input(type='radio', class="radio_selection" id="informYES" name="consent.inform" value="1", required="required")
         label(for="informYES") Yes
-        input(type='radio', class="radio_selection" name="informNO", value="NO", required="required")
-        label(for="informNO") No 
-        p I want to participate in this research and continue with the task 
-        input(type='radio', class="radio_selection" name="consentYES", value="YES", required="required")
+        input(type='radio', class="radio_selection" id="informNO" name="consent.inform" value="0", required="required")
+        label(for="informNO") NO 
+        P I want to participate in this research and continue with the task 
+        input(type='radio', class="radio_selection" id="consentYES" name="consent.consent" value="1", required="required")
         label(for="consentYES") Yes
-        input(type='radio', class="radio_selection" name="consentNO", value="NO", required="required")
-        label(for="consentNO") No 
+        input(type='radio', class="radio_selection" id="consentNO" name="consent.consent" value="0", required="required")
+        label(for="consentNO") NO 
+        br
+        button(type="submit") Submit
