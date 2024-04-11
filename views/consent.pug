@@ -27,28 +27,28 @@ block content
                 td 
                     span I am age 18 or older.
                 td
-                    input(type='radio', class="radio_selection", name="age", value="YES", required)
+                    input(type='radio', id="18YES", class="radio_selection", name="consent.age", value="YES", required)
                     label(for="18YES") Yes
                 td
-                    input(type='radio', class="radio_selection", name="age", value="NO")
+                    input(type='radio', id="18NO", class="radio_selection", name="consent.age", value="NO")
                     label(for="18NO") No  
             tr 
                 td
                     span I have read and understand the information above. 
                 td 
-                    input(type='radio', class="radio_selection", name="inform", value="YES", required)
+                    input(type='radio', id="informYES", class="radio_selection", name="consent.inform", value="YES", required)
                     label(for="informYES") Yes
                 td
-                    input(type='radio', class="radio_selection", name="inform", value="NO")
+                    input(type='radio', id="informNO", class="radio_selection", name="consent.inform", value="NO")
                     label(for="informNO") No 
             tr 
                 td
                     span I want to participate in this research and continue with the task.
                 td
-                    input(type='radio', class="radio_selection", name="consent", value="YES", required)
+                    input(type='radio', id="consentYES", class="radio_selection", name="consent.consent", value="YES", required)
                     label(for="consentYES") Yes 
                 td
-                    input(type='radio', class="radio_selection", name="consent", value="NO")
+                    input(type='radio', id="consentNO", class="radio_selection", name="consent.consent", value="NO")
                     label(for="consentNO") No 
         
         input(type="submit", value="Submit")

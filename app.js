@@ -79,7 +79,7 @@ async function verifySessionCode(req, res, next) {
             if (isCodeValid) {
                 req.session.code = req.body["code"];
                 req.session.save();
-                next();
+                res.redirect(302, "/");
                 return;
             }
         }
@@ -96,7 +96,7 @@ function verifyUserConsent(req, res, next) {
             let declined = false;
             Object.keys(req.body).forEach(key => {
                 if (key.startsWith("consent.")) {
-                    if (req.body[key] !== "1") {
+                    if (req.body[key] !== "YES") {
                         declined = true;
                     }
                 }
@@ -111,10 +111,10 @@ function verifyUserConsent(req, res, next) {
 
             req.session.consent = true;
             req.session.save();
-            next();
+            res.redirect(302, "/");
             return;            
         }
-
+        
         res.render('./consent', helpers.getRenderingParamsForPage("consent"));
         return;
     }
@@ -141,7 +141,7 @@ async function verifyUserPreferences(req, res, next) {
                 }
             });
             req.session.save();
-            next();
+            res.redirect(302, "/");
             return;
         }
 
