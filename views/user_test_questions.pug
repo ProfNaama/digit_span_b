@@ -4,7 +4,63 @@ block content
     h2= body_message
 
     form(method='POST' action='/user_test_questions-ended')
-        if questions
+        p When did the Boston Tea Party take place?
+        input(type='radio', class="radio_selection" name='Boston_Quiz1', value="1", required="required")
+        label December 16, 1773
+        br
+        input(type='radio', class="radio_selection" name='Boston_Quiz1', value="2", required="required")
+        label July 4, 1776
+        br
+        input(type='radio', class="radio_selection" name='Boston_Quiz1', value="3", required="required")
+        label April 19, 1775
+        br
+        input(type='radio', class="radio_selection" name='Boston_Quiz1', value="4", required="required")
+        label September 3, 1783
+        br
+
+        p What was the primary motivation behind the Boston Tea Party?
+        input(type='radio', class="radio_selection" name='Boston_Quiz2', value="1", required="required")
+        label Protest against the British government's taxation without representation
+        br
+        input(type='radio', class="radio_selection" name='Boston_Quiz2', value="2", required="required")
+        label Celebration of American independence
+        br
+        input(type='radio', class="radio_selection" name='Boston_Quiz2', value="3", required="required")
+        label Promotion of tea consumption in the colonies
+        br
+        input(type='radio', class="radio_selection" name='Boston_Quiz2', value="4", required="required")
+        label Establishment of trade routes with China
+        br
+
+        p Who organized and led the Boston Tea Party?
+        input(type='radio', class="radio_selection" name='Boston_Quiz3', value="1", required="required")
+        label A combination of international forces
+        br
+        input(type='radio', class="radio_selection" name='Boston_Quiz3', value="2", required="required")
+        label British soldiers
+        br
+        input(type='radio', class="radio_selection" name='Boston_Quiz3', value="3", required="required")
+        label The Sons of Liberty
+        br
+        input(type='radio', class="radio_selection" name='Boston_Quiz3', value="4", required="required")
+        label French revolutionaries
+        br
+
+        p What was the immediate consequence of the Boston Tea Party?
+        input(type='radio', class="radio_selection" name='Boston_Quiz4', value="1", required="required")
+        label The British government repealed the Tea Act
+        br
+        input(type='radio', class="radio_selection" name='Boston_Quiz4', value="2", required="required")
+        label The American colonies declared independence
+        br
+        input(type='radio', class="radio_selection" name='Boston_Quiz4', value="3", required="required")
+        label The British government imposed harsher taxes on other goods
+        br
+        input(type='radio', class="radio_selection" name='Boston_Quiz4', value="4", required="required")
+        label The British government closed the port of Boston
+        br
+
+        //- if questions
             // Loop through the elements of questions object keys (question name) and values (question text).
             // have numbered questions and a submit button.
             // present each value as a label and a text box for the user to enter their answer.

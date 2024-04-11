@@ -1,6 +1,6 @@
 extends layout
 block content 
-    h1= header_message
+    h1
     h2 Please answer the following questions
 
     form(class="demo_qustionnaire" method='POST' action='/user_questionnaire-ended')
@@ -35,7 +35,7 @@ block content
         br
         input(type='radio', class="radio_selection" name='age', value="7", required="required")
         label over 70
-        
+        br
         p What best describes the level of your education?
         input(type='radio', class="radio_selection" name='education', value="1", required="required")
         label Some high school, no diploma

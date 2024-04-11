@@ -164,6 +164,6 @@ form * {
     display: block;
 }
 
-.demo_qustionnaire input[type=radio] {
-    /* display: block; */
+p {
+    line-height: 100%;
 }
