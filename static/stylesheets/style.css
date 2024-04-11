@@ -163,3 +163,7 @@ form * {
 .AvatarOption * {
     display: block;
 }
+
+.demo_qustionnaire input[type=radio] {
+    /* display: block; */
+}

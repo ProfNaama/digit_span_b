@@ -3,74 +3,98 @@ block content
     h1= header_message
     h2 Please answer the following questions
 
-    form(method='POST' action='/user_questionnaire-ended')
+    form(class="demo_qustionnaire" method='POST' action='/user_questionnaire-ended')
         p What is your gender?
+        input(type='radio', class="radio_selection" name='gender', value="1", required="required") 
         label Female
-        input(type='radio', class="radio_selection" name='gender', value="1", required="required")
-        label Male
+        br
         input(type='radio', class="radio_selection" name='gender', value="2", required="required")
-        label Other
+        label Male
+        br
         input(type='radio', class="radio_selection" name='gender', value="3", required="required")
+        label Other
         
         p What is your age?
-        label 18-20
         input(type='radio', class="radio_selection" name='age', value="1", required="required")
-        label 21-30
+        label 18-20
+        br
         input(type='radio', class="radio_selection" name='age', value="2", required="required")
-        label 31-40
+        label 21-30
+        br
         input(type='radio', class="radio_selection" name='age', value="3", required="required")
-        label 41-50
+        label 31-40
+        br
         input(type='radio', class="radio_selection" name='age', value="4", required="required")
-        label 51-60
+        label 41-50
+        br
         input(type='radio', class="radio_selection" name='age', value="5", required="required")
-        label 61-70
+        label 51-60
+        br
         input(type='radio', class="radio_selection" name='age', value="6", required="required")
-        label over 70
+        label 61-70
+        br
         input(type='radio', class="radio_selection" name='age', value="7", required="required")
+        label over 70
         
         p What best describes the level of your education?
-        label Some high school, no diploma
         input(type='radio', class="radio_selection" name='education', value="1", required="required")
-        label High school diploma or GED
+        label Some high school, no diploma
+        br
         input(type='radio', class="radio_selection" name='education', value="2", required="required")
-        label Some college, no degree
+        label High school diploma or GED
+        br
         input(type='radio', class="radio_selection" name='education', value="3", required="required")
-        label Associate (2-year) degree
+        label Some college, no degree
+        br
         input(type='radio', class="radio_selection" name='education', value="4", required="required")
+        label Associate (2-year) degree
+        br
+        input(type='radio', class="radio_selection" name='education', value="5", required="required")
         label Bachelor's (4-year) degree
-        input(type='radio', class="radio_selection" name='education', value="5", required="required")
+        br
+        input(type='radio', class="radio_selection" name='education', value="6", required="required")
         label Master's degree
-        input(type='radio', class="radio_selection" name='education', value="5", required="required")
+        br
+        input(type='radio', class="radio_selection" name='education', value="7", required="required")
         label Doctorate degree
-        input(type='radio', class="radio_selection" name='education', value="5", required="required")
         
         p How much experience you have with AI agents (such as Chat GPT, chatbot, etc.)?
-        label I use them daily
         input(type='radio', class="radio_selection" name='experience', value="1", required="required")
-        label I use them weekly
+        label I use them daily
+        br
         input(type='radio', class="radio_selection" name='experience', value="2", required="required")
-        label I use them monthly
+        label I use them weekly
+        br
         input(type='radio', class="radio_selection" name='experience', value="3", required="required")
-        label I have some experience with AI agents but I almost never use them
+        label I use them monthly
+        br
         input(type='radio', class="radio_selection" name='experience', value="4", required="required")
-        label I have never used an AI agent
+        label I have some experience with AI agents but I almost never use them
+        br
         input(type='radio', class="radio_selection" name='experience', value="5", required="required")
+        label I have never used an AI agent
         
         p What is your daily average usage of digital devices (such as a PC, mobile phone, laptop, tablet, etc.)?
-        label Under an hour
         input(type='radio', class="radio_selection" name='device_usage', value="1", required="required")
-        label 1-2 hours
+        label Less than an hour
+        br
         input(type='radio', class="radio_selection" name='device_usage', value="2", required="required")
-        label 3-4 hours
+        label 1-2 hours
+        br
         input(type='radio', class="radio_selection" name='device_usage', value="3", required="required")
-        label 5-6 hours
+        label 3-4 hours
+        br
         input(type='radio', class="radio_selection" name='device_usage', value="4", required="required")
-        label 7-8 hours
+        label 5-6 hours
+        br
         input(type='radio', class="radio_selection" name='device_usage', value="5", required="required")
-        label 9-10 hours
+        label 7-8 hours
+        br
         input(type='radio', class="radio_selection" name='device_usage', value="6", required="required")
-        label 11 hours and up
+        label 9-10 hours
+        br
         input(type='radio', class="radio_selection" name='device_usage', value="7", required="required")
+        label 11 hours and more
         //- if questions
             // Loop through the elements of questions object keys (question name) and values (question text).
             // have numbered questions and a submit button.
@@ -93,4 +117,6 @@ block content
                 br
                 br
                 br
+        br
+        br
         input(type='submit' value='Finish')
