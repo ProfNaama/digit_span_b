@@ -205,6 +205,8 @@ app.get('/', async (req, res) => {
     helpers.logHiddenPrompts(req);
     let renderParams = helpers.getRenderingParamsForPage("chat");
     renderParams["preferences"] = req.session.preferences;
+    renderParams["header_message"] = helpers.getUserTaskDescription(req);
+    renderParams["body_message"] = "";
     res.render('./chat', renderParams);
 });
 

@@ -140,9 +140,14 @@ function setSelectedHiddenPromptToSession(req) {
     req.session.save();
 }
 
+function getUserTaskDescription(req) {
+    return getFirstCsvRecordValue(getTreatmentGroupCsvRecords(req), "user_task_description");
+}
+
+
 function getInitialTaskContent(req) {
     if (!req.session.initialTask) {
-        req.session.initialTask = getFirstCsvRecordValue(getTreatmentGroupCsvRecords(req), "task_description");
+        req.session.initialTask = getFirstCsvRecordValue(getTreatmentGroupCsvRecords(req), "agent_task_description");
     }
     return req.session.initialTask;
 }
@@ -324,5 +329,6 @@ module.exports = {
     listAvatars,
     isCodeValid,
     setCodeCompleted,
-    getRenderingParamsForPage
+    getRenderingParamsForPage,
+    getUserTaskDescription
 }
