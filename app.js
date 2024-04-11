@@ -103,7 +103,8 @@ function verifyUserConsent(req, res, next) {
             });
             if (declined) {
                 let renderParams = helpers.getRenderingParamsForPage("session_ended");
-                renderParams["body_message"] = "You opted not to consent. Thank You.";
+                renderParams["header_message"] = "Thank You.";
+                renderParams["body_message"] = "You opted not to consent.";
                 res.render('./session_ended', renderParams);
                 req.session.destroy();
                 return;
