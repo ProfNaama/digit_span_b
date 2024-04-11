@@ -1,6 +1,6 @@
 extends layout
 block content 
-    h2=header_message
+    h2
     if body_message
         h3=body_message    
 
@@ -8,9 +8,9 @@ block content
         if text_preferences
             // Loop through the elements of preferences object keys (preference key name) and values (preference text).
             each value, key in text_preferences
-                h3 
-                    label #{value}
-                P
+                //- h3 
+                label Choose a name for the AI agent
+                br
                 input(type='text', name="preferences."+key, required="required")
                 br
                 br
@@ -18,17 +18,14 @@ block content
         // two radio button groups for the user to select their avatar and the agent's avatar.
         // we want to have the two groups of radio buttons in two coumns visible side by side.
         // we will use the grid layout to achieve this.
-        div(class="avatar_grid")
-            if agent_avatar
-                div(class="agent_avatar")
-                    h3 
-                        label Agent Avatar
-                    div(class="avatar_selection")
-                        each value, key in agent_avatar
-                            P
-                            input(type='radio', name='preferences.agent_avatar', value=value, required="required")
-                            img(src=value, alt=key, id=key, width='100', height='100')
-                            br
+        if agent_avatar
+            label Choose an avatar image for the AI agent (scroll down to see full list)
+            br
+            div(class="avatar_selection")
+                each value, key in agent_avatar
+                    div
+                        input(type='radio', name='preferences.agent_avatar', value=value, required="required")
+                        img(src=value, alt=key, id=key, width='100', height='100')
             br
             if user_avatar
                 div(class="user_avatar")
