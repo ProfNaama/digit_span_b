@@ -23,7 +23,11 @@ async function readAllCsvFiles() {
             return new Promise((resolve, reject) => {
                 fs.createReadStream(path.join(csvBasePath, fileName))
                 .pipe(csv())
-                .on('data', (data) => records.push(data))
+                .on('data', (data) => { 
+                    if (Object.keys(data).length > 0) {
+                        records.push(data)
+                    }
+                })
                 .on('end', () => {
                     csvDB[fileName] = records;
                     resolve()

@@ -59,20 +59,8 @@ block content
             updateConversationScroll();
         }
     
-        function EngageAgent() {
-            $.ajax({
-                url: './chat-api',
-                type: 'POST',
-                data: {
-                    message: "hi, I am a user."
-                },
-                success: addAgentText,
-                error: console.error
-            });
-        }
-
         $(document).ready(function(){
-            EngageAgent();
+            addAgentText("hi, I am an agent. How can I help you today?");
             $('#chatForm').on('submit', function(e){
                 e.preventDefault();
                 $("#conversation").children().removeClass("chat-last");
