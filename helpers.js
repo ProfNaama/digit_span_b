@@ -144,6 +144,16 @@ function setSelectedHiddenPromptToSession(req) {
     req.session.save();
 }
 
+function getUserTestQuestions(req) {
+    const firstRaw = getTreatmentGroupCsvRecords(req)[0];
+    let questions = {};
+    Object.keys(firstRaw).filter(k => k.startsWith("test_question")).filter(k => firstRaw[k] && firstRaw[k].length > 0).forEach(k => {
+        questions[k] = {"label": firstRaw[k], "is_text": false, "is_radio_selection": true};
+    });
+    return questions;
+}
+
+
 function getUserTaskDescription(req) {
     return getFirstCsvRecordValue(getTreatmentGroupCsvRecords(req), "user_task_description");
 }
@@ -339,5 +349,6 @@ module.exports = {
     setCodeCompleted,
     getRenderingParamsForPage,
     getUserTaskDescription,
-    isUserPreferencesActive
+    isUserPreferencesActive,
+    getUserTestQuestions
 }

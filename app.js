@@ -245,6 +245,19 @@ app.post('/chat-api', async (req, res) => {
 });
 
 app.get('/chat-ended', (req, res) => {
+    let renderParams = helpers.getRenderingParamsForPage("user_test_questions");
+    renderParams["questions"] = helpers.getUserTestQuestions(req);
+    res.render('./user_test_questions',  renderParams);
+});
+
+
+// user test questions answers are obtained.
+app.post('/user_test_questions-ended', async (req, res) => {
+    // collect answers
+    const user_test_questions = helpers.getUserTestQuestions(req);
+    Object.keys(user_test_questions).forEach((q) => {req.session.quessionsAnswers[q] = req.body[q]});
+    req.session.save();
+
     let renderParams = helpers.getRenderingParamsForPage("user_questionnaire");
     renderParams["questions"] = {};
 
