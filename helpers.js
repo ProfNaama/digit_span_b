@@ -144,6 +144,10 @@ function getUserTaskDescription(req) {
     return getFirstCsvRecordValue(getTreatmentGroupCsvRecords(req), "user_task_description");
 }
 
+function isUserPreferencesActive(req) {
+    return getFirstCsvRecordValue(getTreatmentGroupCsvRecords(req), "choose_preferences") === "1";
+}
+
 
 function getInitialTaskContent(req) {
     if (!req.session.initialTask) {
@@ -330,5 +334,6 @@ module.exports = {
     isCodeValid,
     setCodeCompleted,
     getRenderingParamsForPage,
-    getUserTaskDescription
+    getUserTaskDescription,
+    isUserPreferencesActive
 }

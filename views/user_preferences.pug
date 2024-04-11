@@ -5,38 +5,23 @@ block content
         h3=body_message    
 
     form(method='POST' action='/user_preferences')
-        if text_preferences
-            // Loop through the elements of preferences object keys (preference key name) and values (preference text).
-            each value, key in text_preferences
-                //- h3 
-                label Choose a name for the AI agent
-                br
-                input(type='text', name="preferences."+key, required="required")
-                br
-                br
-            br  
+        label Choose a name for the AI agent
+        br
+        input(type='text', name="preferences.agent_name", required="required")
+        br
+        br
+
         // two radio button groups for the user to select their avatar and the agent's avatar.
         // we want to have the two groups of radio buttons in two coumns visible side by side.
         // we will use the grid layout to achieve this.
-        if agent_avatar
-            label Choose an avatar image for the AI agent (scroll down to see full list)
-            br
-            div(class="avatar_selection")
-                each value, key in agent_avatar
-                    div
-                        input(type='radio', name='preferences.agent_avatar', value=value, required="required")
-                        img(src=value, alt=key, id=key, width='100', height='100')
-            br
-            if user_avatar
-                div(class="user_avatar")
-                    h3 
-                        label User Avatar
-                    div(class="avatar_selection")
-                        each value, key in user_avatar
-                            P
-                            input(type='radio', name='preferences.user_avatar', value=value, required="required")
-                            img(src=value, alt=key, id=key, width='100', height='100')
-                            br
+        label Choose an avatar image for the AI agent (scroll down to see full list)
+        br
+        div(class="avatar_selection")
+            each value, key in agent_avatar
+                div
+                    input(type='radio', name='preferences.agent_avatar', value=value, required="required")
+                    img(src=value, alt=key, id=key, width='100', height='100')
+        br
         br
 
         P 

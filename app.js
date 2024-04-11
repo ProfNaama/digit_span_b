@@ -122,17 +122,28 @@ function verifyUserConsent(req, res, next) {
     next();
 };
 
+const agent_random_selection_array = [
+    {"user_name": "user", "user_avatar_image_id": 3, "agent_name": "agent 6", "agent_avatar_image_id" : 6},
+    {"user_name": "user", "user_avatar_image_id": 4, "agent_name": "agent 7", "agent_avatar_image_id" : 7},
+    {"user_name": "user", "user_avatar_image_id": 5, "agent_name": "agent 8", "agent_avatar_image_id" : 8},
+    {"user_name": "user", "user_avatar_image_id": 7, "agent_name": "agent 10", "agent_avatar_image_id" : 10},
+    {"user_name": "user", "user_avatar_image_id": 8, "agent_name": "agent 11", "agent_avatar_image_id" : 11},
+    {"user_name": "user", "user_avatar_image_id": 9, "agent_name": "agent 12", "agent_avatar_image_id" : 12}
+];
+
 // Middlewares to be executed for every request to the app, making sure the session is initialized with user preferences.
 async function verifyUserPreferences(req, res, next) {
     if (!req.session.preferences) {
-        if (req.path === "/user_preferences" && req.method === "POST") {
+        if (!helpers.isUserPreferencesActive(req) || (req.path === "/user_preferences" && req.method === "POST")) {
             const avatars = await helpers.listAvatars();
-            const preferences_default = {
-                "user_name": "user", 
-                "user_avatar" : avatars[avatars.length-2]
+            const random_assignment = agent_random_selection_array[helpers.getRandomInt(0, agent_random_selection_array.length)];
+            req.session.preferences = {
+                "user_name": random_assignment["user_name"],
+                "user_avatar": avatars[random_assignment["user_avatar_image_id"]],
+                "agent_name": random_assignment["agent_name"],
+                "agent_avatar": avatars[random_assignment["agent_avatar_image_id"]]
             };
-
-            req.session.preferences = preferences_default;
+            
             Object.keys(req.body).forEach(key => {
                 if (key.startsWith("preferences.")) {
                     req.session.preferences[key.replace("preferences.", "")] = req.body[key];
@@ -167,12 +178,7 @@ async function renderUserPreferencesPage(req, res) {
     // (1) user preferences: the name and image of the agent.
     const avatars = await helpers.listAvatars();
     let renderParams = helpers.getRenderingParamsForPage("user_preferences");
-    // renderParams["user_avatar"] = avatars;
     renderParams["agent_avatar"] = avatars;
-    renderParams["text_preferences"] = {
-        //"user_name": "Choose your prefferred chat name:",
-        "agent_name": "Choose your prefferred agent name:",
-    } 
 
     // (2) agent configuration: the user might be required to choose some properties according to the treatment group configuration.
     const filteredRecords = helpers.getSelectedRecords(req);
