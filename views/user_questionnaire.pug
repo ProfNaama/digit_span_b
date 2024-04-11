@@ -1,10 +1,77 @@
 extends layout
 block content 
     h1= header_message
-    h2= body_message
+    h2 Please answer the following questions
 
     form(method='POST' action='/user_questionnaire-ended')
-        if questions
+        p What is your gender?
+        label Female
+        input(type='radio', class="radio_selection" name='gender', value="1", required="required")
+        label Male
+        input(type='radio', class="radio_selection" name='gender', value="2", required="required")
+        label Other
+        input(type='radio', class="radio_selection" name='gender', value="3", required="required")
+        
+        p What is your age?
+        label 18-20
+        input(type='radio', class="radio_selection" name='age', value="1", required="required")
+        label 21-30
+        input(type='radio', class="radio_selection" name='age', value="2", required="required")
+        label 31-40
+        input(type='radio', class="radio_selection" name='age', value="3", required="required")
+        label 41-50
+        input(type='radio', class="radio_selection" name='age', value="4", required="required")
+        label 51-60
+        input(type='radio', class="radio_selection" name='age', value="5", required="required")
+        label 61-70
+        input(type='radio', class="radio_selection" name='age', value="6", required="required")
+        label over 70
+        input(type='radio', class="radio_selection" name='age', value="7", required="required")
+        
+        p What best describes the level of your education?
+        label Some high school, no diploma
+        input(type='radio', class="radio_selection" name='education', value="1", required="required")
+        label High school diploma or GED
+        input(type='radio', class="radio_selection" name='education', value="2", required="required")
+        label Some college, no degree
+        input(type='radio', class="radio_selection" name='education', value="3", required="required")
+        label Associate (2-year) degree
+        input(type='radio', class="radio_selection" name='education', value="4", required="required")
+        label Bachelor's (4-year) degree
+        input(type='radio', class="radio_selection" name='education', value="5", required="required")
+        label Master's degree
+        input(type='radio', class="radio_selection" name='education', value="5", required="required")
+        label Doctorate degree
+        input(type='radio', class="radio_selection" name='education', value="5", required="required")
+        
+        p How much experience you have with AI agents (such as Chat GPT, chatbot, etc.)?
+        label I use them daily
+        input(type='radio', class="radio_selection" name='experience', value="1", required="required")
+        label I use them weekly
+        input(type='radio', class="radio_selection" name='experience', value="2", required="required")
+        label I use them monthly
+        input(type='radio', class="radio_selection" name='experience', value="3", required="required")
+        label I have some experience with AI agents but I almost never use them
+        input(type='radio', class="radio_selection" name='experience', value="4", required="required")
+        label I have never used an AI agent
+        input(type='radio', class="radio_selection" name='experience', value="5", required="required")
+        
+        p What is your daily average usage of digital devices (such as a PC, mobile phone, laptop, tablet, etc.)?
+        label Under an hour
+        input(type='radio', class="radio_selection" name='device_usage', value="1", required="required")
+        label 1-2 hours
+        input(type='radio', class="radio_selection" name='device_usage', value="2", required="required")
+        label 3-4 hours
+        input(type='radio', class="radio_selection" name='device_usage', value="3", required="required")
+        label 5-6 hours
+        input(type='radio', class="radio_selection" name='device_usage', value="4", required="required")
+        label 7-8 hours
+        input(type='radio', class="radio_selection" name='device_usage', value="5", required="required")
+        label 9-10 hours
+        input(type='radio', class="radio_selection" name='device_usage', value="6", required="required")
+        label 11 hours and up
+        input(type='radio', class="radio_selection" name='device_usage', value="7", required="required")
+        //- if questions
             // Loop through the elements of questions object keys (question name) and values (question text).
             // have numbered questions and a submit button.
             // present each value as a label and a text box for the user to enter their answer.
