@@ -1,5 +1,0 @@
-question_name,question_text,is_text,is_radio_selection
-q_age,"What is your age?",1,0
-q_gender,"How do you describe your gender?",1,0
-q_learning,"How positive do you feel regarding learning experience ?",0,1
-q_helpful,"How helpful do you feel the agent was ?",0,1

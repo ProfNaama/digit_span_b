@@ -245,30 +245,8 @@ app.post('/chat-api', async (req, res) => {
 });
 
 app.get('/chat-ended', (req, res) => {
-    let renderParams = helpers.getRenderingParamsForPage("user_test_questions");
-    renderParams["questions"] = helpers.getUserTestQuestions(req);
-    res.render('./user_test_questions',  renderParams);
-});
-
-
-// user test questions answers are obtained.
-app.post('/user_test_questions-ended', async (req, res) => {
-    // collect answers
-    const user_test_questions = helpers.getUserTestQuestions(req);
-    Object.keys(user_test_questions).forEach((q) => {req.session.quessionsAnswers[q] = req.body[q]});
-    req.session.save();
-
     let renderParams = helpers.getRenderingParamsForPage("user_questionnaire");
-    renderParams["questions"] = {};
-
-    helpers.getUserQuestionnaireRecords().map((record) => { 
-        const k = record["question_name"];
-        const v = record["question_text"];
-        const is_text = record["is_text"] == "1" ? true : false;
-        const is_radio_selection = record["is_radio_selection"] == "1" ? true : false ;
-        renderParams["questions"][k] = {"label": v, "is_text": is_text, "is_radio_selection": is_radio_selection};
-    });
-
+    renderParams["questions"] = helpers.getUserTestQuestions(req);
     res.render('./user_questionnaire',  renderParams);
 });
 
@@ -287,8 +265,8 @@ app.post('/user_questionnaire-ended', async (req, res) => {
     }
 
     // collect the questionnaire answers from request body
-    helpers.getUserQuestionnaireRecords().map((record) => { req.session.quessionsAnswers[record["question_name"]] = req.body[record["question_name"]] });
-    
+    helpers.getUserTestQuestions(req).map((record) => { req.session.quessionsAnswers[record["name"]] = req.body[record["name"]] });
+    req.session.save();
     await getSentimentAnalysisScore(req);
     const savedResultsObj = helpers.saveSessionResults(req);
     await helpers.setCodeCompleted(req.session.code, {time: Date.now(), uid: req.session.uid, completionCode: req.session.completionCode});

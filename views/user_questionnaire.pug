@@ -4,115 +4,31 @@ block content
     h2 Please answer the following questions
 
     form(class="demo_qustionnaire" method='POST' action='/user_questionnaire-ended')
-        p What is your gender?
-        input(type='radio', class="radio_selection" name='gender', value="1", required="required") 
-        label Female
-        br
-        input(type='radio', class="radio_selection" name='gender', value="2", required="required")
-        label Male
-        br
-        input(type='radio', class="radio_selection" name='gender', value="3", required="required")
-        label Other
-        
-        p What is your age?
-        input(type='radio', class="radio_selection" name='age', value="1", required="required")
-        label 18-20
-        br
-        input(type='radio', class="radio_selection" name='age', value="2", required="required")
-        label 21-30
-        br
-        input(type='radio', class="radio_selection" name='age', value="3", required="required")
-        label 31-40
-        br
-        input(type='radio', class="radio_selection" name='age', value="4", required="required")
-        label 41-50
-        br
-        input(type='radio', class="radio_selection" name='age', value="5", required="required")
-        label 51-60
-        br
-        input(type='radio', class="radio_selection" name='age', value="6", required="required")
-        label 61-70
-        br
-        input(type='radio', class="radio_selection" name='age', value="7", required="required")
-        label over 70
-        br
-        p What best describes the level of your education?
-        input(type='radio', class="radio_selection" name='education', value="1", required="required")
-        label Some high school, no diploma
-        br
-        input(type='radio', class="radio_selection" name='education', value="2", required="required")
-        label High school diploma or GED
-        br
-        input(type='radio', class="radio_selection" name='education', value="3", required="required")
-        label Some college, no degree
-        br
-        input(type='radio', class="radio_selection" name='education', value="4", required="required")
-        label Associate (2-year) degree
-        br
-        input(type='radio', class="radio_selection" name='education', value="5", required="required")
-        label Bachelor's (4-year) degree
-        br
-        input(type='radio', class="radio_selection" name='education', value="6", required="required")
-        label Master's degree
-        br
-        input(type='radio', class="radio_selection" name='education', value="7", required="required")
-        label Doctorate degree
-        
-        p How much experience you have with AI agents (such as Chat GPT, chatbot, etc.)?
-        input(type='radio', class="radio_selection" name='experience', value="1", required="required")
-        label I use them daily
-        br
-        input(type='radio', class="radio_selection" name='experience', value="2", required="required")
-        label I use them weekly
-        br
-        input(type='radio', class="radio_selection" name='experience', value="3", required="required")
-        label I use them monthly
-        br
-        input(type='radio', class="radio_selection" name='experience', value="4", required="required")
-        label I have some experience with AI agents but I almost never use them
-        br
-        input(type='radio', class="radio_selection" name='experience', value="5", required="required")
-        label I have never used an AI agent
-        
-        p What is your daily average usage of digital devices (such as a PC, mobile phone, laptop, tablet, etc.)?
-        input(type='radio', class="radio_selection" name='device_usage', value="1", required="required")
-        label Less than an hour
-        br
-        input(type='radio', class="radio_selection" name='device_usage', value="2", required="required")
-        label 1-2 hours
-        br
-        input(type='radio', class="radio_selection" name='device_usage', value="3", required="required")
-        label 3-4 hours
-        br
-        input(type='radio', class="radio_selection" name='device_usage', value="4", required="required")
-        label 5-6 hours
-        br
-        input(type='radio', class="radio_selection" name='device_usage', value="5", required="required")
-        label 7-8 hours
-        br
-        input(type='radio', class="radio_selection" name='device_usage', value="6", required="required")
-        label 9-10 hours
-        br
-        input(type='radio', class="radio_selection" name='device_usage', value="7", required="required")
-        label 11 hours and more
-        //- if questions
+        if questions
             // Loop through the elements of questions object keys (question name) and values (question text).
             // have numbered questions and a submit button.
             // present each value as a label and a text box for the user to enter their answer.
             // submit all the question names and user answers to the server
-            each value, key in questions
+            each value in questions
                 h3=value["label"]
                 if value["is_text"] == true
-                    input(type='text', name=key, required="required")
+                    input(type='text', name=value["name"], required="required")
+
+                else if value["is_multi_choice"] == true
+                    each choice in value["choices"]
+                        input(type='radio', class="radio_selection" name=value["name"], value=choice, required="required")
+                        label=choice
+                        br
+
                 else
                     label 0 (Lowest)
-                    input(type='radio', class="radio_selection" name=key, value="1", required="required")
-                    input(type='radio', class="radio_selection" name=key, value="2", required="required")
-                    input(type='radio', class="radio_selection" name=key, value="3", required="required")
-                    input(type='radio', class="radio_selection" name=key, value="4", required="required")
-                    input(type='radio', class="radio_selection" name=key, value="5", required="required")
-                    input(type='radio', class="radio_selection" name=key, value="6", required="required")
-                    input(type='radio', class="radio_selection" name=key, value="7", required="required")
+                    input(type='radio', class="radio_selection" name=value["name"], value="1", required="required")
+                    input(type='radio', class="radio_selection" name=value["name"], value="2", required="required")
+                    input(type='radio', class="radio_selection" name=value["name"], value="3", required="required")
+                    input(type='radio', class="radio_selection" name=value["name"], value="4", required="required")
+                    input(type='radio', class="radio_selection" name=value["name"], value="5", required="required")
+                    input(type='radio', class="radio_selection" name=value["name"], value="6", required="required")
+                    input(type='radio', class="radio_selection" name=value["name"], value="7", required="required")
                     label 7 (Highest)
                 br
                 br

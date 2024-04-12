@@ -37,7 +37,7 @@ async function readAllCsvFiles() {
     );
     treatmentFroupConfigRecords = getCsvRecords("treatment_groups_config.csv");
     measuresRecords = getCsvRecords("chatgpt_measures.csv");
-    userQuestionnaireRecords = getCsvRecords("user_questionnaire.csv");
+    userQuestionnaireRecords = getCsvRecords("questions_bank.csv");
     experimentDescRecords = getCsvRecords("experiment_desc.csv");
     treatmentGroups = Array.from(new Set(treatmentFroupConfigRecords.map(r => parseInt(r["treatment_group"]))));
 }
@@ -71,10 +71,6 @@ function getTreatmentGroupCsvRecords(req) {
 
 function getMeasuresRecords() {
     return measuresRecords;
-}
-
-function getUserQuestionnaireRecords() {
-    return userQuestionnaireRecords;
 }
 
 function getTreatmentGroupId(uid) { 
@@ -145,14 +141,22 @@ function setSelectedHiddenPromptToSession(req) {
 }
 
 function getUserTestQuestions(req) {
-    const firstRaw = getTreatmentGroupCsvRecords(req)[0];
-    let questions = {};
-    Object.keys(firstRaw).filter(k => k.startsWith("test_question")).filter(k => firstRaw[k] && firstRaw[k].length > 0).forEach(k => {
-        questions[k] = {"label": firstRaw[k], "is_text": false, "is_radio_selection": true};
+    const treatmentGroupQuestions = getTreatmentGroupCsvRecords(req)[0]["user_questions"].split(";").map(q => q.trim());
+    let questions = [];
+
+    treatmentGroupQuestions.forEach(q => { 
+        userQuestionnaireRecords.filter(record => record["question_name"] === q).map((record) => { 
+            const name = record["question_name"];
+            const v = record["question_text"];
+            const is_text = record["is_text"] == "1" ? true : false;
+            const is_likert = record["is_likert"] == "1" ? true : false ;
+            const is_multi_choise = record["is_multi_choice"] == "1" ? true : false ;
+            const multi_choise_options = record["multi_choice_options"].split("|").map(o => o.trim());
+            questions.push({"name": name, "label": v, "is_text": is_text, "is_likert": is_likert, "is_multi_choice": is_multi_choise, "choices": multi_choise_options});
+        });
     });
     return questions;
 }
-
 
 function getUserTaskDescription(req) {
     return getFirstCsvRecordValue(getTreatmentGroupCsvRecords(req), "user_task_description");
@@ -331,7 +335,6 @@ async function setCodeCompleted(code, obj) {
 module.exports = {
     waitForSystemInitializiation,
     getMeasuresRecords,
-    getUserQuestionnaireRecords,
     getTreatmentGroupId,
     getCsvRecords,
     getFirstCsvRecordValue,
