@@ -149,6 +149,8 @@ input[type=submit] {
   
 }
 
+
+
 #avaterSelect {
     display: flex;
     flex-direction: row;
@@ -167,3 +169,4 @@ form * {
 p {
     line-height: 133%;
 }
+

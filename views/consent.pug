@@ -24,7 +24,7 @@ block content
     h3 Voluntary Participation 
     p Your participation in this research is voluntary.  You may discontinue participation at any time during the research activity.  You may print a copy of this consent form for your records. 
 
-    form(method='POST' action='/consent')
+    form(id="consenrForm", method='POST' action='/consent')
         table 
             tr
                 td 
@@ -53,5 +53,6 @@ block content
                 td
                     input(type='radio', id="consentNO", class="radio_selection", name="consent.consent", value="NO")
                     label(for="consentNO") No 
-        
-        input(id="consentSubmit", type="submit", value="Submit")
+            tr
+                td
+                    input(id="consentSubmit", type="submit", value="SUBMIT")
