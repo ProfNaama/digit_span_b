@@ -123,12 +123,12 @@ function verifyUserConsent(req, res, next) {
 };
 
 const agent_random_selection_array = [
-    {"user_name": "user", "user_avatar_image_id": 3, "agent_name": "agent 6", "agent_avatar_image_id" : 6},
-    {"user_name": "user", "user_avatar_image_id": 4, "agent_name": "agent 7", "agent_avatar_image_id" : 7},
-    {"user_name": "user", "user_avatar_image_id": 5, "agent_name": "agent 8", "agent_avatar_image_id" : 8},
-    {"user_name": "user", "user_avatar_image_id": 7, "agent_name": "agent 10", "agent_avatar_image_id" : 10},
-    {"user_name": "user", "user_avatar_image_id": 8, "agent_name": "agent 11", "agent_avatar_image_id" : 11},
-    {"user_name": "user", "user_avatar_image_id": 9, "agent_name": "agent 12", "agent_avatar_image_id" : 12}
+    {"user_name": "user", "user_avatar_image_id": 3, "agent_name": "Alex", "agent_avatar_image_id" : 6},
+    {"user_name": "user", "user_avatar_image_id": 4, "agent_name": "Ariel", "agent_avatar_image_id" : 7},
+    {"user_name": "user", "user_avatar_image_id": 5, "agent_name": "Reily", "agent_avatar_image_id" : 8},
+    {"user_name": "user", "user_avatar_image_id": 7, "agent_name": "Avery", "agent_avatar_image_id" : 10},
+    {"user_name": "user", "user_avatar_image_id": 8, "agent_name": "Jordan", "agent_avatar_image_id" : 11},
+    {"user_name": "user", "user_avatar_image_id": 9, "agent_name": "Casey", "agent_avatar_image_id" : 12}
 ];
 
 // Middlewares to be executed for every request to the app, making sure the session is initialized with user preferences.
