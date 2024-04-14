@@ -15,6 +15,8 @@
     font-family: MyFont;
     /* border: 1px solid gray; */
 }
+
+
 .container {
     display: grid;
     grid-template-areas: 
@@ -51,20 +53,26 @@
     overflow-y: scroll;
     display: flex; 
     flex-direction: column; 
+    padding: 0px;
+    margin: 0px;
 }
 
 .chat-user , .chat-agent{
     /* this is the box of the user */
-    margin: 10px;
+    margin-left: 0px;
+    padding-left: 0px;
     display: flex;
     flex-direction: row;
 }
 
-.agent-card {
+.agent-card, .user-card {
     display: flex;
-    flex-direction:column-reverse;
-
+    flex-direction:column;
+    text-align: center;
 }
+
+
+
 /* .chat-agent {
     this is the box of the AI
     margin: 10px
@@ -89,6 +97,10 @@
     grid-template-areas: 
     "user_avatar agent_avatar";    
 } */
+
+.task_description{
+    background-color: var(--grayBLU);
+}
 
 .avatar_selection {
     width: 75vw;

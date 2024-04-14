@@ -1,9 +1,10 @@
 extends layout
 block content 
     script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js")
-    div(class='Task_Description') 
+    div(class='task_description') 
+        h2 Task description:
         p= header_message
-        p= body_message
+        h3 below is the chat, you can get started
     
     div(id="conversation", class="conversation")
     form(id="chatForm")
@@ -33,12 +34,14 @@ block content
         function addUserText(userText){
             let element = document.createElement("div");
             element.className = "chat-user chat-last";
+            let UserCard = document.createElement("div");
+            UserCard.className = "user-card";
+            element.appendChild(UserCard);
             let img_elem = document.createElement("img");
             img_elem.className = "chat-avatar";
             img_elem.setAttribute("src", preferences_user_avatar);
-
-            element.appendChild(document.createTextNode(preferences_user_name));
-            element.appendChild(img_elem);
+            UserCard.appendChild(img_elem);
+            UserCard.appendChild(document.createTextNode(preferences_user_name));
             element.appendChild(document.createTextNode(userText));
             document.getElementById('conversation').appendChild(element);
             updateConversationScroll();
@@ -54,8 +57,8 @@ block content
             let img_elem = document.createElement("img");
             img_elem.className = "chat-avatar";
             img_elem.setAttribute("src", preferences_agent_avatar);
-            AgentCard.appendChild(document.createTextNode(preferences_agent_name));
             AgentCard.appendChild(img_elem);
+            AgentCard.appendChild(document.createTextNode(preferences_agent_name));
             element.appendChild(document.createTextNode(agentText));
             document.getElementById('conversation').appendChild(element);
 
