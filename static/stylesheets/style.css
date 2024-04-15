@@ -20,9 +20,11 @@
 .container {
     display: grid;
     grid-template-areas: 
-    "header header header header header"
-    "left main main main main"
-    "left footer footer footer footer";
+    "header header"
+    "left main"
+    "left footer";
+    grid-template-columns: 13.5vw auto;
+
 }
 .header {
     grid-area: header;
