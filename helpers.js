@@ -42,9 +42,9 @@ async function readAllCsvFiles() {
     treatmentGroups = Array.from(new Set(treatmentFroupConfigRecords.map(r => parseInt(r["treatment_group"]))));
 }
 
-async function listAvatars() {
+async function listAvatars(is_agent = true) {
     const avatars = await fs.promises.readdir('static/images/avatars/');
-    return avatars.filter(f => f.startsWith("agent_")).map(f => path.join('static/images/avatars', f));
+    return avatars.filter(f => f.startsWith(is_agent ? "agent_" : "user_")).map(f => path.join('static/images/avatars', f));
 }
 
 let initializationPromise = new Promise((resolve, reject) => {
