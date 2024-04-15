@@ -280,15 +280,6 @@ app.post('/user_questionnaire-ended', async (req, res) => {
     }
 });
 
-// test design route
-app.get("/DesignTest", (req,res)=>{
-    res.render("chat_design");
-})
-
-app.get("/DesignTest2", (req,res)=>{
-    res.render("config_design");
-})
-
 app.use("*", (req, res) => { 
     res.redirect('/');
 });
