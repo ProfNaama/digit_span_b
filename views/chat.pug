@@ -59,7 +59,9 @@ block content
             img_elem.setAttribute("src", preferences_agent_avatar);
             AgentCard.appendChild(img_elem);
             AgentCard.appendChild(document.createTextNode(preferences_agent_name));
-            element.appendChild(document.createTextNode(agentText));
+            let htmlText = document.createElement("p")
+            htmlText.innerHTML = agentText.replace(new RegExp("\n", "g"), "<br/>"); 
+            element.appendChild(htmlText);
             document.getElementById('conversation').appendChild(element);
 
             updateConversationScroll();
