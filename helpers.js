@@ -44,7 +44,7 @@ async function readAllCsvFiles() {
 
 async function listAvatars() {
     const avatars = await fs.promises.readdir('static/images/avatars/');
-    return avatars.map(f => path.join('static/images/avatars', f));
+    return avatars.filter(f => f.startsWith("agent_")).map(f => path.join('static/images/avatars', f));
 }
 
 let initializationPromise = new Promise((resolve, reject) => {
