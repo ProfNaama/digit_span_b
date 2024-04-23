@@ -33,13 +33,31 @@ async function verifySystemInitialized(req, res, next) {
     next();
 };
 
+function extractUid(prolificUid){
+    if ("PROLIFIC_PID" in prolificUid){
+        let intcode = 0
+        for (c in prolificUid["PROLIFIC_PID"]) {
+            intcode *= 65535;
+            intcode += c.charCodeAt(0);
+            intcode = intcode % maxUID;
+        }
+        return intcode;
+    } else {
+        console.log("PROLIFIC_PID not found in query params. generating a randon uid");
+        return helpers.getRandomInt(0, maxUID)
+    }
+}
+
 // Middlewares to be executed for every request to the app, making sure the session is initialized with uid, treatment group id, etc.
 function verifySession(req, res, next) {
     if (!req.session.uid) {
-        let uid = parseInt(req.query["uid"]) || helpers.getRandomInt(0, maxUID);
+        let uid = {}
+        uid["PROLIFIC_PID"] = req.query["PROLIFIC_PID"] || ""
+        uid["STUDY_ID"] = req.query["STUDY_ID"] || ""
+        uid["SESSION_ID"] = req.query["SESSION_ID"] || ""
 
-        req.session.uid = uid;
-        req.session.treatmentGroupId = helpers.getTreatmentGroupId(uid);
+        req.session.uid = JSON.stringify(uid);
+        req.session.treatmentGroupId = helpers.getTreatmentGroupId(extractUid(uid));
         req.session.initialTask = ""
         req.session.systemRoleHiddenContent = "";
         req.session.conversationContext = [];
@@ -270,7 +288,7 @@ app.post('/user_questionnaire-ended', async (req, res) => {
     req.session.save();
     await getSentimentAnalysisScore(req);
     const savedResultsObj = helpers.saveSessionResults(req);
-    await helpers.setCodeCompleted(req.session.code, {time: Date.now(), uid: req.session.uid, completionCode: req.session.completionCode});
+    await helpers.setCodeCompleted(req.session.code, {time: new Date().toISOString(), uid: req.session.uid, completionCode: req.session.completionCode});
     req.session.destroy();
     console.log("Session ended. uid: " + savedResultsObj.uid);
     
