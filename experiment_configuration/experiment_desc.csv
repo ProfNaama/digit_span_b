@@ -1,8 +1,8 @@
-page,header,body1,body2
-welcome_code,"Welcome,",Please enter your Prolific personal id (PID) and your password,
-consent,Online Consent for Study number STUDY2024_00000142,By selecting the following check box and clicking on the 'agree' button you consent to the experiment,
-user_preferences,Welcome to the ChatLab experiment website,In the next page you will be asked to engageg with an AI agent. Please personalize this agent:,Please select the following properties of the agent
-chat,Chat with the AI,Please free to use the AI during your task,
-user_questionnaire,Thank You for chatting…,Please fill out the next set of questions.,
-session_ended,Thank You for participating in the experiment.,Please save the following completion code for your records,
-error,We are sorry - an error has occured. Please close your browser and try again,,
+"page","header","body1","body2"
+"chat","Chat with the AI","Please free to use the AI during your task",
+"consent","Online Consent for Study number STUDY2024_00000142","By selecting the following check box and clicking on the 'agree' button you consent to the experiment",
+"user_questionnaire","Thank You for chatting","Please fill out the next set of questions.",
+"session_ended","Thank You for participating in the experiment.","Please save the following completion code for your records",
+"error","We are sorry - an error has occured. Please close your browser and try again",,
+"welcome_code","Welcome","Please enter your Prolific personal id (PID) and your password",
+"user_preferences","Welcome to the ChatLab experiment website","In the next page you will be asked to engageg with an AI agent. Please personalize this agent:","Please select the following properties of the agent"
