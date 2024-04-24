@@ -108,7 +108,7 @@ async function verifySessionCode(req, res, next) {
                     if (!req.session.prolificUid["prolific_pid"]){
                         req.session.prolificUid["prolific_pid"] = req.body["prolificPID"];
                         req.session.treatmentGroupId = helpers.getTreatmentGroupId(extractUid(req.session.prolificUid["prolific_pid"]));
-                        console.log("notice. session. uid: " + req.session.uid + ", updated prolific_pid: " + req.session.prolificUid["prolific_pid"] + ",  updted treatment group: " + req.session.treatmentGroupId);
+                        console.log("notice. session. uid: " + req.session.uid + ", updated prolific_pid: " + req.session.prolificUid["prolific_pid"] + ",  updated treatment group: " + req.session.treatmentGroupId);
                     }
                     if (req.session.prolificUid["prolific_pid"] !== req.body["prolificPID"]) { 
                         req.session.prolificUid["user_reported_prolific_pid"] = req.body["prolificPID"];
@@ -316,10 +316,6 @@ app.post('/user_questionnaire-ended', async (req, res) => {
         // redirect to the results page with POST method
         res.redirect(307, config.resultsRedirectUrl);
     }
-});
-
-app.use("*", (req, res) => { 
-    res.redirect('/');
 });
 
 async function getSentimentAnalysisScoreForMessage(message) {
