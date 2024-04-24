@@ -210,6 +210,7 @@ p {
 .LikertItemTable td {
     width: 33%;
     padding: auto;
+    /* text-align: center; */
 }
 
 .H3_q_Item {
