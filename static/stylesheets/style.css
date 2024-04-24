@@ -2,6 +2,7 @@
     --gray: rgb(234, 234, 234);
     --beigh: rgb(237, 228, 197);
     --grayBLU: rgb(206, 227, 233);
+    --Light_Gray: rgb(241, 240, 240);
 }
 
 
@@ -202,13 +203,13 @@ p {
 
 .LikertItemTable {
     width: 60vw;
-    /* border: 1px solid black; */
+    background-color: var(--Light_Gray);
+    border-radius: 24px;
 }
 
 .LikertItemTable td {
     width: 33%;
     padding: auto;
-    /* border: 1px solid black; */
 }
 
 .H3_q_Item {
