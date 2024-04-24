@@ -163,6 +163,14 @@ input[type=submit] {
     border: 1px solid gray;
 }
 
+.form-text-input {
+    border-radius: 12px;  
+    border: 1px solid gray;
+    padding-right: 10px;
+    width: 40%;
+  
+}
+
 #message {
     border-radius: 12px;  
     border: 1px solid gray;

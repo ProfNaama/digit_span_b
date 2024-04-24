@@ -33,13 +33,39 @@ async function verifySystemInitialized(req, res, next) {
     next();
 };
 
+function extractUid(uidStr){
+    if (!uidStr || uidStr.length == 0) {
+        console.log("uidStr not valid. generating a randon uid");
+        return helpers.getRandomInt(0, maxUID)
+    }
+    
+    let intcode = 0;
+    for (let i = 0; i < uidStr.length; i++) {
+        intcode *= 65535;
+        intcode += uidStr.charCodeAt(i);
+        intcode = intcode % maxUID;
+    }
+    return intcode;
+}
+
 // Middlewares to be executed for every request to the app, making sure the session is initialized with uid, treatment group id, etc.
 function verifySession(req, res, next) {
     if (!req.session.uid) {
-        let uid = parseInt(req.query["uid"]) || helpers.getRandomInt(0, maxUID);
+        let prolificUid = {}
+        Object.keys(req.query).forEach(key => {
+            key = key.toLowerCase();
+            if (key === "prolific_pid" || key === "study_id" || key === "session_id") {
+                prolificUid[key] = req.query[key];
+            }
+        });
 
-        req.session.uid = uid;
-        req.session.treatmentGroupId = helpers.getTreatmentGroupId(uid);
+        req.session.uid = prolificUid["prolific_pid"];
+        if (!req.session.uid) {
+            req.session.uid = helpers.getRandomInt(0, maxUID).toString();
+        }
+
+        req.session.prolificUid = prolificUid;
+        req.session.treatmentGroupId = helpers.getTreatmentGroupId(extractUid(req.session.uid));
         req.session.initialTask = ""
         req.session.systemRoleHiddenContent = "";
         req.session.conversationContext = [];
@@ -78,6 +104,17 @@ async function verifySessionCode(req, res, next) {
             const isCodeValid = await helpers.isCodeValid(req.body["code"]);
             if (isCodeValid) {
                 req.session.code = req.body["code"];
+                if (req.session.prolificUid["prolific_pid"] !== req.body["prolificPID"]) {
+                    if (!req.session.prolificUid["prolific_pid"]){
+                        req.session.prolificUid["prolific_pid"] = req.body["prolificPID"];
+                        req.session.treatmentGroupId = helpers.getTreatmentGroupId(extractUid(req.session.prolificUid["prolific_pid"]));
+                        console.log("notice. session. uid: " + req.session.uid + ", updated prolific_pid: " + req.session.prolificUid["prolific_pid"] + ",  updated treatment group: " + req.session.treatmentGroupId);
+                    }
+                    if (req.session.prolificUid["prolific_pid"] !== req.body["prolificPID"]) { 
+                        req.session.prolificUid["user_reported_prolific_pid"] = req.body["prolificPID"];
+                        console.log("notice: user_reported_prolific_pid: " + req.session.prolificUid["user_reported_prolific_pid"] + " differs from prolific_pid: " + req.session.prolificUid["prolific_pid" + ". continue with the original prolific_pid"]);
+                    }
+                }
                 req.session.save();
                 res.redirect(302, "/");
                 return;
@@ -270,7 +307,7 @@ app.post('/user_questionnaire-ended', async (req, res) => {
     req.session.save();
     await getSentimentAnalysisScore(req);
     const savedResultsObj = helpers.saveSessionResults(req);
-    await helpers.setCodeCompleted(req.session.code, {time: Date.now(), uid: req.session.uid, completionCode: req.session.completionCode});
+    await helpers.setCodeCompleted(req.session.code, {time: new Date().toISOString(), uid: req.session.uid, completionCode: req.session.completionCode});
     req.session.destroy();
     console.log("Session ended. uid: " + savedResultsObj.uid);
     
@@ -279,10 +316,6 @@ app.post('/user_questionnaire-ended', async (req, res) => {
         // redirect to the results page with POST method
         res.redirect(307, config.resultsRedirectUrl);
     }
-});
-
-app.use("*", (req, res) => { 
-    res.redirect('/');
 });
 
 async function getSentimentAnalysisScoreForMessage(message) {
