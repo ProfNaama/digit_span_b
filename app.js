@@ -61,7 +61,7 @@ function verifySession(req, res, next) {
 
         req.session.uid = prolificUid["prolific_pid"];
         if (!req.session.uid) {
-            req.session.uid = str(helpers.getRandomInt(0, maxUID));
+            req.session.uid = helpers.getRandomInt(0, maxUID).toString();
         }
 
         req.session.prolificUid = prolificUid;
