@@ -200,3 +200,17 @@ p {
     line-height: 133%;
 }
 
+.LikertItemTable {
+    width: 60vw;
+    /* border: 1px solid black; */
+}
+
+.LikertItemTable td {
+    width: 33%;
+    padding: auto;
+    /* border: 1px solid black; */
+}
+
+.H3_q_Item {
+    width: 60vw;
+}
