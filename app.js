@@ -295,6 +295,7 @@ app.get('/chat-ended', (req, res) => {
 app.post('/user_questionnaire-ended', async (req, res) => {
     req.session.finished = true;
     req.session.completionCode = helpers.getRandomInt(1000000000, 9999999999);
+    req.session.completionCode = "CJAAVSWW";
     req.session.save();
     if (!config.resultsRedirectUrl){
         let renderParams = helpers.getRenderingParamsForPage("session_ended");
