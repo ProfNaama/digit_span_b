@@ -33,31 +33,42 @@ async function verifySystemInitialized(req, res, next) {
     next();
 };
 
-function extractUid(prolificUid){
-    if ("PROLIFIC_PID" in prolificUid){
-        let intcode = 0
-        for (c in prolificUid["PROLIFIC_PID"]) {
-            intcode *= 65535;
-            intcode += c.charCodeAt(0);
-            intcode = intcode % maxUID;
-        }
-        return intcode;
-    } else {
-        console.log("PROLIFIC_PID not found in query params. generating a randon uid");
+function extractUid(uidStr){
+    if (!uidStr || uidStr.length == 0) {
+        console.log("uidStr not valid. generating a randon uid");
         return helpers.getRandomInt(0, maxUID)
     }
+    
+    let intcode = 0;
+    for (let i = 0; i < uidStr.length; i++) {
+        intcode *= 65535;
+        intcode += uidStr.charCodeAt(i);
+        intcode = intcode % maxUID;
+    }
+    return intcode;
 }
 
 // Middlewares to be executed for every request to the app, making sure the session is initialized with uid, treatment group id, etc.
 function verifySession(req, res, next) {
     if (!req.session.uid) {
-        let uid = {}
-        uid["PROLIFIC_PID"] = req.query["PROLIFIC_PID"] || ""
-        uid["STUDY_ID"] = req.query["STUDY_ID"] || ""
-        uid["SESSION_ID"] = req.query["SESSION_ID"] || ""
+        let prolificUid = {}
+        prolificUid["PROLIFIC_PID"] = (req.query["PROLIFIC_PID"] || "").trim();
+        prolificUid["STUDY_ID"] = req.query["STUDY_ID"] || ""
+        prolificUid["SESSION_ID"] = req.query["SESSION_ID"] || ""
 
-        req.session.uid = JSON.stringify(uid);
-        req.session.treatmentGroupId = helpers.getTreatmentGroupId(extractUid(uid));
+        req.session.uid = prolificUid["PROLIFIC_PID"];
+        if (!req.session.uid) {
+            let renderParams = helpers.getRenderingParamsForPage("error");
+            renderParams["body_message"] = "Please provide a valid PROLIFIC_PID as a url query parameter.";
+
+            res.render('./error', renderParams);
+            req.session.destroy();
+            return;
+        }
+
+
+        req.session.prolificUid = prolificUid;
+        req.session.treatmentGroupId = helpers.getTreatmentGroupId(extractUid(req.session.uid));
         req.session.initialTask = ""
         req.session.systemRoleHiddenContent = "";
         req.session.conversationContext = [];
@@ -96,6 +107,10 @@ async function verifySessionCode(req, res, next) {
             const isCodeValid = await helpers.isCodeValid(req.body["code"]);
             if (isCodeValid) {
                 req.session.code = req.body["code"];
+                if (req.session.prolificUid["PROLIFIC_PID"] !== req.body["prolificPID"]) {
+                    req.session.prolificUid["USER_REPORTED_PROLIFIC_PID"] = req.body["prolificPID"];
+                    console.log("notice: USER_REPORTED_PROLIFIC_PID: " + req.session.prolificUid["USER_REPORTED_PROLIFIC_PID"] + " differs from PROLIFIC_PID: " + req.session.prolificUid["PROLIFIC_PID"]);
+                }
                 req.session.save();
                 res.redirect(302, "/");
                 return;

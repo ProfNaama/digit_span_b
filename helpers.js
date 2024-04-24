@@ -218,6 +218,7 @@ function getAndResetInteractionTime(req) {
 function sessionToJsonObject(req) {   
     const sessionJson = {
         "uid": req.session.uid,
+        "prolificUid": req.session.prolificUid,
         "code": req.session.code,
         "treatmentGroupId": req.session.treatmentGroupId,
         "initialTask": req.session.initialTask,
