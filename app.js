@@ -58,12 +58,8 @@ function verifySession(req, res, next) {
                 prolificUid[key] = req.query[key];
             }
         });
-
-        req.session.uid = prolificUid["prolific_pid"];
-        if (!req.session.uid) {
-            req.session.uid = helpers.getRandomInt(0, maxUID).toString();
-        }
-
+        
+        req.session.uid = helpers.getRandomInt(0, maxUID).toString();
         req.session.prolificUid = prolificUid;
         req.session.treatmentGroupId = helpers.getTreatmentGroupId(extractUid(req.session.uid));
         req.session.initialTask = ""
@@ -107,7 +103,7 @@ async function verifySessionCode(req, res, next) {
                 if (req.session.prolificUid["prolific_pid"] !== req.body["prolificPID"]) {
                     if (!req.session.prolificUid["prolific_pid"]){
                         req.session.prolificUid["prolific_pid"] = req.body["prolificPID"];
-                        req.session.treatmentGroupId = helpers.getTreatmentGroupId(extractUid(req.session.prolificUid["prolific_pid"]));
+                        // req.session.treatmentGroupId = helpers.getTreatmentGroupId(extractUid(req.session.prolificUid["prolific_pid"]));
                         console.log("notice. session. uid: " + req.session.uid + ", updated prolific_pid: " + req.session.prolificUid["prolific_pid"] + ",  updated treatment group: " + req.session.treatmentGroupId);
                     }
                     if (req.session.prolificUid["prolific_pid"] !== req.body["prolificPID"]) { 
