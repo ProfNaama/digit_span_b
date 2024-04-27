@@ -1,10 +1,7 @@
 question_name,question_text,is_text,is_likert,is_multi_choice,multi_choice_options
-q_gender,What is your gender?,0,0,1,Female|Male|Other
 q_age,What is your age?,0,0,1,18-20|21-30|31-40|41-50|51-60|61-70|over 70
-q_education,What best describes the level of your education?,0,0,1,"Some high school, no diploma|High school diploma or GED|Some college, no degree|Associate (2-year) degree|Bachelor's (4-year) degree|Master's degree|Doctorate degree"
-q_experience,"How much experience you have with AI agents (such as Chat GPT, chatbot, etc.)?",0,0,1,I use them daily|I use them weekly|I use them monthly|I have some experience with AI agents but I almost never use them|I have never used an AI agent
-q_device_usage,"What is your daily average usage of digital devices (such as a PC, mobile phone, laptop, tablet, etc.)?",0,0,1,Less than an hour|1-2 hours|3-4 hours|5-6 hours|7-8 hours|9-10 hours|11 hours and more
 q_Boston_Quiz1,When did the Boston Tea Party take place?,0,0,1,"December 16, 1773|July 4, 1776|April 19, 1775|September 3, 1783"
+q_Boston_Quiz10,What was the Boston Tea Party's significance in global history?,0,0,1,It was a key event leading to the American Revolution|It was a key event leading to the French Revolution|It was a key event leading to the Russian Revolution|It was a key event leading to the Chinese Revolution
 q_Boston_Quiz2,What was the primary motivation behind the Boston Tea Party?,0,0,1,Protest against the British government's taxation without representation|Celebration of American independence|Promotion of tea consumption in the colonies|Establishment of trade routes with China
 q_Boston_Quiz3,Who organized and led the Boston Tea Party?,0,0,1,A combination of international forces|British soldiers|The Sons of Liberty|French revolutionaries
 q_Boston_Quiz4,What was the immediate consequence of the Boston Tea Party?,0,0,1,The British government repealed the Tea Act|The American colonies declared independence|The British government imposed harsher taxes on other goods|The British government closed the port of Boston
@@ -13,28 +10,42 @@ q_Boston_Quiz6,What was the Boston Tea Party?,0,0,1,A political protest|A religi
 q_Boston_Quiz7,What was the Boston Tea Party's significance in American history?,0,0,1,It was a key event leading to the American Revolution|It was a key event leading to the Civil War|It was a key event leading to the War of 1812|It was a key event leading to the Mexican-American War
 q_Boston_Quiz8,What was the Boston Tea Party's significance in world history?,0,0,1,It was a key event leading to the American Revolution|It was a key event leading to the French Revolution|It was a key event leading to the Russian Revolution|It was a key event leading to the Chinese Revolution
 q_Boston_Quiz9,What was the Boston Tea Party's significance in British history?,0,0,1,It was a key event leading to the American Revolution|It was a key event leading to the French Revolution|It was a key event leading to the Russian Revolution|It was a key event leading to the Chinese Revolution
-q_Boston_Quiz10,What was the Boston Tea Party's significance in global history?,0,0,1,It was a key event leading to the American Revolution|It was a key event leading to the French Revolution|It was a key event leading to the Russian Revolution|It was a key event leading to the Chinese Revolution
-q_service_quality1,Please rate the service provided by the customer service agent in each of the following items below:,0,1,0,"Poor|Excellent "
-q_service_quality2,,0,1,0,Inferior|Superior
-q_service_quality3,,0,1,0,Low standards|High standards
-q_service_satisfaction1,"Overall, how satisfied or dissatisfied did your experience with the customer service agent leave  you feeling?",0,1,0,Extremely dissatisfied|Extremely satisfied
-q_service_satisfaction2,How well did this service experience with the customer service agent meet your needs?,0,1,0,Extremely poor|Extremely well
-q_service_satisfaction3,"To what extent do you agree or disagree that overall, you are satisfied with the experience of  interacting with the customer service agent?",0,1,0," Strongly disagree|Strongly agree"
-q_human_likeness1,"Using the following scale, how would you evaluate the customer service agent?",0,1,0,Very humanlike|Very mechanical
-q_human_likeness2,,0,1,0,"Has many more human qualities|Has many more techno qualities "
-q_human_likeness3,,0,1,0,"Very person-like | Very machine-like "
+q_comments,Do you wish to add anything?,1,0,0,
+q_device_usage,"What is your daily average usage of digital devices (such as a PC, mobile phone, laptop, tablet, etc.)?",0,0,1,Less than an hour|1-2 hours|3-4 hours|5-6 hours|7-8 hours|9-10 hours|11 hours and more
+q_education,What best describes the level of your education?,0,0,1,"Some high school, no diploma|High school diploma or GED|Some college, no degree|Associate (2-year) degree|Bachelor's (4-year) degree|Master's degree|Doctorate degree"
 q_emotional_intensity1,"In your opinion, how much emotion was expressed by the customer service agent during your conversation?",0,1,0,Very little emotion | A great deal of emotion
 q_emotional_intensity2,,0,1,0,Very few feelings | A lot of feelings
 q_emotional_intensity3,,0,1,0,Expressed very few sentiments | Expressed many sentiments
-q_user_emotion1,Please indicate how you felt right after your interaction with the service chatbot:,0,1,0,Depressed | Cheerful
-q_user_emotion2,,0,1,0,Sad | Joyful
-q_user_emotion3,,0,1,0,Annoyed | Pleased
-q_user_emotion4,,0,1,0,Unhappy | Happy
-q_user_emotion5,,0,1,0,In a bad mood | In a good mood
 q_expectation_confirmation1,Below are statements dealing with your perception of the chatbot you've just interacted with. Please indicate to what extent you agree or disagree with each statement.,0,0,0,
 q_expectation_confirmation2,The level of the chatbot's expressed emotion is how you would expect most chatbots to behave:,0,1,0,Agree | Disagree
 q_expectation_confirmation3,The level of the chatbot's emotional display was exactly what I expected:,0,1,0,Agree | Disagree
 q_expectation_confirmation4,"Overall, most of my expectations regarding the level of the chatbot's expressed emotion were confirmed:",0,1,0,Agree | Disagree
+q_experience,"How much experience you have with AI agents (such as Chat GPT, chatbot, etc.)?",0,0,1,I use them daily|I use them weekly|I use them monthly|I have some experience with AI agents but I almost never use them|I have never used an AI agent
+q_gender,What is your gender?,0,0,1,Female|Male|Other
+q_human_likeness1,"Using the following scale, how would you evaluate the customer service agent?",0,1,0,Very humanlike|Very mechanical
+q_human_likeness2,,0,1,0,Has many more human qualities|Has many more techno qualities 
+q_human_likeness3,,0,1,0,Very person-like | Very machine-like 
+q_learning_quality1,Please rate the help provided by the AI agent in each of the following items below:,0,1,0,Poor|Excellent 
+q_learning_quality2,,0,1,0,Inferior|Superior
+q_learning_quality3,,0,1,0,Low standards|High standards
+q_learning_satisfaction1,"Overall, how satisfied or dissatisfied did your experience with the AI agent leave  you feeling?",0,1,0,Extremely dissatisfied|Extremely satisfied
+q_learning_satisfaction2,How well did this learning experience with the AI agent meet your needs?,0,1,0,Extremely poor|Extremely well
+q_learning_satisfaction3,"To what extent do you agree or disagree that overall, you are satisfied with the experience of interacting with the AI agent?",0,1,0, Strongly disagree|Strongly agree
+q_service_quality1,Please rate the service provided by the customer service agent in each of the following items below:,0,1,0,Poor|Excellent 
+q_service_quality2,,0,1,0,Inferior|Superior
+q_service_quality3,,0,1,0,Low standards|High standards
+q_service_satisfaction1,"Overall, how satisfied or dissatisfied did your experience with the customer service agent leave  you feeling?",0,1,0,Extremely dissatisfied|Extremely satisfied
+q_service_satisfaction2,How well did this service experience with the customer service agent meet your needs?,0,1,0,Extremely poor|Extremely well
+q_service_satisfaction3,"To what extent do you agree or disagree that overall, you are satisfied with the experience of  interacting with the customer service agent?",0,1,0, Strongly disagree|Strongly agree
+q_trust_1,I trust the AI agent.,0,1,0,Agree | Disagree
+q_trust_2,I can rely on the AI agent.,0,1,0,Agree | Disagree
+q_trust_Dev_Intention_1,The developers are trustworthy.,0,1,0,Agree | Disagree
+q_trust_Dev_Intention_2,The developers take my well-being seriously.,0,1,0,Agree | Disagree
+q_trust_Familiarity_1,I already know similar AI agents.,0,1,0,Agree | Disagree
+q_trust_Familiarity_2,I have already used similar AI agents. ,0,1,0,Agree | Disagree
+q_trust_Propensity_1,One should be careful with unfamiliar automated AI agents.,0,1,0,Agree | Disagree
+q_trust_Propensity_2,I rather trust an AI agent than I mistrust it.,0,1,0,Agree | Disagree
+q_trust_Propensity_3,Automated AI agents generally work well.,0,1,0,Agree | Disagree
 q_trust_Reliability_Competence_1,The AI agent is capable of interpreting situations correctly.,0,1,0,Agree | Disagree
 q_trust_Reliability_Competence_2,The AI agent works reliably.,0,1,0,Agree | Disagree
 q_trust_Reliability_Competence_3,the AI agent malfunction is likely.,0,1,0,Agree | Disagree
@@ -43,58 +54,8 @@ q_trust_Reliability_Competence_5,The AI agent might make sporadic errors,0,1,0,A
 q_trust_Reliability_Competence_6,I am confident about the AI agent�s capabilities,0,1,0,Agree | Disagree
 q_trust_Understanding_Predictability_1,The AI agent was always clear to me.,0,1,0,Agree | Disagree
 q_trust_Understanding_Predictability_2,The AI agent reacts predictably,0,1,0,Agree | Disagree
-q_trust_Familiarity_1,I already know similar AI agents.,0,1,0,Agree | Disagree
-q_trust_Familiarity_2,"I have already used similar AI agents. ",0,1,0,Agree | Disagree
-q_trust_Dev_Intention_1,The developers are trustworthy.,0,1,0,Agree | Disagree
-q_trust_Dev_Intention_2,The developers take my well-being seriously.,0,1,0,Agree | Disagree
-q_trust_Propensity_1,One should be careful with unfamiliar automated AI agents.,0,1,0,Agree | Disagree
-q_trust_Propensity_2,I rather trust an AI agent than I mistrust it.,0,1,0,Agree | Disagree
-q_trust_Propensity_3,Automated AI agents generally work well.,0,1,0,Agree | Disagree
-q_trust_1,I trust the AI agent.,0,1,0,Agree | Disagree
-q_trust_2,I can rely on the AI agent.,0,1,0,Agree | Disagree
-q_comments,Do you wish to add anything?,1,0,0,
-=======,,,,,
-question_name,question_text,is_text,is_likert,is_multi_choice,multi_choice_options
-q_gender,What is your gender?,0,0,1,Female|Male|Other
-q_age,What is your age?,0,0,1,18-20|21-30|31-40|41-50|51-60|61-70|over 70
-q_education,What best describes the level of your education?,0,0,1,"Some high school, no diploma|High school diploma or GED|Some college, no degree|Associate (2-year) degree|Bachelor's (4-year) degree|Master's degree|Doctorate degree"
-q_experience,"How much experience you have with AI agents (such as Chat GPT, chatbot, etc.)?",0,0,1,I use them daily|I use them weekly|I use them monthly|I have some experience with AI agents but I almost never use them|I have never used an AI agent
-q_device_usage,"What is your daily average usage of digital devices (such as a PC, mobile phone, laptop, tablet, etc.)?",0,0,1,Less than an hour|1-2 hours|3-4 hours|5-6 hours|7-8 hours|9-10 hours|11 hours and more
-q_Boston_Quiz1,When did the Boston Tea Party take place?,0,0,1,"December 16, 1773|July 4, 1776|April 19, 1775|September 3, 1783"
-q_Boston_Quiz2,What was the primary motivation behind the Boston Tea Party?,0,0,1,Protest against the British government's taxation without representation|Celebration of American independence|Promotion of tea consumption in the colonies|Establishment of trade routes with China
-q_Boston_Quiz3,Who organized and led the Boston Tea Party?,0,0,1,A combination of international forces|British soldiers|The Sons of Liberty|French revolutionaries
-q_Boston_Quiz4,What was the immediate consequence of the Boston Tea Party?,0,0,1,The British government repealed the Tea Act|The American colonies declared independence|The British government imposed harsher taxes on other goods|The British government closed the port of Boston
-q_Boston_Quiz5,What was the long-term consequence of the Boston Tea Party?,0,0,1,The American colonies declared independence|The British government repealed the Tea Act|The British government imposed harsher taxes on other goods|The British government closed the port of Boston
-q_Boston_Quiz6,What was the Boston Tea Party?,0,0,1,A political protest|A religious ceremony|A military operation|A diplomatic negotiation
-q_Boston_Quiz7,What was the Boston Tea Party's significance in American history?,0,0,1,It was a key event leading to the American Revolution|It was a key event leading to the Civil War|It was a key event leading to the War of 1812|It was a key event leading to the Mexican-American War
-q_Boston_Quiz8,What was the Boston Tea Party's significance in world history?,0,0,1,It was a key event leading to the American Revolution|It was a key event leading to the French Revolution|It was a key event leading to the Russian Revolution|It was a key event leading to the Chinese Revolution
-q_Boston_Quiz9,What was the Boston Tea Party's significance in British history?,0,0,1,It was a key event leading to the American Revolution|It was a key event leading to the French Revolution|It was a key event leading to the Russian Revolution|It was a key event leading to the Chinese Revolution
-q_Boston_Quiz10,What was the Boston Tea Party's significance in global history?,0,0,1,It was a key event leading to the American Revolution|It was a key event leading to the French Revolution|It was a key event leading to the Russian Revolution|It was a key event leading to the Chinese Revolution
-q_service_quality1,Please rate the service provided by the customer service agent in each of the following items below:,0,1,0,"Poor|Excellent "
-q_service_quality2,,0,1,0,Inferior|Superior
-q_service_quality3,,0,1,0,Low standards|High standards
-q_service_satisfaction1,"Overall, how satisfied or dissatisfied did your experience with the customer service agent leave  you feeling?",0,1,0,Extremely dissatisfied|Extremely satisfied
-q_service_satisfaction2,How well did this service experience with the customer service agent meet your needs?,0,1,0,Extremely poor|Extremely well
-q_service_satisfaction3,"To what extent do you agree or disagree that overall, you are satisfied with the experience of  interacting with the customer service agent?",0,1,0," Strongly disagree|Strongly agree"
-q_human_likeness1,"Using the following scale, how would you evaluate the customer service agent?",0,1,0,Very humanlike|Very mechanical
-q_human_likeness2,,0,1,0,"Has many more human qualities|Has many more techno qualities "
-q_human_likeness3,,0,1,0,"Very person-like | Very machine-like "
-q_emotional_intensity1,"In your opinion, how much emotion was expressed by the customer service agent during your conversation?",0,1,0,Very little emotion | A great deal of emotion
-q_emotional_intensity2,,0,1,0,Very few feelings | A lot of feelings
-q_emotional_intensity3,,0,1,0,Expressed very few sentiments | Expressed many sentiments
 q_user_emotion1,Please indicate how you felt right after your interaction with the service chatbot:,0,1,0,Depressed | Cheerful
 q_user_emotion2,,0,1,0,Sad | Joyful
 q_user_emotion3,,0,1,0,Annoyed | Pleased
 q_user_emotion4,,0,1,0,Unhappy | Happy
 q_user_emotion5,,0,1,0,In a bad mood | In a good mood
-q_expectation_confirmation1,Below are statements dealing with your perception of the chatbot you've just interacted with. Please indicate to what extent you agree or disagree with each statement.,0,0,0,
-q_expectation_confirmation2,The level of the chatbot's expressed emotion is how you would expect most chatbots to behave:,0,1,0,Agree | Disagree
-q_expectation_confirmation3,The level of the chatbot's emotional display was exactly what I expected:,0,1,0,Agree | Disagree
-q_expectation_confirmation4,"Overall, most of my expectations regarding the level of the chatbot's expressed emotion were confirmed:",0,1,0,Agree | Disagree
-q_learning_quality1,Please rate the help provided by the AI agent in each of the following items below:,0,1,0,"Poor|Excellent "
-q_learning_quality2,,0,1,0,Inferior|Superior
-q_learning_quality3,,0,1,0,Low standards|High standards
-q_learning_satisfaction1,"Overall, how satisfied or dissatisfied did your experience with the AI agent leave  you feeling?",0,1,0,Extremely dissatisfied|Extremely satisfied
-q_learning_satisfaction2,How well did this learning experience with the AI agent meet your needs?,0,1,0,Extremely poor|Extremely well
-q_learning_satisfaction3,"To what extent do you agree or disagree that overall, you are satisfied with the experience of interacting with the AI agent?",0,1,0," Strongly disagree|Strongly agree"
-q_comments,Do you wish to add anything?,1,0,0,
