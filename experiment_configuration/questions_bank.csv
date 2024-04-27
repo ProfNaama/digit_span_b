@@ -17,7 +17,7 @@ q_Boston_Quiz10,What was the Boston Tea Party's significance in global history?,
 q_service_quality1,Please rate the service provided by the customer service agent in each of the following items below:,0,1,0,Poor|Excellent 
 q_service_quality2,,0,1,0,Inferior|Superior
 q_service_quality3,,0,1,0,Low standards|High standards
-q_service_satisfaction1,"Overall, how satisfied or dissatisfied did your experience with the customer service agent leave  you feeling?",0,1,0,Extremely dissatisfied|Extremely satisfied
+q_service_satisfaction1,"Overall, how satisfied or dissatisfied did your experience with the customer service agent was?",0,1,0,Extremely dissatisfied|Extremely satisfied
 q_service_satisfaction2,How well did this service experience with the customer service agent meet your needs?,0,1,0,Extremely poor|Extremely well
 q_service_satisfaction3,"To what extent do you agree or disagree that overall, you are satisfied with the experience of  interacting with the customer service agent?",0,1,0, Strongly disagree|Strongly agree
 q_learning_quality1,"Please rate the help provided by the AI agent in each of the following items below:",0,1,0,"Poor|Excellent "
