@@ -38,25 +38,25 @@ q_user_emotion3,,0,1,0,Annoyed | Pleased
 q_user_emotion4,,0,1,0,Unhappy | Happy
 q_user_emotion5,,0,1,0,In a bad mood | In a good mood
 q_expectation_confirmation1,Below are statements dealing with your perception of the chatbot you've just interacted with. Please indicate to what extent you agree or disagree with each statement.,0,0,0,
-q_expectation_confirmation2,The level of the chatbot's expressed emotion is how you would expect most chatbots to behave:,0,1,0,Agree | Disagree
-q_expectation_confirmation3,The level of the chatbot's emotional display was exactly what I expected:,0,1,0,Agree | Disagree
-q_expectation_confirmation4,"Overall, most of my expectations regarding the level of the chatbot's expressed emotion were confirmed:",0,1,0,Agree | Disagree
+q_expectation_confirmation2,The level of the chatbot's expressed emotion is how you would expect most chatbots to behave:,0,1,0,Disagree|Agree
+q_expectation_confirmation3,The level of the chatbot's emotional display was exactly what I expected:,0,1,0,Disagree|Agree
+q_expectation_confirmation4,"Overall, most of my expectations regarding the level of the chatbot's expressed emotion were confirmed:",0,1,0,Disagree|Agree
 q_trust_general_label,"Please rate your level of agreement with the following statements:",0,0,0,
-q_trust_Reliability_Competence_1,The AI agent is capable of interpreting situations correctly.,0,1,0,Agree | Disagree
-q_trust_Reliability_Competence_2,The AI agent works reliably.,0,1,0,Agree | Disagree
-q_trust_Reliability_Competence_3,The AI agent malfunction is likely.,0,1,0,Agree | Disagree
-q_trust_Reliability_Competence_4,The AI agent is capable of taking over complicated tasks.,0,1,0,Agree | Disagree
-q_trust_Reliability_Competence_5,The AI agent might make sporadic errors.,0,1,0,Agree | Disagree
-q_trust_Reliability_Competence_6,I am confident about the AI agent's capabilities.,0,1,0,Agree | Disagree
-q_trust_Understanding_Predictability_1,The AI agent was always clear to me.,0,1,0,Agree | Disagree
-q_trust_Understanding_Predictability_2,The AI agent reacts predictably.,0,1,0,Agree | Disagree
-q_trust_Familiarity_1,I already know similar AI agents.,0,1,0,Agree | Disagree
-q_trust_Familiarity_2,I have already used similar AI agents. ,0,1,0,Agree | Disagree
-q_trust_Dev_Intention_1,The developers are trustworthy.,0,1,0,Agree | Disagree
-q_trust_Dev_Intention_2,The developers take my well-being seriously.,0,1,0,Agree | Disagree
-q_trust_Propensity_1,One should be careful with unfamiliar automated AI agents.,0,1,0,Agree | Disagree
-q_trust_Propensity_2,I rather trust an AI agent than I mistrust it.,0,1,0,Agree | Disagree
-q_trust_Propensity_3,Automated AI agents generally work well.,0,1,0,Agree | Disagree
-q_trust_1,I trust the AI agent.,0,1,0,Agree | Disagree
-q_trust_2,I can rely on the AI agent.,0,1,0,Agree | Disagree
+q_trust_Reliability_Competence_1,The AI agent is capable of interpreting situations correctly.,0,1,0,Disagree|Agree
+q_trust_Reliability_Competence_2,The AI agent works reliably.,0,1,0,Disagree|Agree
+q_trust_Reliability_Competence_3,The AI agent malfunction is likely.,0,1,0,Disagree|Agree
+q_trust_Reliability_Competence_4,The AI agent is capable of taking over complicated tasks.,0,1,0,Disagree|Agree
+q_trust_Reliability_Competence_5,The AI agent might make sporadic errors.,0,1,0,Disagree|Agree
+q_trust_Reliability_Competence_6,I am confident about the AI agent's capabilities.,0,1,0,Disagree|Agree
+q_trust_Understanding_Predictability_1,The AI agent was always clear to me.,0,1,0,Disagree|Agree
+q_trust_Understanding_Predictability_2,The AI agent reacts predictably.,0,1,0,Disagree|Agree
+q_trust_Familiarity_1,I already know similar AI agents.,0,1,0,Disagree|Agree
+q_trust_Familiarity_2,I have already used similar AI agents. ,0,1,0,Disagree|Agree
+q_trust_Dev_Intention_1,The developers are trustworthy.,0,1,0,Disagree|Agree
+q_trust_Dev_Intention_2,The developers take my well-being seriously.,0,1,0,Disagree|Agree
+q_trust_Propensity_1,One should be careful with unfamiliar automated AI agents.,0,1,0,Disagree|Agree
+q_trust_Propensity_2,I rather trust an AI agent than I mistrust it.,0,1,0,Disagree|Agree
+q_trust_Propensity_3,Automated AI agents generally work well.,0,1,0,Disagree|Agree
+q_trust_1,I trust the AI agent.,0,1,0,Disagree|Agree
+q_trust_2,I can rely on the AI agent.,0,1,0,Disagree|Agree
 q_comments,Do you wish to add anything?,1,0,0,
