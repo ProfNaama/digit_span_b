@@ -42,8 +42,13 @@ async function readAllCsvFiles() {
     treatmentGroups = Array.from(new Set(treatmentFroupConfigRecords.map(r => parseInt(r["treatment_group"]))));
 }
 
+const avatgarsPath = 'static/images/avatars/';
+function getAvatarImageFullPath(imageName) {
+    return path.join(avatgarsPath, imageName);
+}
+
 async function listAvatars(is_agent = true) {
-    const avatars = await fs.promises.readdir('static/images/avatars/');
+    const avatars = await fs.promises.readdir(avatgarsPath);
     return avatars.filter(f => f.startsWith(is_agent ? "agent_" : "user_")).map(f => path.join('static/images/avatars', f));
 }
 
@@ -349,6 +354,7 @@ module.exports = {
     getAndResetInteractionTime,
     saveSessionResults,
     listAvatars,
+    getAvatarImageFullPath,
     isCodeValid,
     setCodeCompleted,
     getRenderingParamsForPage,

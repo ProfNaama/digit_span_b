@@ -156,12 +156,12 @@ function verifyUserConsent(req, res, next) {
 };
 
 const agent_random_selection_array = [
-    {"user_name": "you", "user_avatar_image_id": 0, "agent_name": "Hannah", "agent_avatar_image_id" : 5},
-    {"user_name": "you", "user_avatar_image_id": 0, "agent_name": "Emma", "agent_avatar_image_id" : 10},
-    {"user_name": "you", "user_avatar_image_id": 0, "agent_name": "Abigail", "agent_avatar_image_id" : 11},
-    {"user_name": "you", "user_avatar_image_id": 0, "agent_name": "Andrew", "agent_avatar_image_id" : 1},
-    {"user_name": "you", "user_avatar_image_id": 0, "agent_name": "Ethan", "agent_avatar_image_id" : 2},
-    {"user_name": "you", "user_avatar_image_id": 0, "agent_name": "Joe", "agent_avatar_image_id" : 6}
+    {"user_name": "you", "user_avatar_image_name": "user_no_bias_photo.png", "agent_name": "Hannah", "agent_avatar_image_name" : "agent_avatar_5.png"},
+    {"user_name": "you", "user_avatar_image_name": "user_no_bias_photo.png", "agent_name": "Emma", "agent_avatar_image_name" : "agent_avatar_10.png"},
+    {"user_name": "you", "user_avatar_image_name": "user_no_bias_photo.png", "agent_name": "Abigail", "agent_avatar_image_name" : "agent_avatar_11.png"},
+    {"user_name": "you", "user_avatar_image_name": "user_no_bias_photo.png", "agent_name": "Andrew", "agent_avatar_image_name" : "agent_avatar_1.png"},
+    {"user_name": "you", "user_avatar_image_name": "user_no_bias_photo.png", "agent_name": "Ethan", "agent_avatar_image_name" : "agent_avatar_2.png"},
+    {"user_name": "you", "user_avatar_image_name": "user_no_bias_photo.png", "agent_name": "Joe", "agent_avatar_image_name" : "agent_avatar_6.png"}
 ];
 
 // Middlewares to be executed for every request to the app, making sure the session is initialized with user preferences.
@@ -173,9 +173,9 @@ async function verifyUserPreferences(req, res, next) {
             const random_assignment = agent_random_selection_array[helpers.getRandomInt(0, agent_random_selection_array.length)];
             req.session.preferences = {
                 "user_name": random_assignment["user_name"],
-                "user_avatar": user_avatars[random_assignment["user_avatar_image_id"]],
+                "user_avatar": helpers.getAvatarImageFullPath(random_assignment["user_avatar_image_name"]),
                 "agent_name": random_assignment["agent_name"],
-                "agent_avatar": agent_avatars[random_assignment["agent_avatar_image_id"]]
+                "agent_avatar": helpers.getAvatarImageFullPath(random_assignment["agent_avatar_image_name"])
             };
             
             Object.keys(req.body).forEach(key => {
