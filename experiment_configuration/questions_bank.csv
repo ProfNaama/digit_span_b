@@ -26,9 +26,9 @@ q_learning_quality3,"",0,1,0,"Low standards|High standards"
 q_learning_satisfaction1,"Overall, how satisfied or dissatisfied did your experience with the AI agent leave  you feeling?",0,1,0,"Extremely dissatisfied|Extremely satisfied"
 q_learning_satisfaction2,"How well did this learning experience with the AI agent meet your needs?",0,1,0,"Extremely poor|Extremely well"
 q_learning_satisfaction3,"To what extent do you agree or disagree that overall, you are satisfied with the experience of interacting with the AI agent?",0,1,0," Strongly disagree|Strongly agree"
-q_human_likeness1,"How would you evaluate the customer service agent using each of the following scales?",0,1,0,Very humanlike|Very mechanical
-q_human_likeness2,,0,1,0,Has many more human qualities|Has many more techno qualities 
-q_human_likeness3,,0,1,0,Very person-like | Very machine-like 
+q_human_likeness1,"How would you evaluate the customer service agent using each of the following scales?",0,1,0,Very mechanical|Very humanlike
+q_human_likeness2,,0,1,0,Has many more techno qualities|Has many more human qualities
+q_human_likeness3,,0,1,0,Very machine-like|Very person-like
 q_emotional_intensity1,"In your opinion, how much emotion was expressed by the customer service agent during your conversation?",0,1,0,Very little emotion | A great deal of emotion
 q_emotional_intensity2,,0,1,0,Very few feelings | A lot of feelings
 q_emotional_intensity3,,0,1,0,Expressed very few sentiments | Expressed many sentiments
