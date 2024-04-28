@@ -227,7 +227,7 @@ function sessionToJsonObject(req) {
         "code": req.session.code,
         "treatmentGroupId": req.session.treatmentGroupId,
         "initialTask": req.session.initialTask,
-        "preference": req.session.preference,
+        "preferences": req.session.preferences,
         "systemRoleHiddenContent": req.session.systemRoleHiddenContent,
         "conversationContext": req.session.conversationContext,
         "userConfigFilter": req.session.userConfigFilter,
