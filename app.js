@@ -72,7 +72,7 @@ function verifySession(req, res, next) {
                 req.session.prolificUid[key] = req.query[key];
             }
         });
-
+        req.session.sessionStartTime = new Date().toISOString();
         req.session.save();
         console.log("new session. uid: " + req.session.uid + 
             ", treatment group: " + req.session.treatmentGroupId + 
@@ -292,6 +292,7 @@ app.post('/user_questionnaire-ended', async (req, res) => {
     req.session.finished = true;
     req.session.completionCode = helpers.getRandomInt(1000000000, 9999999999);
     req.session.completionCode = "CJAAVSWW";
+    req.session.user_questionnaire_ended = new Date().toISOString();
     req.session.save();
     if (!config.resultsRedirectUrl){
         let renderParams = helpers.getRenderingParamsForPage("session_ended");
