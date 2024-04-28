@@ -157,10 +157,10 @@ function verifyUserConsent(req, res, next) {
 
 const agent_random_selection_array = [
     {"user_name": "you", "user_avatar_image_name": "user_no_bias_photo.png", "agent_name": "Hannah", "agent_avatar_image_name" : "agent_avatar_5.png"},
-    {"user_name": "you", "user_avatar_image_name": "user_no_bias_photo.png", "agent_name": "Emma", "agent_avatar_image_name" : "agent_avatar_10.png"},
-    {"user_name": "you", "user_avatar_image_name": "user_no_bias_photo.png", "agent_name": "Abigail", "agent_avatar_image_name" : "agent_avatar_11.png"},
+    {"user_name": "you", "user_avatar_image_name": "user_no_bias_photo.png", "agent_name": "Emma", "agent_avatar_image_name" : "agent_avatar_18.png"},
+    {"user_name": "you", "user_avatar_image_name": "user_no_bias_photo.png", "agent_name": "Abigail", "agent_avatar_image_name" : "agent_avatar_16.png"},
     {"user_name": "you", "user_avatar_image_name": "user_no_bias_photo.png", "agent_name": "Andrew", "agent_avatar_image_name" : "agent_avatar_1.png"},
-    {"user_name": "you", "user_avatar_image_name": "user_no_bias_photo.png", "agent_name": "Ethan", "agent_avatar_image_name" : "agent_avatar_2.png"},
+    {"user_name": "you", "user_avatar_image_name": "user_no_bias_photo.png", "agent_name": "Ethan", "agent_avatar_image_name" : "agent_avatar_14.png"},
     {"user_name": "you", "user_avatar_image_name": "user_no_bias_photo.png", "agent_name": "Joe", "agent_avatar_image_name" : "agent_avatar_6.png"}
 ];
 
