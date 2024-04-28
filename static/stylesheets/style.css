@@ -43,6 +43,7 @@
 .content {
     grid-area: main;
     border-radius: 12px;
+    min-height: 85vh;
 }
 
 .footer {
@@ -108,7 +109,7 @@
 
 .avatar_selection {
     width: 75vw;
-    height: 200px; 
+    /* height: 200px;  */
     overflow-y: scroll;
     overflow-x: hidden;
     display: flex;
