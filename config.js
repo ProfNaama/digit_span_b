@@ -1,7 +1,4 @@
 let config = {}
-// openai
-config.apiKey = process.env['OPENAI_API_KEY'];
-config.apiTokenLimit = parseInt(process.env["OPENAI_TOKEN_LIMIT"] || "200");
 
 // postgres
 config.connectionString = process.env['DATABASE_URL'];

@@ -6,75 +6,73 @@ block content
         h3 Task description:
         p= header_message
         h3 Click start to get started 
-        button start
+        button(id="start_button") start
 
     div(class='testNumbers')
         p(id='numbers') 
     
     div(id='userAnswer')
-        form(action="", method="post") 
-        input(type="text", name="UserAnswer")
-        input(type="submit", value="submit")
+        form(id="user_response") 
+            input(type="text", id="user_response_text" name="UserAnswer")
+            input(type="submit", value="submit")
 
 
-
-    //- div(id="conversation", class="conversation")
-    //- form(id="chatForm")
-    //-     label(for="message") User Text
-    //-     input(type="text" class="form-text-input" id="message" placeholder="Type your message here" required)
-    //-     input(type="submit" value="Send")
-    
-    //- br
-    
-
-    //- form(id="chatEndedForm" method='GET' action='/chat-ended')
-    //-     br
-    //-     input(type="submit" value="End Chat")
-    //- br
+    form(id="memTestEndedForm" method='GET' action='/chat-ended')
+        br
+        input(type="submit" value="End Chat")
+    br
 
     script.
 
         $(document).ready(function(){
-            const numbers = [4,2,3,7,8,1,2];
-            var changeNumber = (number)=> {
-                this.getElementById('numbers').innerHTML = number 
-            };
-            numbers.forEach(function(value,i) {
+            $('#memTestEndedForm').hide();
+
+            function onServerRandomNumbers(numbers){
+                if (!numbers || numbers.length === 0) {
+                    $('#memTestEndedForm').submit();
+                    return;
+                }   
+                document.getElementById('userAnswer').style.display = "none";
+                var changeNumber = (number)=> {
+                    document.getElementById('numbers').innerHTML = number 
+                };
+                
+                numbers.forEach(function(value,i) {
+                    setTimeout(()=>{
+                        changeNumber(value)
+                    }, i*1000);
+                });
+
                 setTimeout(()=>{
-                    changeNumber(value)
-                }, i*1000);
-            })
-            setTimeout(()=>{
-                changeNumber('')
-                this.getElementById('userAnswer').style.display = "block";
-            }, numbers.length*1000)
-       
-  
-            //- this.getElementById('numbers').innerHTML = '1';
-            //- setTimeout(()=>{
-            //-     this.getElementById('numbers').innerHTML = '2'
-            //- }, 1000);
-            //- setTimeout(()=>{
-            //-     this.getElementById('numbers').innerHTML = '3'
-            //- }, 2000);
-            
+                    changeNumber('');
+                    document.getElementById('userAnswer').style.display = "block";
+                }, numbers.length*1000);
+            };
 
+            $('#start_button').on('click', function(e){
+                e.preventDefault();
+                $.ajax({
+                    url: './mem-test-api',
+                    type: 'POST',
+                    data: {},
+                    success: onServerRandomNumbers,
+                    error: console.error
+                });
+                $('#start_button').hide();
+            });
 
-            //- $('#chatForm').on('submit', function(e){
-            //-     e.preventDefault();
-            //-     $("#conversation").children().removeClass("chat-last");
-
-            //-     const message = $('#message').val();
-            //-     addUserText(message);
-
-            //-     $.ajax({
-            //-         url: './chat-api',
-            //-         type: 'POST',
-            //-         data: {
-            //-             message: message
-            //-         },
-            //-         success: addAgentText,
-            //-         error: console.error
-            //-     });
-            //- });
+            $('#user_response').on('submit', function(e){
+                e.preventDefault();
+                const message = $('#user_response_text').val();
+                $('#user_response_text').val("");
+                $.ajax({
+                    url: './mem-test-api',
+                    type: 'POST',
+                    data: {
+                        user_response: message
+                    },
+                    success: onServerRandomNumbers,
+                    error: console.error
+                });
+            });
         });

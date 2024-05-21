@@ -1,6 +1,5 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-// const OpenAIApi = require("openai");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const app = express();
@@ -22,10 +21,6 @@ app.use(session({
 }));
 
 const maxUID = 100000;
-
-// const openai = new OpenAIApi({
-//     apiKey: config.apiKey
-// });
 
 // Middleware to initilaize the system
 async function verifySystemInitialized(req, res, next) {
@@ -54,13 +49,11 @@ function verifySession(req, res, next) {
         req.session.uid = helpers.getRandomInt(0, maxUID).toString();
         req.session.treatmentGroupId = helpers.getTreatmentGroupId(extractUid(req.session.uid));
         req.session.initialTask = ""
-        req.session.systemRoleHiddenContent = "";
         req.session.conversationContext = [];
         req.session.preferences = null;
         req.session.userConfigFilter = {};
         req.session.lastInteractionTime = null;
         req.session.quessionsAnswers = {};
-        req.session.global_measures = {}
         req.session.code = null;
         req.session.completionCode = null;
         req.session.consent = false;
@@ -240,10 +233,6 @@ async function renderUserPreferencesPage(req, res) {
 }
 
 app.get('/', async (req, res) => {
-    // At this point, the hidden prompts are ready (either the user did not need to choose or the user has already configured the properties).
-    // Save the hidden prompts to the session and redirect to the chat page, where the main interaction happens.
-    helpers.setSelectedHiddenPromptToSession(req);
-    helpers.logHiddenPrompts(req);
     let renderParams = helpers.getRenderingParamsForPage("chat");
     renderParams["preferences"] = req.session.preferences;
     renderParams["header_message"] = helpers.getUserTaskDescription(req);
@@ -251,32 +240,24 @@ app.get('/', async (req, res) => {
     res.render('./chat', renderParams);
 });
 
-// the main chat route.
-// each part of the conversation is stored in the session
-// the conversation context is sent to the openai chat api
-// response is sent back to the client
-// app.post('/chat-api', async (req, res) => {
-//     const message = req.body.message;
-//     req.session.conversationContext.push({ role: 'user', content: message, interactionTime: helpers.getAndResetInteractionTime(req) });
-//     const messageWithContext = helpers.createFullConversationPrompt(req);
-//     try {
-//         const chatCompletion = await openai.chat.completions.create({
-//             messages: messageWithContext,
-//             model: 'gpt-3.5-turbo',
-//             //model: "gpt-3.5-turbo-0125",
-//             //model: "gpt-4",
-//             max_tokens: config.apiTokenLimit,
-//             temperature: 0.7
-//         });
-//         const apiReply = chatCompletion.choices[0].message.content;
-//         req.session.conversationContext.push({ role: 'assistant', content: apiReply, interactionTime: helpers.getAndResetInteractionTime(req) });
-//         req.session.save();
-//         res.send(apiReply);
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ error: 'Error processing request' });
-//     }
-// });
+app.post('/mem-test-api', (req, res) => {
+    if ("user_response" in req.body && req.session.conversationContext.length > 0){
+        req.session.conversationContext[req.session.conversationContext.length-1]["user_response"] = req.body["user_response"];
+    }
+
+    if (req.session.conversationContext.length >= 5) {
+        req.session.save();
+        res.json([]);
+    } else {
+        let random_numbers = [];
+        for (let i = 0; i < 5; i++) {
+            random_numbers.push(helpers.getRandomInt(0, 100));
+        }
+        req.session.conversationContext.push({"random_numbers": random_numbers});
+        req.session.save();
+        res.json(random_numbers);
+    }
+});
 
 app.get('/chat-ended', (req, res) => {
     let renderParams = helpers.getRenderingParamsForPage("user_questionnaire");

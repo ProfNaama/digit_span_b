@@ -125,19 +125,6 @@ function mergeHiddenPrompts(prompts) {
     return hiddenPromptPrefix + prompts.join("\n");
 }
 
-function logHiddenPrompts(req) {
-    console.log("uid: " + req.session.uid + 
-        ", treatment group: " + req.session.treatmentGroupId + 
-        ", hidden system role is set to : " + req.session.systemRoleHiddenContent +
-        ", initial task: " + getInitialTaskContent(req)
-    );
-}
-
-function setSelectedHiddenPromptToSession(req) {
-    const hiddenSystemRoleContent = mergeHiddenPrompts(getSelectedPrompts(req));
-    req.session.systemRoleHiddenContent = hiddenSystemRoleContent;
-    req.session.save();
-}
 
 function getUserTestQuestions(req) {
     const treatmentGroupQuestions = getTreatmentGroupCsvRecords(req)[0]["user_questions"].split(";").map(q => q.trim());
@@ -171,15 +158,6 @@ function getInitialTaskContent(req) {
         req.session.initialTask = getFirstCsvRecordValue(getTreatmentGroupCsvRecords(req), "agent_task_description");
     }
     return req.session.initialTask;
-}
-
-function createFullConversationPrompt(req) {
-    const initialTaskContent = getInitialTaskContent(req);
-    let conversationSystemRole = {"role": "system", "content": req.session.systemRoleHiddenContent + "\n" + initialTaskContent}; 
-    const conversation = req.session.conversationContext.map(c => ({role: c.role, content: c.content}));
-    const messageWithContext = [conversationSystemRole].concat(conversation);
-
-    return messageWithContext;
 }
 
 function groupRecordsByProperty(records) {
@@ -224,7 +202,6 @@ function sessionToJsonObject(req) {
         "treatmentGroupId": req.session.treatmentGroupId,
         "initialTask": req.session.initialTask,
         "preferences": req.session.preferences,
-        "systemRoleHiddenContent": req.session.systemRoleHiddenContent,
         "conversationContext": req.session.conversationContext,
         "userConfigFilter": req.session.userConfigFilter,
         "quessionsAnswers": req.session.quessionsAnswers,
@@ -340,11 +317,8 @@ module.exports = {
     getFirstCsvRecordValue,
     getRandomInt,
     getSelectedRecords,
-    createFullConversationPrompt,
     filterUserConfigProperties,
     groupRecordsByProperty,
-    setSelectedHiddenPromptToSession,
-    logHiddenPrompts,
     getAndResetInteractionTime,
     saveSessionResults,
     listAvatars,
