@@ -8,7 +8,6 @@ const csvBasePath = "experiment_configuration/";
 const csvDB = {};
 
 let treatmentFroupConfigRecords;
-let measuresRecords;
 let userQuestionnaireRecords;
 let experimentDescRecords;
 let treatmentGroups;
@@ -36,7 +35,6 @@ async function readAllCsvFiles() {
         })
     );
     treatmentFroupConfigRecords = getCsvRecords("treatment_groups_config.csv");
-    measuresRecords = getCsvRecords("chatgpt_measures.csv");
     userQuestionnaireRecords = getCsvRecords("questions_bank.csv");
     experimentDescRecords = getCsvRecords("experiment_desc.csv");
     treatmentGroups = Array.from(new Set(treatmentFroupConfigRecords.map(r => parseInt(r["treatment_group"]))));
@@ -72,10 +70,6 @@ function getFirstCsvRecordValue(csvRecords, property_name) {
 
 function getTreatmentGroupCsvRecords(req) {
     return treatmentFroupConfigRecords.filter(r => parseInt(r["treatment_group"]) === req.session.treatmentGroupId);
-}
-
-function getMeasuresRecords() {
-    return measuresRecords;
 }
 
 function getTreatmentGroupId(uid) { 
@@ -234,7 +228,6 @@ function sessionToJsonObject(req) {
         "conversationContext": req.session.conversationContext,
         "userConfigFilter": req.session.userConfigFilter,
         "quessionsAnswers": req.session.quessionsAnswers,
-        "global_measures": req.session.global_measures,
         "completionCode": req.session.completionCode
     }
     return sessionJson;
@@ -342,7 +335,6 @@ async function setCodeCompleted(code, obj) {
 
 module.exports = {
     waitForSystemInitializiation,
-    getMeasuresRecords,
     getTreatmentGroupId,
     getCsvRecords,
     getFirstCsvRecordValue,
