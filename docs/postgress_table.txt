@@ -1,12 +1,12 @@
 
-CREATE TABLE results (
+CREATE TABLE mem_test_results (
     uuid        integer,
     userid      varchar(256),
     result      json
 );
 
 
-CREATE TABLE codes (
+CREATE TABLE mem_test_codes (
     code      varchar(256) NOT NULL,
     completed   json,
     PRIMARY KEY (code)
@@ -20,20 +20,6 @@ d = list(map(str, range(10))) + [chr(ord("a")+i) for i in range(26)]
 for i in range(100):
     print("(\'" + "".join([d[random.randint(0, len(d)-1)]  for i in range(10)]) + "\'),")
 
-INSERT INTO codes (code) VALUES 
-('i7eykhmphz'),
-('oarrnevoo9'),
-('48x6bsscue'),
-('02tizjzqj0'),
-('x5rzoqq2nh'),
-('upk7yujh2a'),
-('mnqo1zxxwg'),
-('v1jrcv5oxj'),
-('thova77bsj'),
-('a0gxdz6emj'),
-('tvag68f0of')
-;
-
 
 # fetch results 
-select * from codes join results on codes.completed->>'uid' = CAST(results.uuid AS TEXT);
+select * from mem_test_codes join mem_test_results on mem_test_codes.completed->>'uid' = CAST(mem_test_results.uuid AS TEXT);

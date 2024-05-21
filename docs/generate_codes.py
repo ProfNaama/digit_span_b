@@ -16,7 +16,7 @@ def generate_csv_format(codes):
 
 # prapare for PostgreSQL
 def generate_postgresql_format(codes):
-    print ("INSERT INTO codes (code) VALUES")
+    print ("INSERT INTO mem_test_codes (code) VALUES")
     print(",\n".join(["(\'" + c + "\')" for c in codes]))
     print (";")
     

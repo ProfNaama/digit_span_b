@@ -318,7 +318,7 @@ newclktu8f
 ib6bikc49z
 lddlgh6u0y
 1xmqa5zevg
-INSERT INTO codes (code) VALUES
+INSERT INTO mem_test_codes (code) VALUES
 ('i7eykhmphz')
 ('oarrnevoo9')
 ('rbveqhn79s')
