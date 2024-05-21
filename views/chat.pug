@@ -9,9 +9,9 @@ block content
         button start
 
     div(class='testNumbers')
-        p 1, 2, 3, 4,5
+        p(id='numbers') 
     
-    div(class='userAnswer')
+    div(id='userAnswer')
         form(action="", method="post") 
         input(type="text", name="UserAnswer")
         input(type="submit", value="submit")
@@ -33,70 +33,48 @@ block content
     //- br
 
     script.
-        const preferences_user_avatar = !{JSON.stringify(preferences.user_avatar)} ? !{JSON.stringify(preferences.user_avatar)} : "";
-        const preferences_agent_avatar = !{JSON.stringify(preferences.agent_avatar)} ? !{JSON.stringify(preferences.agent_avatar)} : "";
-        const preferences_user_name = !{JSON.stringify(preferences.user_name)} ? !{JSON.stringify(preferences.user_name)} : "";
-        const preferences_agent_name = !{JSON.stringify(preferences.agent_name)} ? !{JSON.stringify(preferences.agent_name)} : "";
 
-
-        function updateConversationScroll(){
-            var element = document.getElementById("conversation");
-            element.scrollTop = element.scrollHeight - element.clientHeight;
-        }
-
-        function addUserText(userText){
-            let element = document.createElement("div");
-            element.className = "chat-user chat-last";
-            let UserCard = document.createElement("div");
-            UserCard.className = "user-card";
-            element.appendChild(UserCard);
-            let img_elem = document.createElement("img");
-            img_elem.className = "chat-avatar";
-            img_elem.setAttribute("src", preferences_user_avatar);
-            UserCard.appendChild(img_elem);
-            UserCard.appendChild(document.createTextNode(preferences_user_name));
-            element.appendChild(document.createTextNode(userText));
-            document.getElementById('conversation').appendChild(element);
-            updateConversationScroll();
-            $('#chatForm')[0].reset();
-        }
-
-        function addAgentText(agentText){
-            let element = document.createElement("div");
-            element.className = "chat-agent chat-last";
-            let AgentCard = document.createElement("div");
-            AgentCard.className = "agent-card";
-            element.appendChild(AgentCard);
-            let img_elem = document.createElement("img");
-            img_elem.className = "chat-avatar";
-            img_elem.setAttribute("src", preferences_agent_avatar);
-            AgentCard.appendChild(img_elem);
-            AgentCard.appendChild(document.createTextNode(preferences_agent_name));
-            let htmlText = document.createElement("p")
-            htmlText.innerHTML = agentText.replace(new RegExp("\n", "g"), "<br/>"); 
-            element.appendChild(htmlText);
-            document.getElementById('conversation').appendChild(element);
-
-            updateConversationScroll();
-        }
-    
         $(document).ready(function(){
-            addAgentText("Hi, how can I help you today?");
-            $('#chatForm').on('submit', function(e){
-                e.preventDefault();
-                $("#conversation").children().removeClass("chat-last");
+            const numbers = [4,2,3,7,8,1,2];
+            var changeNumber = (number)=> {
+                this.getElementById('numbers').innerHTML = number 
+            };
+            numbers.forEach(function(value,i) {
+                setTimeout(()=>{
+                    changeNumber(value)
+                }, i*1000);
+            })
+            setTimeout(()=>{
+                changeNumber('')
+                this.getElementById('userAnswer').style.display = "block";
+            }, numbers.length*1000)
+       
+  
+            //- this.getElementById('numbers').innerHTML = '1';
+            //- setTimeout(()=>{
+            //-     this.getElementById('numbers').innerHTML = '2'
+            //- }, 1000);
+            //- setTimeout(()=>{
+            //-     this.getElementById('numbers').innerHTML = '3'
+            //- }, 2000);
+            
 
-                const message = $('#message').val();
-                addUserText(message);
 
-                $.ajax({
-                    url: './chat-api',
-                    type: 'POST',
-                    data: {
-                        message: message
-                    },
-                    success: addAgentText,
-                    error: console.error
-                });
-            });
+            //- $('#chatForm').on('submit', function(e){
+            //-     e.preventDefault();
+            //-     $("#conversation").children().removeClass("chat-last");
+
+            //-     const message = $('#message').val();
+            //-     addUserText(message);
+
+            //-     $.ajax({
+            //-         url: './chat-api',
+            //-         type: 'POST',
+            //-         data: {
+            //-             message: message
+            //-         },
+            //-         success: addAgentText,
+            //-         error: console.error
+            //-     });
+            //- });
         });
