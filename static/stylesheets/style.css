@@ -89,108 +89,23 @@
 }
 
 
-
-.conversation {
-    /* max height is 75% of the screen height; */
-    max-height: 75vh;
-    overflow-y: scroll;
-    display: flex; 
-    flex-direction: column; 
-    padding: 0px;
-    margin: 0px;
-}
-
-.chat-user , .chat-agent{
-    /* this is the box of the user */
-    margin-left: 0px;
-    padding-left: 0px;
-    display: flex;
-    flex-direction: row;
-}
-
-.agent-card, .user-card {
-    display: flex;
-    flex-direction:column;
-    text-align: center;
-}
-
-
-
-/* .chat-agent {
-    this is the box of the AI
-    margin: 10px
-} */
-
 .chat-avatar {
-    /* this is the box of both icons */
     border-radius: 50%;
     background-color: var(--gray);
     height: 100px;
 }
 
+
 .chat-last {
     border: 2px solid var(--grayBLU);
     border-radius: 12px;     
     margin: 10px
-}
+} 
 
-/* .avatar_grid {
-    border: 1px solid black;
-    display: grid;
-    grid-template-areas: 
-    "user_avatar agent_avatar";    
-} */
 
 .task_description{
     background-color: var(--grayBLU);
     height: 300px;
-}
-
-.avatar_selection {
-    width: 75vw;
-    /* height: 200px;  */
-    overflow-y: scroll;
-    overflow-x: hidden;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-}
-
-/* .agent_avatar {
-    grid-area: agent_avatar;
-}
-
-.user_avatar {
-    grid-area: user_avatar;
-} */
-
-.cardContainer {
-    border: 2px solid var(--gray);
-    border-radius: 12px;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-}
-.cardA {
-    width: 12%;
-    background-color: white;
-}
-
-.cardB {
-    width: 80%;
-    background-color: white;
-}
-
-.avatarIMG {
-    background-color: lightgray;
-    border-radius: 50%;
-    width: 100%;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;}
-
-#avatarName {
-    text-align: center;
 }
 
 #chatForm {
@@ -220,22 +135,11 @@ input[type=submit] {
   
 }
 
-
-
-#avaterSelect {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-}
-
 form * {
     width: max-content;
     margin: inherit;
 }
 
-.AvatarOption * {
-    display: block;
-}
 
 p {
     line-height: 133%;
@@ -250,7 +154,6 @@ p {
 .LikertItemTable td {
     width: 33%;
     padding: auto;
-    /* text-align: center; */
 }
 
 .H3_q_Item {
