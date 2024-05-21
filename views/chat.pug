@@ -4,9 +4,11 @@ block content
     div(class='task_description') 
         h2 Please read the following task description and complete the task.
         h3 Task description:
-        p Below is a digit span test. Test how many digits you can remember in your short-term memory. Once you click the start button, a sequence of numbers will appear in the gray box below. You are required to repeat the sequences of numbers as best as you can.
+        p Below is a digit span test. Test how many digits you can remember in your short-term memory. Once you click the start button, a sequence of numbers will appear in the yellow box below. You are required to repeat the sequences of numbers as best as you can.
         h3 Click start to get started 
         button(id="start_button") start
+    br
+    br
 
     div(class='testNumbers')
         p(id='numbers') 
@@ -48,6 +50,7 @@ block content
                 setTimeout(()=>{
                     changeNumber('');
                     document.getElementById('userAnswer').style.display = "block";
+                    document.getElementById('user_response_text').focus();                    
                 }, numbers.length*1000);
             };
 

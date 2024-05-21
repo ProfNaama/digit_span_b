@@ -250,7 +250,7 @@ app.post('/mem-test-api', (req, res) => {
         res.json([]);
     } else {
         let random_numbers = [];
-        for (let i = 0; i < 5; i++) {
+        for (let i = 0; i < 8; i++) {
             random_numbers.push(helpers.getRandomInt(0, 10));
         }
         req.session.conversationContext.push({"random_numbers": random_numbers});

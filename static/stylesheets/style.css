@@ -53,7 +53,7 @@
 }
 
 .testNumbers {
-    background-color: var(--Light_Gray);
+    background-color: yellow;
     width: fit-content;
     margin: auto;
     border-radius: 16px;
