@@ -2,14 +2,16 @@ extends layout
 block content 
     script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js")
     div(class='task_description') 
-        h2 Please read the following task description and engage with the AI agent to complete the task.
+        h2 Please read the following task description and complete the task.
         h3 Task description:
-        p= header_message
+        p Below is a digit span test. Test how many digits you can remember in your short-term memory. Once you click the start button, a sequence of numbers will appear in the gray box below. You are required to repeat the sequences of numbers as best as you can.
         h3 Click start to get started 
         button(id="start_button") start
 
     div(class='testNumbers')
         p(id='numbers') 
+    br
+    br
     
     div(id='userAnswer')
         form(id="user_response") 

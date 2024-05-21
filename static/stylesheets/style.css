@@ -52,9 +52,42 @@
     border-radius: 12px;
 }
 
+.testNumbers {
+    background-color: var(--Light_Gray);
+    width: fit-content;
+    margin: auto;
+    border-radius: 16px;
+}
+
+#numbers { 
+    height: 100px;
+    width: 100px;
+    margin: auto;
+    font-size: 50px;
+    text-align: center;
+    line-height: 100px;
+}
+
 #userAnswer { 
     display: none;
+    background-color: var(--Light_Gray);
+    width: fit-content;
+    margin: auto;
+    border-radius: 16px;
 }
+
+#user_response_text {
+    border-radius: 16px;
+    border: 1px solid white;
+}
+
+#start_button {
+    background-color:gray;
+    color: white;
+    border-radius: 12px;
+    border: 1px solid gray;
+}
+
 
 
 .conversation {
@@ -110,6 +143,7 @@
 
 .task_description{
     background-color: var(--grayBLU);
+    height: 300px;
 }
 
 .avatar_selection {
