@@ -33,7 +33,7 @@ block content
                     table(class="LikertItemTable") 
                         tr 
                             td 
-                                label= "0 (" + value["likert_scale"][0] + ")"
+                                label= "1 (" + value["likert_scale"][0] + ")"
                             td
                                 input(type='radio', class="radio_selection" name=value["name"], value="1", required="required")
                                 input(type='radio', class="radio_selection" name=value["name"], value="2", required="required")
@@ -44,6 +44,11 @@ block content
                                 input(type='radio', class="radio_selection" name=value["name"], value="7", required="required") 
                             td
                                 label= "7 (" + value["likert_scale"][1] + ")" 
+                else if value["is_insturctions"] == true
+                    br
+                    br
+                    h3(class="instructions_q_Item")=value["label"]
+                    br
                 else 
                     if value["label"]
                         br

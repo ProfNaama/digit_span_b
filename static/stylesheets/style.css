@@ -143,3 +143,9 @@ p {
 .H3_q_Item {
     width: 60vw;
 }
+
+.instructions_q_Item {
+    font-size: x-large;
+    background-color: var(--grayBLU);
+    border-radius: 16px;
+}
