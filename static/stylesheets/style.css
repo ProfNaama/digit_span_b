@@ -52,6 +52,11 @@
     border-radius: 12px;
 }
 
+#userAnswer { 
+    display: none;
+}
+
+
 .conversation {
     /* max height is 75% of the screen height; */
     max-height: 75vh;
