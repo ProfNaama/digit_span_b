@@ -9,8 +9,6 @@ const csvDB = {};
 
 let treatmentFroupConfigRecords;
 let userQuestionnaireRecords;
-let experimentDescRecords;
-let treatmentGroups;
 
 // read the csv files and store them in the csvDB
 // we use async createReadStream to parse records
@@ -36,18 +34,6 @@ async function readAllCsvFiles() {
     );
     treatmentFroupConfigRecords = getCsvRecords("treatment_groups_config.csv");
     userQuestionnaireRecords = getCsvRecords("questions_bank.csv");
-    experimentDescRecords = getCsvRecords("experiment_desc.csv");
-    treatmentGroups = Array.from(new Set(treatmentFroupConfigRecords.map(r => parseInt(r["treatment_group"]))));
-}
-
-const avatgarsPath = 'static/images/avatars/';
-function getAvatarImageFullPath(imageName) {
-    return path.join(avatgarsPath, imageName);
-}
-
-async function listAvatars(is_agent = true) {
-    const avatars = await fs.promises.readdir(avatgarsPath);
-    return avatars.filter(f => f.startsWith(is_agent ? "agent_" : "user_")).map(f => path.join('static/images/avatars', f));
 }
 
 let initializationPromise = new Promise((resolve, reject) => {
@@ -69,11 +55,7 @@ function getFirstCsvRecordValue(csvRecords, property_name) {
 }
 
 function getTreatmentGroupCsvRecords(req) {
-    return treatmentFroupConfigRecords.filter(r => parseInt(r["treatment_group"]) === req.session.treatmentGroupId);
-}
-
-function getTreatmentGroupId(uid) { 
-    return treatmentGroups[(uid % treatmentGroups.length)];
+    return treatmentFroupConfigRecords;
 }
 
 // notice that in case we want to reproduce random numbers, we could add the flag --random_seed=42 (or whatever number) to the node command.
@@ -83,27 +65,6 @@ function getRandomInt(min, max) {
     return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); // The maximum is exclusive and the minimum is inclusive
 }
 
-function getSelectedRecords(req) {
-    // filter the records according to the user's treatment group and user config filter
-    const treatmentGroupRecords =  treatmentFroupConfigRecords.filter(r => parseInt(r["treatment_group"]) === req.session.treatmentGroupId);
-    let filteredRecords = [];
-    for (const record of treatmentGroupRecords) {
-        let match = true;
-        for (const [userK, userV] of Object.entries(req.session.userConfigFilter)) {
-            if (record["property_name"] == [userK]) {
-                match = false;
-                if (record["property_value"] == userV) {
-                    match = true;
-                    break;
-                }
-            }
-        }
-        if (match) {
-            filteredRecords.push(record);
-        }   
-    }
-    return filteredRecords;
-}
 
 function getRenderingParamsForPage(page) {
     let params = {
@@ -115,16 +76,6 @@ function getRenderingParamsForPage(page) {
     
     return params;
 }
-
-function getSelectedPrompts(req) {
-    return getSelectedRecords(req).map(r => r["hidden_prompt"]);
-}
-
-const hiddenPromptPrefix = "You have the following set of properties:\n";
-function mergeHiddenPrompts(prompts) {    
-    return hiddenPromptPrefix + prompts.join("\n");
-}
-
 
 function getUserTestQuestions(req) {
     const treatmentGroupQuestions = getTreatmentGroupCsvRecords(req)[0]["user_questions"].split(";").map(q => q.trim());
@@ -146,42 +97,6 @@ function getUserTestQuestions(req) {
     return questions;
 }
 
-function getUserTaskDescription(req) {
-    return getFirstCsvRecordValue(getTreatmentGroupCsvRecords(req), "user_task_description");
-}
-
-function isUserPreferencesActive(req) {
-    return getFirstCsvRecordValue(getTreatmentGroupCsvRecords(req), "choose_preferences") === "1";
-}
-
-
-function getInitialTaskContent(req) {
-    if (!req.session.initialTask) {
-        req.session.initialTask = getFirstCsvRecordValue(getTreatmentGroupCsvRecords(req), "agent_task_description");
-    }
-    return req.session.initialTask;
-}
-
-function groupRecordsByProperty(records) {
-    let recordsByProperty = {};
-    for (const record of records) {
-        if (!recordsByProperty[record["property_name"]]) {
-            recordsByProperty[record["property_name"]] = [];
-        }
-        recordsByProperty[record["property_name"]].push(record["property_value"]);
-    }
-    return recordsByProperty;}
-
-function filterUserConfigProperties(recordsByProperty) {
-    // filter those properties that have more than one value, so the user can select a preference
-    let userConfigProperties = {};
-    Object.keys(recordsByProperty).forEach(k => {
-        if (recordsByProperty[k].length > 1) {
-            userConfigProperties[k] = recordsByProperty[k];
-        }
-    });
-    return userConfigProperties;
-}
 
 function getAndResetInteractionTime(req) {
     let currentTime = Date.now()
@@ -201,11 +116,7 @@ function sessionToJsonObject(req) {
         "userQuestionnaireEnded": req.session.user_questionnaire_ended,
         "prolificUid": req.session.prolificUid,
         "code": req.session.code,
-        "treatmentGroupId": req.session.treatmentGroupId,
-        "initialTask": req.session.initialTask,
-        "preferences": req.session.preferences,
         "conversationContext": req.session.conversationContext,
-        "userConfigFilter": req.session.userConfigFilter,
         "quessionsAnswers": req.session.quessionsAnswers,
         "completionCode": req.session.completionCode
     }
@@ -314,21 +225,13 @@ async function setCodeCompleted(code, obj) {
 
 module.exports = {
     waitForSystemInitializiation,
-    getTreatmentGroupId,
     getCsvRecords,
     getFirstCsvRecordValue,
     getRandomInt,
-    getSelectedRecords,
-    filterUserConfigProperties,
-    groupRecordsByProperty,
     getAndResetInteractionTime,
     saveSessionResults,
-    listAvatars,
-    getAvatarImageFullPath,
     isCodeValid,
     setCodeCompleted,
     getRenderingParamsForPage,
-    getUserTaskDescription,
-    isUserPreferencesActive,
     getUserTestQuestions
 }

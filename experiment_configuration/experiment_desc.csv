@@ -5,4 +5,3 @@ user_questionnaire,Thank You for chatting,Please fill out the next set of questi
 session_ended,Thank You for participating in the experiment.,Please save the following completion code for your records for Prolific completion verification.,
 error,We are sorry - an error has occured. Please close your browser and try again,,
 welcome_code,Welcome,Please enter your unique code you recieved for this website (don't enter your prolific password),
-user_preferences,Welcome to the ChatLab experiment website,In the next page you will be asked to engageg with an AI agent. Please personalize this agent:,Please select the following properties of the agent
