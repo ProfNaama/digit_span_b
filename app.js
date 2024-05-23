@@ -94,16 +94,6 @@ async function verifySessionCode(req, res, next) {
             const isCodeValid = await helpers.isCodeValid(req.body["code"]);
             if (isCodeValid) {
                 req.session.code = req.body["code"];
-                if (req.session.prolificUid["prolific_pid"] !== req.body["prolificPID"]) {
-                    if (!req.session.prolificUid["prolific_pid"]){
-                        req.session.prolificUid["prolific_pid"] = req.body["prolificPID"];
-                        console.log("notice. session. uid: " + req.session.uid + ", updated prolific_pid: " + req.session.prolificUid["prolific_pid"]);
-                    }
-                    if (req.session.prolificUid["prolific_pid"] !== req.body["prolificPID"]) { 
-                        req.session.prolificUid["user_reported_prolific_pid"] = req.body["prolificPID"];
-                        console.log("notice: user_reported_prolific_pid: " + req.session.prolificUid["user_reported_prolific_pid"] + " differs from prolific_pid: " + req.session.prolificUid["prolific_pid"]);
-                    }
-                }
                 req.session.save();
                 res.redirect(302, "/");
                 return;

@@ -5,10 +5,7 @@ block content
 
     form(method='POST' action='/welcome_code')
         p
-        label(for="proloficPID") Your prolific ID
-        input(type="text", id="proloficPID", class="form-text-input" name="prolificPID", placeholder="Prolific personal ID... ", required)
-        br
-        label(for="prolificCode") Your unique password for this website
-        input(type="text", id="prolificCode", class="form-text-input" name="code", placeholder="Unique entry password... ", required)
+        label(for="prolificCode") Your unique code for this website
+        input(type="text", id="prolificCode", class="form-text-input" name="code", placeholder="Unique entry code... ", required)
         br
         input(type='submit', value='Enter')
