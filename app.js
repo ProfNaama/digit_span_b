@@ -41,9 +41,10 @@ function verifySession(req, res, next) {
         req.session.finished = false;
         req.session.prolificUid = {};
         Object.keys(req.query).forEach(key => {
+            let value = req.query[key];
             key = key.toLowerCase();
             if (key === "prolific_pid" || key === "study_id" || key === "session_id") {
-                req.session.prolificUid[key] = req.query[key];
+                req.session.prolificUid[key] = value;
             }
         });
         req.session.sessionStartTime = new Date().toISOString();
