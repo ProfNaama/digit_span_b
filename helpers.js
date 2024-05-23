@@ -137,8 +137,10 @@ function getUserTestQuestions(req) {
             const is_text = record["is_text"] == "1" ? true : false;
             const is_likert = record["is_likert"] == "1" ? true : false ;
             const is_multi_choise = record["is_multi_choice"] == "1" ? true : false ;
+            const is_insturctions = record["is_insturctions"] == "1" ? true : false ;
+
             const multi_choise_options = record["multi_choice_options"].split("|").map(o => o.trim());
-            questions.push({"name": name, "label": label, "is_text": is_text, "is_likert": is_likert, "likert_scale": multi_choise_options, "is_multi_choice": is_multi_choise, "choices": multi_choise_options});
+            questions.push({"name": name, "label": label, "is_text": is_text, "is_likert": is_likert, "likert_scale": multi_choise_options, "is_multi_choice": is_multi_choise, "is_insturctions": is_insturctions, "choices": multi_choise_options});
         });
     });
     return questions;

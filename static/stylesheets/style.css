@@ -130,7 +130,7 @@ p {
 }
 
 .LikertItemTable {
-    width: 60vw;
+    width: 80%;
     background-color: var(--Light_Gray);
     border-radius: 24px;
 }
@@ -141,11 +141,66 @@ p {
 }
 
 .H3_q_Item {
-    width: 60vw;
+    width: 80%;
 }
 
 .instructions_q_Item {
-    font-size: x-large;
-    background-color: var(--grayBLU);
-    border-radius: 16px;
+    width: 80%;
+    font-size: 22px;
+    line-height:200%;
+    /* text-decoration: underline; */
+    font-style: italic;
 }
+
+@media screen and (max-width: 600px) {
+
+    /* label, span{
+        color: red;
+        font-size:x-large;
+    } */
+    .container {
+        display: grid;
+        grid-template-areas: 
+        "header header header"
+        "main main main"
+        "footer footer footer";
+        grid-template-columns: 90%;
+
+    }
+
+    .left {
+        display: none;
+    }
+
+    .LikertItemTable {
+        width: 100%;
+        background-color: var(--Light_Gray);
+        border-radius: 24px;
+    }
+
+    .LikertItemTable label {
+        font-size: smaller;
+    }
+
+    .LikertItemTable input {
+        width: 9px;
+    }
+
+    .LikertItemTable td {
+        width: 33%;
+        padding: auto;
+    }
+    
+    .H3_q_Item {
+        width: 100%;
+    }
+    
+    .instructions_q_Item {
+        width: 100%;
+        font-size: 22px;
+        line-height:200%;
+        /* text-decoration: underline; */
+        font-style: italic;
+    }
+  }
+
