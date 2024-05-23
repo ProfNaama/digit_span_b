@@ -16,7 +16,7 @@ Fink_Q_8,When I use this device I frequently experience cognitive load,0,1,0,0,s
 Fink_Q_9,When I use this device I frequently feel that my capacity to store information in my memory is limited,0,1,0,0,strongly disagree|strongly agree
 Fink_Q_10,When I use this device I generally devote limited time to any specific task,0,1,0,0,strongly disagree|strongly agree
 Fink_Q_11,When I use this device I prefer to switch between tasks rather than to devote my time to one specific task,0,1,0,0,strongly disagree|strongly agree
-Calstera_instructions,Considering you day to day please rate your agreement with the following statements on a scale of 1 to 7(1 representing strongly disagree and 7 representing strongly agree),0,0,0,1,
+Calstera_instructions,"Considering your day to day, please rate your agreement with the following statements on a scale of 1 to 7(1 representing strongly disagree and 7 representing strongly agree)",0,0,0,1,
 Calstera_Q_1,I have trouble concentrating when there is movement in the room I am in,0,1,0,0,strongly disagree|strongly agree
 Calstera_Q_2,In general I stay in control of my thoughts and do not let myself get distracted by interfering thoughts,0,1,0,0,strongly disagree|strongly agree
 Calstera_Q_3,I am easily drawn to new stimuli (for example voices of people passing by a sound in the house etc.) that are not relevant to a task I am doing.,0,1,0,0,strongly disagree|strongly agree
