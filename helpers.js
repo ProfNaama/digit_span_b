@@ -68,7 +68,7 @@ function getRandomInt(min, max) {
 
 function getRenderingParamsForPage(page) {
     let params = {
-        title: "ChatLab",
+        title: "DigitSpan",
         header_message: getFirstCsvRecordValue(getCsvRecords("experiment_desc.csv").filter(raw => raw["page"] === page), "header"), 
         body_message: getFirstCsvRecordValue(getCsvRecords("experiment_desc.csv").filter(raw => raw["page"] === page), "body1"), 
         body2_message: getFirstCsvRecordValue(getCsvRecords("experiment_desc.csv").filter(raw => raw["page"] === page), "body2"), 
