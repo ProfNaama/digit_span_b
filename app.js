@@ -28,30 +28,11 @@ async function verifySystemInitialized(req, res, next) {
     next();
 };
 
-function extractUid(uidStr){
-    if (!uidStr || uidStr.length == 0) {
-        console.log("uidStr not valid. generating a randon uid");
-        return helpers.getRandomInt(0, maxUID)
-    }
-    
-    let intcode = 0;
-    for (let i = 0; i < uidStr.length; i++) {
-        intcode *= 65535;
-        intcode += uidStr.charCodeAt(i);
-        intcode = intcode % maxUID;
-    }
-    return intcode;
-}
-
 // Middlewares to be executed for every request to the app, making sure the session is initialized with uid, treatment group id, etc.
 function verifySession(req, res, next) {
     if (!req.session.uid) {
         req.session.uid = helpers.getRandomInt(0, maxUID).toString();
-        req.session.treatmentGroupId = helpers.getTreatmentGroupId(extractUid(req.session.uid));
-        req.session.initialTask = ""
         req.session.conversationContext = [];
-        req.session.preferences = null;
-        req.session.userConfigFilter = {};
         req.session.lastInteractionTime = null;
         req.session.quessionsAnswers = {};
         req.session.code = null;
@@ -60,15 +41,15 @@ function verifySession(req, res, next) {
         req.session.finished = false;
         req.session.prolificUid = {};
         Object.keys(req.query).forEach(key => {
+            let value = req.query[key];
             key = key.toLowerCase();
             if (key === "prolific_pid" || key === "study_id" || key === "session_id") {
-                req.session.prolificUid[key] = req.query[key];
+                req.session.prolificUid[key] = value;
             }
         });
         req.session.sessionStartTime = new Date().toISOString();
         req.session.save();
         console.log("new session. uid: " + req.session.uid + 
-            ", treatment group: " + req.session.treatmentGroupId + 
             ", prolific_uid: " + req.session.prolificUid["prolific_pid"]);
     }
     next();
@@ -94,16 +75,6 @@ async function verifySessionCode(req, res, next) {
             const isCodeValid = await helpers.isCodeValid(req.body["code"]);
             if (isCodeValid) {
                 req.session.code = req.body["code"];
-                if (req.session.prolificUid["prolific_pid"] !== req.body["prolificPID"]) {
-                    if (!req.session.prolificUid["prolific_pid"]){
-                        req.session.prolificUid["prolific_pid"] = req.body["prolificPID"];
-                        console.log("notice. session. uid: " + req.session.uid + ", updated prolific_pid: " + req.session.prolificUid["prolific_pid"]);
-                    }
-                    if (req.session.prolificUid["prolific_pid"] !== req.body["prolificPID"]) { 
-                        req.session.prolificUid["user_reported_prolific_pid"] = req.body["prolificPID"];
-                        console.log("notice: user_reported_prolific_pid: " + req.session.prolificUid["user_reported_prolific_pid"] + " differs from prolific_pid: " + req.session.prolificUid["prolific_pid"]);
-                    }
-                }
                 req.session.save();
                 res.redirect(302, "/");
                 return;
@@ -148,94 +119,16 @@ function verifyUserConsent(req, res, next) {
     next();
 };
 
-const agent_random_selection_array = [
-    {"user_name": "you", "user_avatar_image_name": "user_no_bias_photo.png", "agent_name": "Hannah", "agent_avatar_image_name" : "agent_avatar_5.png"},
-    {"user_name": "you", "user_avatar_image_name": "user_no_bias_photo.png", "agent_name": "Emma", "agent_avatar_image_name" : "agent_avatar_18.png"},
-    {"user_name": "you", "user_avatar_image_name": "user_no_bias_photo.png", "agent_name": "Abigail", "agent_avatar_image_name" : "agent_avatar_16.png"},
-    {"user_name": "you", "user_avatar_image_name": "user_no_bias_photo.png", "agent_name": "Andrew", "agent_avatar_image_name" : "agent_avatar_1.png"},
-    {"user_name": "you", "user_avatar_image_name": "user_no_bias_photo.png", "agent_name": "Ethan", "agent_avatar_image_name" : "agent_avatar_14.png"},
-    {"user_name": "you", "user_avatar_image_name": "user_no_bias_photo.png", "agent_name": "Joe", "agent_avatar_image_name" : "agent_avatar_6.png"}
-];
-
-// Middlewares to be executed for every request to the app, making sure the session is initialized with user preferences.
-async function verifyUserPreferences(req, res, next) {
-    if (!req.session.preferences) {
-        if (!helpers.isUserPreferencesActive(req) || (req.path === "/user_preferences" && req.method === "POST")) {
-            const agent_avatars = await helpers.listAvatars(true);
-            const user_avatars = await helpers.listAvatars(false);
-            const random_assignment = agent_random_selection_array[helpers.getRandomInt(0, agent_random_selection_array.length)];
-            req.session.preferences = {
-                "user_name": random_assignment["user_name"],
-                "user_avatar": helpers.getAvatarImageFullPath(random_assignment["user_avatar_image_name"]),
-                "agent_name": random_assignment["agent_name"],
-                "agent_avatar": helpers.getAvatarImageFullPath(random_assignment["agent_avatar_image_name"])
-            };
-            
-            Object.keys(req.body).forEach(key => {
-                if (key.startsWith("preferences.")) {
-                    req.session.preferences[key.replace("preferences.", "")] = req.body[key];
-                }
-                else if (key.startsWith("user_config")) {
-                    req.session.userConfigFilter[key.replace("user_config.", "")] = req.body[key];
-                }
-            });
-            req.session.save();
-            res.redirect(302, "/");
-            return;
-        }
-
-        await renderUserPreferencesPage(req, res);
-        return;
-    }
-    next();
-};
-
 app.use([
     verifySystemInitialized, 
     verifySession, 
     verifySessionEnded, 
     verifySessionCode, 
-    verifyUserConsent,
-    verifyUserPreferences
+    verifyUserConsent
 ]);
-
-async function renderUserPreferencesPage(req, res) {
-    // user preferences page. consists of (1) user preferences and (2) agent configuration.
-    
-    // (1) user preferences: the name and image of the agent.
-    const agent_avatars = await helpers.listAvatars(true);
-    let renderParams = helpers.getRenderingParamsForPage("user_preferences");
-    renderParams["agent_avatar"] = agent_avatars;
-
-    // (2) agent configuration: the user might be required to choose some properties according to the treatment group configuration.
-    const filteredRecords = helpers.getSelectedRecords(req);
-    let recordsByProperty = helpers.groupRecordsByProperty(filteredRecords);
-    let userConfigProperties = helpers.filterUserConfigProperties(recordsByProperty);
-    const userPropertiesCount = Object.keys(userConfigProperties).length;
-
-    if (userPropertiesCount > 0) {
-        // according to the csv, the user has some properties to decide on.
-        if (Object.keys(req.session.userConfigFilter).length == 0) {
-            // this is the expected case, when the csv is set to let the user choose the properties.
-            renderParams["userConfig"] = userConfigProperties
-        } else {
-            // should not happen.
-            // if we reached here, this means the user was required to choose a property, but the user config is not complete (i.e. some properties were not decided).
-            console.log("Properties are not filtered correctly!. uid: " + req.session.uid + ", treatment group: " + req.session.treatmentGroupId + ", user config filter is set to : " + JSON.stringify(userConfigProperties));
-            renderParams = helpers.getRenderingParamsForPage("error");
-            renderParams["body_message"] = "Properties are not filtered correctly! Please contact the experimenter.";
-            res.render('./error', renderParams);
-            return;
-        }
-    }
-
-    res.render('./user_preferences',  renderParams);
-}
 
 app.get('/', async (req, res) => {
     let renderParams = helpers.getRenderingParamsForPage("chat");
-    renderParams["preferences"] = req.session.preferences;
-    renderParams["header_message"] = helpers.getUserTaskDescription(req);
     renderParams["body_message"] = "";
     res.render('./chat', renderParams);
 });
