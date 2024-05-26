@@ -1,12 +1,12 @@
 
-CREATE TABLE mem_test_results (
+CREATE TABLE digit_span_b_results (
     uuid        integer,
     userid      varchar(256),
     result      json
 );
 
 
-CREATE TABLE mem_test_codes (
+CREATE TABLE digit_span_b_codes (
     code      varchar(256) NOT NULL,
     completed   json,
     PRIMARY KEY (code)
@@ -22,4 +22,4 @@ for i in range(100):
 
 
 # fetch results 
-select * from mem_test_codes join mem_test_results on mem_test_codes.completed->>'uid' = CAST(mem_test_results.uuid AS TEXT);
+select * from digit_span_b_codes join digit_span_b_results on digit_span_b_codes.completed->>'uid' = CAST(digit_span_b_results.uuid AS TEXT);

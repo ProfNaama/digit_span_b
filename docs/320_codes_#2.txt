@@ -319,7 +319,7 @@ Your Prolific PID,55oifpubmt
 Your Prolific PID,olwtd19eiy
 Your Prolific PID,mf7npcnjjg
 Your Prolific PID,ifnb5kujfz
-INSERT INTO mem_test_codes (code) VALUES
+INSERT INTO digit_span_b_codes (code) VALUES
 ('6hiedtwhn9'),
 ('hfvie0aa2e'),
 ('1esvy1es7j'),

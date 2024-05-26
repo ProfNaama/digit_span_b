@@ -231,7 +231,7 @@ function saveSessionResults(req) {
         }); 
         
         const query = {
-            text: 'INSERT INTO mem_test_results (uuid, userid, result) VALUES ($1, $2, $3)',
+            text: 'INSERT INTO digit_span_b_results (uuid, userid, result) VALUES ($1, $2, $3)',
             values: [sessionResultObj.uid, sessionResultObj.userid, sessionResultObj]
         }
     
@@ -262,7 +262,7 @@ async function isCodeValid(code) {
             }); 
             
             const query = {
-                text: 'SELECT completed FROM mem_test_codes WHERE code = $1',
+                text: 'SELECT completed FROM digit_span_b_codes WHERE code = $1',
                 values: [code]
             }
         
@@ -294,7 +294,7 @@ async function setCodeCompleted(code, obj) {
         }); 
         
         const query = {
-            text: 'UPDATE mem_test_codes SET completed = $2 WHERE code = $1',
+            text: 'UPDATE digit_span_b_codes SET completed = $2 WHERE code = $1',
             values: [code, obj]
         }
     

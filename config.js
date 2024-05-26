@@ -2,7 +2,7 @@ let config = {}
 
 // postgres
 config.connectionString = process.env['DATABASE_URL'];
-config.pgTable = process.env['PGTABLE'] || "mem_test_results";
+config.pgTable = process.env['PGTABLE'] || "digit_span_b_results";
 
 // save results
 config.resultsFile = process.env['RESULTS_FILE'];
