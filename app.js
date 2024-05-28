@@ -142,7 +142,10 @@ app.post('/mem-test-api', (req, res) => {
         req.session.save();
         res.json([]);
     } else {
-        let random_numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+        let random_numbers = [];
+        for (let i = 1; i <= config.digits; i++) {
+            random_numbers.push(i);
+        }
         // shuffle the array
         for (let i = 0; i < random_numbers.length; i++) {
             const randPos = helpers.getRandomInt(0, random_numbers.length);

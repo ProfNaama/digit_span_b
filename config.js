@@ -11,4 +11,8 @@ config.encodeBase64 = process.env['BASE64_ENCODE'] && parseInt(process.env['BASE
 
 // secret code ... temporary
 config.reusableCode = process.env['REUSABLE_CODE'];
+
+// number of digits
+config.digits = process.env['DIGITS'] || 7;
+
 module.exports = config;
