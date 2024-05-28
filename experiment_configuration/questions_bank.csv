@@ -4,34 +4,31 @@ q_age,What is your age?,0,0,1,0,18-20|21-30|31-40|41-50|51-60|61-70|over 70
 q_education,What best describes the level of your education?,0,0,1,0,"Some high school, no diploma|High school diploma or GED|Some college, no degree|Associate (2-year) degree|Bachelor's (4-year) degree|Master's degree|Doctorate degree"
 q_experience,"How much experience you have with AI agents (such as Chat GPT, chatbot, etc.)?",0,0,1,0,I use them daily|I use them weekly|I use them monthly|I have some experience with AI agents but I almost never use them|I have never used an AI agent
 q_device_usage,"What is your daily average usage of digital devices (such as a PC, mobile phone, laptop, tablet, etc.)?",0,0,1,0,Less than an hour|1-2 hours|3-4 hours|5-6 hours|7-8 hours|9-10 hours|11 hours and more
-Fink_instructions,Considering the device you are using now please rate your agreement with the following statements on a scale of 1 to 7 (1 representing strongly disagree and 7 representing strongly agree),0,0,0,1,
-Fink_Q_1,When I use this device I typically feel that my attention capacity is limited,0,1,0,0,strongly disagree|strongly agree
-Fink_Q_2,When I use this device I feel that this screen size limits my ability to devote attention to the task,0,1,0,0,strongly disagree|strongly agree
-Fink_Q_3,When I use this device it is difficult for me to concentrate for long periods of time,0,1,0,0,strongly disagree|strongly agree
-Fink_Q_4,When I use this device I feel that the environment makes it difficult for me to focus my attention on the task,0,1,0,0,strongly disagree|strongly agree
-Fink_Q_5,When I use this device interruptions in my environment frequently draw my attention away from what I am doing,0,1,0,0,strongly disagree|strongly agree
-Fink_Q_6,When I use this device on-screen interruptions frequently draw my attention away from what I am doing,0,1,0,0,strongly disagree|strongly agree
-Fink_Q_7,When I use this device I frequently divert my attention to things that happen in my environment,0,1,0,0,strongly disagree|strongly agree
-Fink_Q_8,When I use this device I frequently experience cognitive load,0,1,0,0,strongly disagree|strongly agree
-Fink_Q_9,When I use this device I frequently feel that my capacity to store information in my memory is limited,0,1,0,0,strongly disagree|strongly agree
-Fink_Q_10,When I use this device I generally devote limited time to any specific task,0,1,0,0,strongly disagree|strongly agree
-Fink_Q_11,When I use this device I prefer to switch between tasks rather than to devote my time to one specific task,0,1,0,0,strongly disagree|strongly agree
-Calstera_instructions,"Considering your day to day, please rate your agreement with the following statements on a scale of 1 to 7(1 representing strongly disagree and 7 representing strongly agree)",0,0,0,1,
-Calstera_Q_1,I have trouble concentrating when there is movement in the room I am in,0,1,0,0,strongly disagree|strongly agree
-Calstera_Q_2,In general I stay in control of my thoughts and do not let myself get distracted by interfering thoughts,0,1,0,0,strongly disagree|strongly agree
-Calstera_Q_3,I am easily drawn to new stimuli (for example voices of people passing by a sound in the house etc.) that are not relevant to a task I am doing.,0,1,0,0,strongly disagree|strongly agree
-Calstera_Q_4,I can be so absorbed by a line of thoughts that I become more or less unaware of my surroundings.,0,1,0,0,strongly disagree|strongly agree
-Calstera_Q_5,When I am doing a task I am often so focused I do not notice my surroundings.,0,1,0,0,strongly disagree|strongly agree
-Calstera_Q_6,I do not have difficulties working while listening to music.,0,1,0,0,strongly disagree|strongly agree
-Calstera_Q_7,It is hard for me to stay on one activity for a whole hour.,0,1,0,0,strongly disagree|strongly agree
-Calstera_Q_8,During an activity unrelated mental images and thoughts come to my mind.,0,1,0,0,strongly disagree|strongly agree
-Calstera_Q_9,I often put hold of an activity because I suddenly think about another one I have to start or continue.,0,1,0,0,strongly disagree|strongly agree
-Calstera_Q_10,I generally stay focused on a single task until it is finished.,0,1,0,0,strongly disagree|strongly agree
-Calstera_Q_11,I can easily ignore my surroundings.,0,1,0,0,strongly disagree|strongly agree
-Calstera_Q_12,Sometimes I interrupt an activity to check an unrelated detail.,0,1,0,0,strongly disagree|strongly agree
-Calstera_Q_13,When I am working on my computer I often go on the internet to visit websites that are unrelated to my work.,0,1,0,0,strongly disagree|strongly agree
-Calstera_Q_14,I can easily concentrate on a task even when there is movement in the room I am in.,0,1,0,0,strongly disagree|strongly agree
-Calstera_Q_15,I can spend several minutes on a question and try to dissect it.,0,1,0,0,strongly disagree|strongly agree
-Calstera_Q_16,I have trouble thinking when there are noises even if these noises are not intense.,0,1,0,0,strongly disagree|strongly agree
-Calstera_Q_17,I am often the first one to notice something has changed in a room.,0,1,0,0,strongly disagree|strongly agree
+Fink_instructions,Considering your experience when you use your mobile please rate your agreement with the following statements on a scale of 1 to 7 (1 representing 'strongly disagree' and 7 representing 'strongly agree'),0,0,0,1,
+Fink_Q_1,When I use my mobile I typically feel that my attention capacity is limited,0,1,0,0,strongly disagree|strongly agree
+Fink_Q_2,When I use my mobile I frequently feel overloaded with information,0,1,0,0,strongly disagree|strongly agree
+Fink_Q_3,When I use my mobile I frequently feel that my capacity to store information in my memory is limited,0,1,0,0,strongly disagree|strongly agree
+Fink_Q_4,When I use my mobile I prefer to switch between tasks rather than to devote my time to one specific task,0,1,0,0,strongly disagree|strongly agree
+Fink_Q_5,When I use my mobile I feel that I can successfully complete tasks without paying too much attention,0,1,0,0,strongly disagree|strongly agree
+Calstera_instructions,Considering your day-to-day activities with your mobile please rate your agreement with the following statements on a scale of 1 to 7 (1 representing 'strongly disagree' and 7 representing 'strongly agree'),0,0,0,1,
+Calstera_Q_1,When I use my mobile I have trouble concentrating when there is movement in the room I am in,0,1,0,0,strongly disagree|strongly agree
+Calstera_Q_2,When I use my mobile I generally stay in control of my thoughts and do not let myself get distracted by interfering thoughts,0,1,0,0,strongly disagree|strongly agree
+Calstera_Q_3,When I use my mobile I am easily drawn to new stimuli (for example voices of people passing by a sound in the house etc.) that are not relevant to a task I am doing,0,1,0,0,strongly disagree|strongly agree
+Calstera_Q_4,When I use my mobile I can be so absorbed by a line of thoughts that I become more or less unaware of my surroundings,0,1,0,0,strongly disagree|strongly agree
+Calstera_Q_5,When I use my mobile I am often so focused I do not notice my surroundings,0,1,0,0,strongly disagree|strongly agree
+Calstera_Q_6,When I use my mobile I do not have difficulties working while listening to music,0,1,0,0,strongly disagree|strongly agree
+Calstera_Q_7,When I use my mobile It is hard for me to stay on one activity for a whole hour,0,1,0,0,strongly disagree|strongly agree
+Calstera_Q_8,When I use my mobile unrelated mental images and thoughts come to my mind,0,1,0,0,strongly disagree|strongly agree
+Calstera_Q_9,When I use my mobile I often put hold to an activity because I suddenly think about another one I have to start or continue,0,1,0,0,strongly disagree|strongly agree
+Calstera_Q_10,When I use my mobile I generally stay focused on a single task until it is finished,0,1,0,0,strongly disagree|strongly agree
+Calstera_Q_11,When I use my mobile I can easily ignore my surroundings,0,1,0,0,strongly disagree|strongly agree
+Calstera_Q_12,When I use my mobile sometimes I interrupt an activity to check an unrelated detail,0,1,0,0,strongly disagree|strongly agree
+Calstera_Q_13,When I use my mobile I often visit websites that are unrelated to my work,0,1,0,0,strongly disagree|strongly agree
+Calstera_Q_14,When I use my mobile I can easily concentrate on a task even when there is movement in the room I am in,0,1,0,0,strongly disagree|strongly agree
+Calstera_Q_15,When I use my mobile I can spend several minutes on a question and try to dissect it,0,1,0,0,strongly disagree|strongly agree
+Calstera_Q_16,When I use my mobile I have trouble thinking when there are noises even if these noises are not intense,0,1,0,0,strongly disagree|strongly agree
+Calstera_Q_17,When I use my mobile I am often the first one to notice something has changed in a room,0,1,0,0,strongly disagree|strongly agree
 q_comments,Do you wish to add anything?,1,0,0,0,
+Attention_Q_1,Please select 'strongly agree' for this question to indicate that you are paying attention.,0,1,0,0,strongly disagree|strongly agree
+Attention_Q_2,Please choose the option located on the left side of the scale for this question.,0,1,0,0,strongly disagree|strongly agree
+Device_Q,Please describe the device you are using now:,0,0,1,0,Smartphone|Desktop|Laptop|Tablet
