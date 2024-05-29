@@ -89,7 +89,7 @@
 
 .task_description{
     background-color: var(--grayBLU);
-    height: 300px;
+    height: max-content;
 }
 
 #chatForm {
@@ -148,16 +148,32 @@ p {
     width: 80%;
     font-size: 22px;
     line-height:200%;
-    /* text-decoration: underline; */
     font-style: italic;
 }
 
-@media screen and (max-width: 3000px) {
+.likertScale {
+    width: max-content;
+    background-color: yellow;
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 0;
+    border-radius: 16px;
+}
 
-    /* label, span{
-        color: red;
-        font-size:x-large;
-    } */
+@media screen and (max-width: 1000px) {
+
+    .consentTXT *,  .consentTXT{
+        font-size:xx-large;
+    }
+ 
+    #consenrForm * {
+        font-size: xx-large;
+    }
+
+    #consenrForm input[type=radio] {
+        transform: scale(1.8);
+    }
+
     .container {
         display: grid;
         grid-template-areas: 
@@ -192,56 +208,6 @@ p {
         border-radius: 16px;
     }
 
-    /* .LikertItemTable {
-        width: 100%;
-        background-color: var(--Light_Gray);
-        border-radius: 24px;
-    } */
-
-    /* .txtLikert {
-        font-size: 13px;
-    } */
-
-
-    /* td label {
-        /* width: 100%; */
-        /* margin: auto; */
-        /* color: red; */
-        /* display: block; */
-        /* text-align: center; */
-    /* } */
-
-    /* .likertLabel {
-        display: block;
-        text-align: center;
-
-    }
-
-    .LikertItemTable input[type=radio]{
-        margin: 5%;
-    } */ 
-/* 
-    .RadioDiv {
-        width: 90%;
-        margin: auto;
-    } */
-
-    /* .LikertItemTable input {
-        width: 10px;
-    } */
-/* 
-    .LikertItemTable tr {
-        width: 100%;
-    } */
-
-/* 
-    .LikertItemTable td {
-        width: 33%;
-        margin: auto;
-    } */
-
-  
-    
     .H3_q_Item {
         width: 100%;
     }
@@ -250,7 +216,6 @@ p {
         width: 100%;
         font-size: 22px;
         line-height:200%;
-        /* text-decoration: underline; */
         font-style: italic;
     }
   }
