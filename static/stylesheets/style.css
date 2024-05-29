@@ -152,7 +152,7 @@ p {
     font-style: italic;
 }
 
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 3000px) {
 
     /* label, span{
         color: red;
@@ -178,18 +178,50 @@ p {
         border-radius: 24px;
     }
 
-    .LikertItemTable label {
-        font-size: smaller;
+    .txtLikert {
+        font-size: 13px;
     }
 
-    .LikertItemTable input {
-        width: 9px;
+
+    td label {
+        /* width: 100%; */
+        /* margin: auto; */
+        /* color: red; */
+        display: block;
+        text-align: center;
     }
+
+    .likertLabel {
+        display: block;
+        text-align: center;
+
+    }
+
+    .LikertItemTable input[type=radio]{
+        margin: 5%;
+    }
+
+    .RadioDiv {
+        width: 90%;
+        margin: auto;
+    }
+
+    /* .LikertItemTable input {
+        width: 10px;
+    } */
+
+    .LikertItemTable tr {
+        width: 100%;
+        /* margin: auto; */
+    }
+
 
     .LikertItemTable td {
         width: 33%;
-        padding: auto;
+        margin: auto;
     }
+
+  
     
     .H3_q_Item {
         width: 100%;
