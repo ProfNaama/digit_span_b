@@ -13,7 +13,7 @@ Fink_Q_5,"When I use my mobile, I feel that I can successfully complete tasks wi
 Calstera_instructions,"Considering your day-to-day activities with your mobile, please rate your agreement with the following statements on a scale of 1 to 7 (1 representing 'strongly disagree' and 7 representing 'strongly agree')",0,0,0,1,
 Calstera_Q_1,"When I use my mobile, I have trouble concentrating when there is movement in the room I am in",0,1,0,0,strongly disagree|strongly agree
 Calstera_Q_2,"When I use my mobile, I generally stay in control of my thoughts and do not let myself get distracted by interfering thoughts",0,1,0,0,strongly disagree|strongly agree
-Calstera_Q_3,"When I use my mobile, I am easily drawn to new stimuli (for example, voices of people passing by a sound in the house etc.) that are not relevant to a task I am doing",0,1,0,0,strongly disagree|strongly agree
+Calstera_Q_3,"When I use my mobile, I am easily drawn to new stimuli (for example voices of people passing by, a sound in the house etc.) that are not relevant to a task I am doing",0,1,0,0,strongly disagree|strongly agree
 Calstera_Q_4,"When I use my mobile, I can be so absorbed by a line of thoughts that I become more or less unaware of my surroundings",0,1,0,0,strongly disagree|strongly agree
 Calstera_Q_5,"When I use my mobile, I am often so focused I do not notice my surroundings",0,1,0,0,strongly disagree|strongly agree
 Calstera_Q_6,"When I use my mobile, I do not have difficulties working while listening to music",0,1,0,0,strongly disagree|strongly agree
