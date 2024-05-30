@@ -1,6 +1,6 @@
 
 import random
-random.seed(12233445)
+random.seed(74674870)
 
 code_len = 10
 codes_count = 320
@@ -11,7 +11,7 @@ def generate_codes(codes_count=320):
     
 
 def generate_csv_format(codes):
-    liens = ["Your Prolific PID,{}".format(c) for c in codes]
+    liens = ["{}".format(c) for c in codes]
     print("\n".join(liens))
 
 # prapare for PostgreSQL
@@ -22,5 +22,8 @@ def generate_postgresql_format(codes):
     
 codes = generate_codes(codes_count * 2)
 codes = codes[codes_count:]
+print("================")
 generate_csv_format(codes)
+print("================")
 generate_postgresql_format(codes)
+print("================")
