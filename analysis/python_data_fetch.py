@@ -5,9 +5,11 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import datetime
+import difflib
 
 postgresql_filename = "analysis/select_results_81.json"
 results_filename = 'analysis/json_results_81.json'
+
 with open(postgresql_filename, 'r') as inf:
     data = json.load(inf)
 for d in data:
@@ -39,15 +41,6 @@ def getQuestionAnswer(d, question):
 
 def getUid(d):
     return d['uid']
-
-def getStringSimilarityScore(s1, s2):
-    set(s1)
-    
-
-def getMemTestScore(d):
-    ["conversationContext"]
-    ["random_numbers"]
-    ["user_response"]
     
 def getMemTestQuestionAnswerTuple(d, idx):
     q = "".join([str(n) for n in d['conversationContext'][idx]["random_numbers"]]).lower()
@@ -59,6 +52,10 @@ def getMemTestQuestionAnswerTuple(d, idx):
     a = a.replace(";", "")
     
     return q, a 
+
+def getSimilarityScore(d, idx):
+    q, a = getMemTestQuestionAnswerTuple(d, idx)
+    return difflib.SequenceMatcher(None, q, a).ratio()
 
 questionsList = [
     "Fink_Q_1",
@@ -96,6 +93,7 @@ columnsToFetcherDict = {
 for idx in range(5):
     columnsToFetcherDict["memQ_" + str(idx)] = lambda d,idx=idx: getMemTestQuestionAnswerTuple(d, idx)[0]
     columnsToFetcherDict["memA_" + str(idx)] = lambda d,idx=idx: getMemTestQuestionAnswerTuple(d, idx)[1]
+    columnsToFetcherDict["similarity_score_" + str(idx)] = lambda d,idx=idx: getSimilarityScore(d, idx)
 
 for q in questionsList:
     columnsToFetcherDict[q] = lambda d, q=q: getQuestionAnswer(d, q)
@@ -120,7 +118,7 @@ dataDict = {
     c:[missingDataWrapper(handler, d) for d in jsonData] for c,handler in columnsToFetcherDict.items()
 }
 
-results_filename = 'analysis/37_measures_reslts_76.csv'
+results_filename = 'analysis/42_measures_reslts_76.csv'
 
 df = buildDF(data)
 df.to_csv(results_filename, index=False)
