@@ -44,7 +44,9 @@ def getUid(d):
     
 def getMemTestQuestionAnswerTuple(d, idx):
     q = "".join([str(n) for n in d['conversationContext'][idx]["random_numbers"]]).lower()
-    a = d['conversationContext'][idx]["user_response"].lower()
+    a = ""
+    if "user_response" in d['conversationContext'][idx]:
+        a = d['conversationContext'][idx]["user_response"].lower()
     for n, numStr in enumerate(["zero", "one", "tow", "three", "four", "five", "six", "seven", "eight", "nine"]):
         a = a.replace(numStr, str(n))
     a = a.replace(" ", "")
